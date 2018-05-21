@@ -1,49 +1,30 @@
-console.log("start");
-var sheets = document.styleSheets;
-var aSheet = sheets[0];
-aSheet.insertRule("ytd-browse.style-scope.ytd-page-manager { display: none !important; }");
-aSheet.insertRule(".ytd-watch-next-secondary-results-renderer { display: none !important; }");
+// Lawrence Hook
 
-// var main = document.querySelector("ytd-browse");
-// console.log('main', main);
-// if (main) main.style.display = "none";
-
-// var secondary = document.querySelector(".ytd-watch-next-secondary-results-renderer");
-// console.log('secondary', secondary);
-// if (secondary) secondary.style.display = "none";
+// remove sidebar recommendations
+let sheets = document.styleSheets;
+sheets[0].insertRule(".ytd-watch-next-secondary-results-renderer { display: none !important; }");
 
 
-// var observer = new MutationObserver(function(mutations, thisObserver) {
-//   mutations.forEach(function(mutation) {
-//     if (!mutation.addedNodes) return
 
-//     for (var i = 0; i < mutation.addedNodes.length; i++) {
-//       // do things to your newly added nodes here
-//       var node = mutation.addedNodes[i]
-//       // console.log(node);
-//       if (node.nodeName && node.nodeName.includes("ytd-browse")) {
-//         node.style.display = "none";
-//           // console.log(node.nodeName);
-//       }
+// remove homepage recommendations
+function updateStyle() {
+  // the homepage has pathname "/" which is length 1
+  let property = window.location.pathname.length > 1 ? "flex" : "none";
+  for (let elt of document.querySelectorAll("ytd-browse")) {
+    if (elt) elt.style.setProperty("display", property);
+  }
+}
+updateStyle();
 
-//       if (node.className && node.className.includes) {
-//         if (node.className.includes("ytd-watch-next-secondary-results-renderer")) {
-//           node.style.display = "none";
-//           // console.log(node.className);
-//         }
+// watch for url changes
+let observer = new MutationObserver(function(mutations) {
+  updateStyle();
+  return;
+});
 
-//         if (node.className.includes("videoAdUiAttribution")) {
-//           console.log(node.className);
-//           alert("1");
-//         }
-//       }
-//     }
-//   })
-// })
-
-// observer.observe(document.body, {
-//     childList: true
-//   , subtree: true
-//   , attributes: false
-//   , characterData: false
-// })
+observer.observe(document.body, {
+    childList: true
+  , subtree: true
+  , attributes: false
+  , characterData: false
+})
