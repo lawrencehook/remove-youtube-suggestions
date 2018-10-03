@@ -15,8 +15,15 @@ function updateStyle(setting) {
 
 // After getting settings
 function onGotHomepageSetting(item) {
-  console.log(item);
-  if (item.homepage) {
+  var removeHomepage = item.homepage;
+  if (removeHomepage === undefined) {
+    removeHomepage = true;
+    browser.storage.local.set({
+      homepage: true
+    });
+  }
+
+  if (removeHomepage) {
     updateStyle(item.homepage);
 
     // watch for url changes
@@ -36,8 +43,15 @@ function onGotHomepageSetting(item) {
 }
 
 function onGotSidebarSetting(item) {
-  console.log(item);
-  if (item.sidebar) {
+  var removeSidebar = item.sidebar;
+  if (removeSidebar === undefined) {
+    removeSidebar = true;
+    browser.storage.local.set({
+      sidebar: true
+    });
+  }
+
+  if (removeSidebar) {
     let sheets = document.styleSheets;
     sheets[0].insertRule(".ytd-watch-next-secondary-results-renderer { display: none !important; }");
   }
