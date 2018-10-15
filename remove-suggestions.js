@@ -53,8 +53,24 @@ function onGotSidebarSetting(item) {
 
   if (removeSidebar) {
     let sheets = document.styleSheets;
-    sheets[0].insertRule("ytd-compact-video-renderer.style-scope { display: none !important; }"); 
+    sheets[0].insertRule("ytd-compact-video-renderer.style-scope { display: none !important; }");
+    sheets[0].insertRule("ytd-compact-radio-renderer.style-scope { display: none !important; }");
+    sheets[0].insertRule("ytd-image-companion-renderer.style-scope { display: none !important; }");
     sheets[0].insertRule("#upnext { display: none !important; }");
+  }
+}
+
+function onGotVideoEndSetting(item) {
+  var removeVideoEnd = item.videoEnd;
+  if (removeVideoEnd === undefined) {
+    removeVideoEnd = true;
+    browser.storage.local.set({
+      videoEnd: true
+    });
+  }
+  if (removeVideoEnd) {
+    let sheets = document.styleSheets;
+    sheets[0].insertRule(".html5-endscreen { display: none !important; }");
   }
 }
 
@@ -63,3 +79,6 @@ gettingHomepage.then(onGotHomepageSetting, onError);
 
 var gettingSidebar = browser.storage.local.get("sidebar");
 gettingSidebar.then(onGotSidebarSetting, onError);
+
+var gettingVideoEnd = browser.storage.local.get("videoEnd");
+gettingVideoEnd.then(onGotVideoEndSetting, onError);
