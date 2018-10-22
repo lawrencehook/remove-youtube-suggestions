@@ -2,7 +2,7 @@
   "description": "Removes all suggestions from Youtube.",
   "manifest_version": 2,
   "name": "Remove Youtube Suggestions",
-  "version": "1.2.2",
+  "version": "1.3.1",
   "homepage_url": "https://github.com/emumoo/remove-youtube-suggestions",
 
   "content_scripts": [
