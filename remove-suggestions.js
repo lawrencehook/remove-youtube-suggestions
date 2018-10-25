@@ -57,6 +57,7 @@ function onGotSidebarSetting(item) {
     sheets[0].insertRule("ytd-compact-radio-renderer.style-scope { display: none !important; }");
     sheets[0].insertRule("ytd-image-companion-renderer.style-scope { display: none !important; }");
     sheets[0].insertRule("ytd-compact-playlist-renderer.style-scope { display: none !important; }");
+    sheets[0].insertRule("a.ytd-action-companion-renderer { display: none !important; }");
     sheets[0].insertRule("#upnext { display: none !important; }");
   }
 }
