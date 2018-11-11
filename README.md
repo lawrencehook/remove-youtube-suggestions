@@ -1,4 +1,4 @@
 # Remove Youtube Suggestions
+### A Firefox Add on to remove all suggestions from the youtube sidebar
 
-## What it does
-This extension removes all suggestions from Youtube.
+Availible for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
