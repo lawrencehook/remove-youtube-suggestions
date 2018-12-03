@@ -4,4 +4,4 @@
 "Remove Youtube Suggestions" hides the homepage and the videos that appear on the sidebar.
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
-Availible for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
+Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
