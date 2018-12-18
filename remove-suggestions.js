@@ -53,12 +53,14 @@ function onGotSidebarSetting(item) {
 
   if (removeSidebar) {
     let sheets = document.styleSheets;
-    sheets[0].insertRule("ytd-compact-video-renderer.style-scope { display: none !important; }");
-    sheets[0].insertRule("ytd-compact-radio-renderer.style-scope { display: none !important; }");
-    sheets[0].insertRule("ytd-image-companion-renderer.style-scope { display: none !important; }");
-    sheets[0].insertRule("ytd-compact-playlist-renderer.style-scope { display: none !important; }");
-    sheets[0].insertRule("a.ytd-action-companion-renderer { display: none !important; }");
-    sheets[0].insertRule("#upnext { display: none !important; }");
+    let display_none = " { display: none !important; }";
+    sheets[0].insertRule("ytd-compact-video-renderer.style-scope" + display_none);
+    sheets[0].insertRule("ytd-compact-radio-renderer.style-scope" + display_none);
+    sheets[0].insertRule("ytd-image-companion-renderer.style-scope" + display_none);
+    sheets[0].insertRule("ytd-compact-playlist-renderer.style-scope" + display_none);
+    sheets[0].insertRule("a.ytd-action-companion-renderer" + display_none);
+    sheets[0].insertRule("#upnext" + display_none);
+    sheets[0].insertRule("paper-button.style-scope" + display_none); // show more button
   }
 }
 
