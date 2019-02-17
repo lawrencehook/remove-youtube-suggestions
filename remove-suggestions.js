@@ -11,6 +11,11 @@ function updateStyle(setting) {
   for (let elt of document.querySelectorAll("ytd-browse")) {
     if (elt) elt.style.setProperty("display", property);
   }
+
+  // for disable_polymer=true
+  for (let elt of document.querySelectorAll("#feed")) {
+    if (elt) elt.style.setProperty("display", property);
+  }
 }
 
 // After getting settings
@@ -65,6 +70,16 @@ function onGotSidebarSetting(item) {
 
     sheets[0].insertRule("#upnext" + display_none);
     sheets[0].insertRule("paper-button.yt-next-continuation" + display_none); // show more button
+
+    // disable_polymer=true
+    sheets[0].insertRule("li.video-list-item.related-list-item" + display_none); 
+    sheets[0].insertRule("h4.watch-sidebar-head" + display_none); 
+    sheets[0].insertRule("hr.watch-sidebar-separation-line" + display_none); 
+    sheets[0].insertRule("button#watch-more-related-button" + display_none); 
+    // sheets[0].insertRule("paper-button.yt-next-continuation" + display_none); 
+    // sheets[0].insertRule("paper-button.yt-next-continuation" + display_none); 
+
+
   }
 }
 
