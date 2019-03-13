@@ -109,6 +109,9 @@ function onGotCommentsSetting(item) {
   if (removeComments) {
     let sheets = document.styleSheets;
     sheets[0].insertRule("#contents { display: none !important; }");
+
+    // for disable_polymer=true
+    sheets[0].insertRule("#comment-section-renderer-items { display: none !important; }");
   }
 }
 
