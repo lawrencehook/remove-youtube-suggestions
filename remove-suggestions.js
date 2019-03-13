@@ -99,19 +99,19 @@ function onGotVideoEndSetting(item) {
 
 function onGotCommentsSetting(item) {
   var removeComments = item.comments;
-  console.log(item);
+
   if (removeComments === undefined) {
-    removeComments = true;
+    removeComments = false;
     browser.storage.local.set({
-      comments: true
+      comments: false
     });
   }
   if (removeComments) {
     let sheets = document.styleSheets;
-    sheets[0].insertRule("#contents { display: none !important; }");
+    sheets[0].insertRule("ytd-comment-thread-renderer { display: none !important; }");
 
     // for disable_polymer=true
-    sheets[0].insertRule("#comment-section-renderer-items { display: none !important; }");
+    sheets[0].insertRule("#comment-secyoutubetion-renderer-items { display: none !important; }");
   }
 }
 
