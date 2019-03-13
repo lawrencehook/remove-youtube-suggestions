@@ -97,6 +97,21 @@ function onGotVideoEndSetting(item) {
   }
 }
 
+function onGotCommentsSetting(item) {
+  var removeComments = item.comments;
+  console.log(item);
+  if (removeComments === undefined) {
+    removeComments = true;
+    browser.storage.local.set({
+      comments: true
+    });
+  }
+  if (removeComments) {
+    let sheets = document.styleSheets;
+    sheets[0].insertRule("#contents { display: none !important; }");
+  }
+}
+
 var gettingHomepage = browser.storage.local.get("homepage");
 gettingHomepage.then(onGotHomepageSetting, onError);
 
@@ -105,3 +120,6 @@ gettingSidebar.then(onGotSidebarSetting, onError);
 
 var gettingVideoEnd = browser.storage.local.get("videoEnd");
 gettingVideoEnd.then(onGotVideoEndSetting, onError);
+
+var gettingComments = browser.storage.local.get("comments");
+gettingComments.then(onGotCommentsSetting, onError);
