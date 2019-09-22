@@ -60,8 +60,16 @@ function onGotSidebarSetting(item) {
     let sheets = document.styleSheets;
     let display_none = " { display: none !important; }";
 
+    // youtube video recommendations
     sheets[0].insertRule("ytd-compact-video-renderer.style-scope" + display_none);
     sheets[0].insertRule("ytd-compact-radio-renderer.style-scope" + display_none);
+    
+    // movie recommendations
+    sheets[0].insertRule("#dismissable.ytd-compact-movie-renderer" + display_none);
+    sheets[0].insertRule("ytd-movie-offer-module-renderer" + display_none);
+
+    // ads
+    sheets[0].insertRule("#container.ytd-iframe-companion-renderer" + display_none);
 
     sheets[0].insertRule("ytd-image-companion-renderer.style-scope" + display_none);
     sheets[0].insertRule("ytd-compact-playlist-renderer.style-scope" + display_none);
