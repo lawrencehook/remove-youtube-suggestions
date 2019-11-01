@@ -13,6 +13,8 @@ Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remov
 ### Contributing
 If you'd like to contribute to the development of this project, the following commands will get you started with a dev environment.
 ```
+$ git clone https://github.com/emumoo/remove-youtube-suggestions.git
+$ cd remove-youtube-suggestions
 $ npm install --global web-ext
 $ web-ext run
 ```
