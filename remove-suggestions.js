@@ -5,50 +5,46 @@ function onError(error) {
 }
 
 // remove homepage recommendations
-function updateStyle(setting) {
+function updateHomepageStyle(hideHomepage) {
   // the homepage has pathname "/" which is length 1
-  let property = (!setting || window.location.pathname.length > 1) ? "flex" : "none";
-  for (let elt of document.querySelectorAll("ytd-browse")) {
-    if (elt) elt.style.setProperty("display", property);
-  }
+  const thisIsHomepage = window.location.pathname.length <= 1;
+  const hideSuggestions = hideHomepage && thisIsHomepage;
 
-  // for disable_polymer=true
-  for (let elt of document.querySelectorAll("#feed")) {
-    if (elt) elt.style.setProperty("display", property);
-  }
+  const propertyHide = "none";
+  const propertyShow = "flex";
+  const property = hideSuggestions ? propertyHide : propertyShow;
+
+  const normalSuggestions = document.querySelectorAll("ytd-browse") || [];
+  const disabledPolymerSuggestions = document.querySelectorAll("#feed") || [];
+
+  // Hide homepage suggestions
+  normalSuggestions.forEach(elt => elt.style.setProperty("display", property));
+  disabledPolymerSuggestions.forEach(elt => elt.style.setProperty("display", property));
 }
 
-// After getting settings
 function onGotHomepageSetting(item) {
-  var removeHomepage = item.homepage;
-  if (removeHomepage === undefined) {
-    removeHomepage = true;
-    browser.storage.local.set({
-      homepage: true
-    });
+  let hideHomepage = item.homepage;
+  if (hideHomepage === undefined) {
+    hideHomepage = true;
+    browser.storage.local.set({ homepage: true });
   }
 
-  if (removeHomepage) {
-    updateStyle(item.homepage);
+  updateHomepageStyle(hideHomepage);
 
-    // watch for url changes
-    let observer = new MutationObserver(function(mutations) {
-      updateStyle(item.homepage);
-      return;
-    });
+  // watch for url changes
+  const observer = new MutationObserver(mutations => updateHomepageStyle(hideHomepage) );
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: false,
-      characterData: false
-    });
-  }
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: false,
+    characterData: false
+  });
 
 }
 
 function onGotSidebarSetting(item) {
-  var removeSidebar = item.sidebar;
+  let removeSidebar = item.sidebar;
   if (removeSidebar === undefined) {
     removeSidebar = true;
     browser.storage.local.set({
@@ -57,8 +53,8 @@ function onGotSidebarSetting(item) {
   }
 
   if (removeSidebar) {
-    let sheets = document.styleSheets;
-    let display_none = " { display: none !important; }";
+    const sheets = document.styleSheets;
+    const display_none = " { display: none !important; }";
 
     // youtube video recommendations
     sheets[0].insertRule("ytd-compact-video-renderer.style-scope" + display_none);
@@ -90,7 +86,7 @@ function onGotSidebarSetting(item) {
 }
 
 function onGotVideoEndSetting(item) {
-  var removeVideoEnd = item.videoEnd;
+  let removeVideoEnd = item.videoEnd;
   if (removeVideoEnd === undefined) {
     removeVideoEnd = true;
     browser.storage.local.set({
@@ -104,7 +100,7 @@ function onGotVideoEndSetting(item) {
 }
 
 function onGotCommentsSetting(item) {
-  var removeComments = item.comments;
+  let removeComments = item.comments;
 
   if (removeComments === undefined) {
     removeComments = false;
@@ -121,14 +117,17 @@ function onGotCommentsSetting(item) {
   }
 }
 
-var gettingHomepage = browser.storage.local.get("homepage");
+// Ensures that suggestions won't blip while "removed"
+updateHomepageStyle(true);
+
+let gettingHomepage = browser.storage.local.get("homepage");
 gettingHomepage.then(onGotHomepageSetting, onError);
 
-var gettingSidebar = browser.storage.local.get("sidebar");
+let gettingSidebar = browser.storage.local.get("sidebar");
 gettingSidebar.then(onGotSidebarSetting, onError);
 
-var gettingVideoEnd = browser.storage.local.get("videoEnd");
+let gettingVideoEnd = browser.storage.local.get("videoEnd");
 gettingVideoEnd.then(onGotVideoEndSetting, onError);
 
-var gettingComments = browser.storage.local.get("comments");
+let gettingComments = browser.storage.local.get("comments");
 gettingComments.then(onGotCommentsSetting, onError);

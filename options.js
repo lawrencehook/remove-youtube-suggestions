@@ -47,10 +47,10 @@ function restoreOptions() {
     console.log(`Error: ${error}`);
   }
 
-  var gettingHomepage = browser.storage.local.get("homepage");
-  var gettingSidebar = browser.storage.local.get("sidebar");
-  var gettingVideoEnd = browser.storage.local.get("videoEnd");
-  var gettingComments = browser.storage.local.get("comments");
+  let gettingHomepage = browser.storage.local.get("homepage");
+  let gettingSidebar = browser.storage.local.get("sidebar");
+  let gettingVideoEnd = browser.storage.local.get("videoEnd");
+  let gettingComments = browser.storage.local.get("comments");
   gettingHomepage.then(setCurrentChoice, onError);
   gettingSidebar.then(setCurrentChoice, onError);
   gettingVideoEnd.then(setCurrentChoice, onError);
