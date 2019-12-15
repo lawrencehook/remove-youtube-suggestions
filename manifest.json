@@ -6,10 +6,11 @@
   "homepage_url": "https://github.com/emumoo/remove-youtube-suggestions",
 
   "content_scripts": [
+
     {
     "matches": ["*://*.youtube.com/*"],
     "js": ["remove-suggestions.js"],
-    "run_at": "document_start"
+    "run_at": "document_end"
     }
   ],
 

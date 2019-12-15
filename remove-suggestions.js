@@ -24,9 +24,9 @@ function updateHomepageStyle(hideHomepage) {
 
 function onGotHomepageSetting(item) {
   let hideHomepage = item.homepage;
+
   if (hideHomepage === undefined) {
     hideHomepage = true;
-    browser.storage.local.set({ homepage: true });
   }
 
   updateHomepageStyle(hideHomepage);
@@ -37,10 +37,11 @@ function onGotHomepageSetting(item) {
   observer.observe(document.body, {
     childList: true,
     subtree: true,
-    attributes: false,
-    characterData: false
+    attributes: true,
+    characterData: true
   });
 
+  browser.storage.local.set({ homepage: hideHomepage });
 }
 
 function onGotSidebarSetting(item) {
