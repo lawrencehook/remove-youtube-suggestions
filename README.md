@@ -1,16 +1,16 @@
 # Remove Youtube Suggestions
-### A Firefox Add On to hide all suggestions from the youtube sidebar
+### A Firefox Add-On to hide all suggestions from the YouTube
 
 "Remove Youtube Suggestions" hides the homepage and the videos that appear on the sidebar.
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
-### Why should I use this plugin
-Google optimizes for the most engaging videos to recommend, and not necessarily the best content. Their ideal recommendations set in motion the brain's automatic response to click — even if you weren't really interested and often results in a waste of your time.
+### Why should I use this plugin?
+Google optimizes recommendations to be the most _engaging_ videos. Their ideal recommendation sets in motion the brain's automatic response to click — regardless if you are interested or not. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove them as you please!
 
 Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
 
 ### Contributing
-If you'd like to contribute to the development of this project, the following commands will get you started with a dev environment.
+If you'd like to contribute to the development of this add-on, the following commands will get you started in a dev environment.
 
 ```
 $ git clone https://github.com/emumoo/remove-youtube-suggestions.git
@@ -19,5 +19,5 @@ $ npm install --global web-ext
 $ web-ext run
 ```
 
-This will open a firefox window with the current state of the extension running.
+The commands above will open Firefox with the current state of the add-on installed.
 https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
