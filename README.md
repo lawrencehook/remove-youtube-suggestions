@@ -5,13 +5,14 @@
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
 ### Why should I use this plugin
-Because the Google neural networks is built to select the most relevant suggested videos to recommend to you, and it works damn good.
-This sets in motion the brain's automatic response to click on video even if you weren't really interested, wasting your time unnecessarily.
+Google optimizes for the most engaging videos to recommend to you.
+This sets in motion the brain's automatic response to click on video even if you weren't really interested, wasting your time.
 
 Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
 
 ### Contributing
 If you'd like to contribute to the development of this project, the following commands will get you started with a dev environment.
+
 ```
 $ git clone https://github.com/emumoo/remove-youtube-suggestions.git
 $ cd remove-youtube-suggestions
