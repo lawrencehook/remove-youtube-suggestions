@@ -5,8 +5,7 @@
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
 ### Why should I use this plugin
-Google optimizes for the most engaging videos to recommend to you.
-This sets in motion the brain's automatic response to click on video even if you weren't really interested, wasting your time.
+Google optimizes for the most engaging videos to recommend, and not necessarily the best content. Their ideal recommendations set in motion the brain's automatic response to click — even if you weren't really interested and often results in a waste of your time.
 
 Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
 
