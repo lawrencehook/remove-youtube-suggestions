@@ -10,7 +10,7 @@ Google optimizes recommendations to be the most _engaging_ videos. Their ideal r
 Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
 
 ### Contributing
-If you'd like to contribute to the development of this add-on, the following commands will get you started in a dev environment.
+If you'd like to contribute to the development of this add-on, the following commands should get you started with a dev environment.
 
 ```
 $ git clone https://github.com/emumoo/remove-youtube-suggestions.git
