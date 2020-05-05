@@ -3,7 +3,7 @@
 
 
 ### What does it do?
-"Remove Youtube Suggestions" hides the homepage and the videos that appear on the sidebar.
+The aim of this project is to hide recommendations wherever they may appear.
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
 ### Why should I use this plugin?
