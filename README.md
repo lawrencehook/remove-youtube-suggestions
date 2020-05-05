@@ -3,7 +3,7 @@
 
 
 ### What does it do?
-The aim of this project is to hide recommendations wherever they may appear.
+The aim of this project is to hide Youtube recommendations.
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
 ### Why should I use this plugin?
