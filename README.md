@@ -1,6 +1,8 @@
 # Remove Youtube Suggestions
-### A Firefox Add-On to hide all suggestions from the YouTube
+#### A Firefox Extension
 
+
+### What does it do?
 "Remove Youtube Suggestions" hides the homepage and the videos that appear on the sidebar.
 Motivated by an attempt to stymie the "YouTube rabbit hole."
 
