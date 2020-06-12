@@ -24,4 +24,5 @@ $ web-ext run
 The commands above will open Firefox with the current state of the add-on installed.
 https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
 
-If you'd like donate, click [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=CAD&source=url).
+### Donations
+If you'd like donate and show support for this project, click [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=CAD&source=url).
