@@ -5,10 +5,10 @@ function onError(error) {
 }
 
 // remove homepage recommendations
-function updateHomepageStyle(hideHomepage) {
+function updateHomepageStyle(homepage) {
   // the homepage has pathname "/" which is length 1
   const thisIsHomepage = window.location.pathname.length <= 1;
-  const hideSuggestions = hideHomepage && thisIsHomepage;
+  const hideSuggestions = homepage && thisIsHomepage;
 
   const propertyHide = "none";
   const propertyShow = "flex";
@@ -23,16 +23,13 @@ function updateHomepageStyle(hideHomepage) {
 }
 
 function onGotHomepageSetting(item) {
-  let hideHomepage = item.homepage;
+  const homepage = item.homepage === undefined ? true : item.homepage;
+  browser.storage.local.set({ homepage });
 
-  if (hideHomepage === undefined) {
-    hideHomepage = true;
-  }
-
-  updateHomepageStyle(hideHomepage);
+  updateHomepageStyle(homepage);
 
   // watch for url changes
-  const observer = new MutationObserver(mutations => updateHomepageStyle(hideHomepage) );
+  const observer = new MutationObserver(mutations => updateHomepageStyle(homepage) );
 
   observer.observe(document.body, {
     childList: true,
@@ -41,60 +38,53 @@ function onGotHomepageSetting(item) {
     characterData: true
   });
 
-  browser.storage.local.set({ homepage: hideHomepage });
 }
 
 function onGotSidebarSetting(item) {
-  let removeSidebar = item.sidebar;
-  if (removeSidebar === undefined) {
-    removeSidebar = true;
-    browser.storage.local.set({
-      sidebar: true
-    });
-  }
+  const sidebar = item.sidebar === undefined ? true : item.sidebar;
+  browser.storage.local.set({ sidebar });
 
-  if (removeSidebar) {
+  if (sidebar) {
     const sheets = document.styleSheets;
-    const display_none = " { display: none !important; }";
-
-    // youtube video recommendations
-    sheets[0].insertRule("ytd-compact-video-renderer.style-scope" + display_none);
-    sheets[0].insertRule("ytd-compact-radio-renderer.style-scope" + display_none);
+    const elementsToRemove = [
+      "#container.ytd-iframe-companion-renderer", // ads
+      "#dismissable.ytd-compact-movie-renderer",  // movie recommendations
+      "ytd-movie-offer-module-renderer",          // movie recommendations
     
-    // movie recommendations
-    sheets[0].insertRule("#dismissable.ytd-compact-movie-renderer" + display_none);
-    sheets[0].insertRule("ytd-movie-offer-module-renderer" + display_none);
+      // youtube video recommendations
+      "ytd-compact-video-renderer.style-scope",
+      "ytd-compact-radio-renderer.style-scope",
 
-    // ads
-    sheets[0].insertRule("#container.ytd-iframe-companion-renderer" + display_none);
+      // ads
+      "ytd-image-companion-renderer.style-scope",
+      "ytd-compact-playlist-renderer.style-scope",
+      "a.ytd-action-companion-renderer",
+      "#google_companion_ad_div",
+      "ytd-promoted-sparkles-web-renderer",
 
-    sheets[0].insertRule("ytd-image-companion-renderer.style-scope" + display_none);
-    sheets[0].insertRule("ytd-compact-playlist-renderer.style-scope" + display_none);
-    sheets[0].insertRule("a.ytd-action-companion-renderer" + display_none);
-    sheets[0].insertRule("#google_companion_ad_div" + display_none);
+      "#upnext",
+      "paper-button.yt-next-continuation", // show more button
 
-    sheets[0].insertRule("#upnext" + display_none);
-    // sheets[0].insertRule("paper-button.yt-next-continuation" + display_none); // show more button
+      // disable_polymer=true
+      "li.video-list-item.related-list-item",
+      "h4.watch-sidebar-head",
+      "hr.watch-sidebar-separation-line",
+      "button#watch-more-related-button",
+    ];
 
-    // disable_polymer=true
-    sheets[0].insertRule("li.video-list-item.related-list-item" + display_none); 
-    sheets[0].insertRule("h4.watch-sidebar-head" + display_none); 
-    sheets[0].insertRule("hr.watch-sidebar-separation-line" + display_none); 
-    sheets[0].insertRule("button#watch-more-related-button" + display_none); 
+    const displayNoneRule = " { display: none !important; }";
 
+    elementsToRemove.forEach(rule => {
+      sheets[0].insertRule(rule + displayNoneRule);
+    });
 
   }
 }
 
 function onGotVideoEndSetting(item) {
-  let removeVideoEnd = item.videoEnd;
-  if (removeVideoEnd === undefined) {
-    removeVideoEnd = true;
-    browser.storage.local.set({
-      videoEnd: true
-    });
-  }
-  if (removeVideoEnd) {
+  const videoEnd = item.videoEnd === undefined ? true : item.videoEnd;
+  browser.storage.local.set({ videoEnd });
+  if (videoEnd) {
     let sheets = document.styleSheets;
     sheets[0].insertRule(".html5-endscreen { display: none !important; }");
   }
