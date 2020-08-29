@@ -24,4 +24,4 @@ The commands above will open Firefox with the current state of the add-on instal
 https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
 
 ### Donations
-Show support for this project by donating [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url).
+Show support for this project by donating [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5).
