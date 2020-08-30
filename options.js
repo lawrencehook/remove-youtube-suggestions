@@ -1,39 +1,30 @@
-// Lawrence Hook
+// document.querySelectorAll("RYS_setting_checkbox");
+const homepageCheckbox = document.getElementById('homepage');
+const sidebarCheckbox = document.getElementById('sidebar');
+const videoEndCheckbox = document.getElementById('videoEnd');
+const commentsCheckbox = document.getElementById('comments');
+homepageCheckbox.addEventListener("change", saveHomepageSetting);
+sidebarCheckbox.addEventListener("change", saveSidebarSetting);
+videoEndCheckbox.addEventListener("change", saveVideoEndSetting);
+commentsCheckbox.addEventListener("change", saveCommentsSetting);
+
+document.addEventListener("DOMContentLoaded", restoreOptions);
 
 function saveHomepageSetting(e) {
-	browser.storage.local.set({
-		homepage: e.target.checked
-	});
+	browser.storage.local.set({ homepage: e.target.checked });
 }
 
 function saveSidebarSetting(e) {
-	browser.storage.local.set({
-		sidebar: e.target.checked
-	});
+	browser.storage.local.set({ sidebar: e.target.checked });
 }
 
 function saveVideoEndSetting(e) {
-  browser.storage.local.set({
-    videoEnd: e.target.checked
-  });
+  browser.storage.local.set({ videoEnd: e.target.checked });
 }
 
 function saveCommentsSetting(e) {
-  browser.storage.local.set({
-    comments: e.target.checked
-  });
+  browser.storage.local.set({ comments: e.target.checked });
 }
-
-var homepage_checkbox = document.getElementById('homepage');
-var sidebar_checkbox = document.getElementById('sidebar');
-var videoEnd_checkbox = document.getElementById('videoEnd');
-var comments_checkbox = document.getElementById('comments');
-homepage_checkbox.addEventListener("change", saveHomepageSetting);
-sidebar_checkbox.addEventListener("change", saveSidebarSetting);
-videoEnd_checkbox.addEventListener("change", saveVideoEndSetting);
-comments_checkbox.addEventListener("change", saveCommentsSetting);
-
-
 
 function restoreOptions() {
 
@@ -47,14 +38,10 @@ function restoreOptions() {
     console.log(`Error: ${error}`);
   }
 
-  let gettingHomepage = browser.storage.local.get("homepage");
-  let gettingSidebar = browser.storage.local.get("sidebar");
-  let gettingVideoEnd = browser.storage.local.get("videoEnd");
-  let gettingComments = browser.storage.local.get("comments");
-  gettingHomepage.then(setCurrentChoice, onError);
-  gettingSidebar.then(setCurrentChoice, onError);
-  gettingVideoEnd.then(setCurrentChoice, onError);
-  gettingComments.then(setCurrentChoice, onError);
+  const settings = ["homepage", "sidebar", "videoEnd", "comments"];
+  settings.forEach(setting => {
+    browser.storage.local.
+      get(setting).
+      then(setCurrentChoice, onError);
+  });
 }
-
-document.addEventListener("DOMContentLoaded", restoreOptions);
