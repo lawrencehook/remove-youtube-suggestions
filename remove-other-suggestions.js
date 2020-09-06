@@ -1,19 +1,39 @@
-// Get local settings
-const gettingSidebar = browser.storage.local.get("sidebar");
-gettingSidebar.then(onGotSidebarSetting, onError);
+// Chrome
+if (typeof(chrome) !== 'undefined') {
+  browser = chrome;
 
-const gettingVideoEnd = browser.storage.local.get("videoEnd");
-gettingVideoEnd.then(onGotVideoEndSetting, onError);
+  try {
+    browser.storage.local.get("sidebar", onGotSidebarSetting);
+    browser.storage.local.get("videoEnd", onGotVideoEndSetting);
+    browser.storage.local.get("comments", onGotCommentsSetting);
+  } catch (e) {
+    console.log(e);
+  }
 
-const gettingComments = browser.storage.local.get("comments");
-gettingComments.then(onGotCommentsSetting, onError);
+// Firefox
+} else {
+
+  try {
+    const gettingSidebar = browser.storage.local.get("sidebar");
+    gettingSidebar.then(onGotSidebarSetting, onError);
+
+    const gettingVideoEnd = browser.storage.local.get("videoEnd");
+    gettingVideoEnd.then(onGotVideoEndSetting, onError);
+
+    const gettingComments = browser.storage.local.get("comments");
+    gettingComments.then(onGotCommentsSetting, onError);
+  } catch (e) {
+    console.log(e);
+  }
+
+}
 
 
 /**********
  * Sidebar
  **********/
-function onGotSidebarSetting(item) {
-  const sidebar = item.sidebar === undefined ? true : item.sidebar;
+function onGotSidebarSetting(result) {
+  const sidebar = result.sidebar === undefined ? true : result.sidebar;
   browser.storage.local.set({ sidebar });
 
   if (sidebar) {
@@ -50,8 +70,8 @@ function onGotSidebarSetting(item) {
 /***************
  * End of Video
  ***************/
-function onGotVideoEndSetting(item) {
-  const videoEnd = item.videoEnd === undefined ? true : item.videoEnd;
+function onGotVideoEndSetting(result) {
+  const videoEnd = result.videoEnd === undefined ? true : result.videoEnd;
   browser.storage.local.set({ videoEnd });
   if (videoEnd) {
     removeSelectors([
@@ -63,8 +83,8 @@ function onGotVideoEndSetting(item) {
 /***********
  * Comments
  ***********/
-function onGotCommentsSetting(item) {
-  const comments = item.comments === undefined ? true : item.comments;
+function onGotCommentsSetting(result) {
+  const comments = result.comments === undefined ? false : result.comments;
   browser.storage.local.set({ comments });
   if (comments) {
     removeSelectors([

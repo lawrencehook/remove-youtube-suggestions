@@ -1,6 +1,17 @@
-// Get local settings
-const gettingHomepage = browser.storage.local.get("homepage");
-gettingHomepage.then(onGotHomepageSetting, onError);
+// Chrome
+if (typeof(chrome) !== 'undefined') {
+  browser = chrome;
+
+  browser.storage.local.get("homepage", onGotHomepageSetting);
+
+// Firefox
+} else {
+
+  const gettingHomepage = browser.storage.local.get("homepage");
+  gettingHomepage.then(onGotHomepageSetting, onError);
+
+}
+
 
 /***********
  * Homepage
@@ -32,8 +43,8 @@ removeHomepageObserver.observe(document, {
   childList: true,
   subtree: true,
 });
-function onGotHomepageSetting(item) {
-  const homepage = item.homepage === undefined ? true : item.homepage;
+function onGotHomepageSetting(result) {
+  const homepage = result.homepage === undefined ? true : result.homepage;
   browser.storage.local.set({ homepage });
   updateHomepageStyle(homepage);
 
@@ -52,18 +63,23 @@ function updateHomepageStyle(homepage) {
 }
 
 function onHomepage() {
-  // Test using path
-  const pathIsHomepage = window.location.pathname.length <= 1;
+  try {
+    // Test using path
+    const pathIsHomepage = window.location.pathname.length <= 1;
 
-  // Test using right-sidebar icons
-  const iconSelector = "span.title.style-scope.ytd-mini-guide-entry-renderer";
-  const icons = document.querySelectorAll(iconSelector);
-  const homeIcon = icons.length > 0 && icons[0];
-  const homeIconColor = homeIcon && window.getComputedStyle(homeIcon, null).getPropertyValue("color");
-  const inactiveColor = "rgb(96, 96, 96)";
-  const iconColorIsHomepage = homeIconColor && homeIconColor !== inactiveColor;
+    // Test using right-sidebar icons
+    const iconSelector = "span.title.style-scope.ytd-mini-guide-entry-renderer";
+    const icons = document.querySelectorAll(iconSelector);
+    const iconColors = Array.from(icons).map(icon => window.getComputedStyle(icon, null).getPropertyValue("color"));
+    const iconColorCounts = getCounts(iconColors);
+    const homeIcon = icons.length > 0 && icons[0];
+    const homeIconColor = homeIcon && window.getComputedStyle(homeIcon, null).getPropertyValue("color");
+    const iconColorIsHomepage = homeIconColor && iconColorCounts[homeIconColor] === 1;
 
-  return pathIsHomepage || iconColorIsHomepage;
+    return pathIsHomepage || iconColorIsHomepage;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function updateHomepage(property) {
@@ -82,4 +98,11 @@ function removeSelectors(selectors) {
 
 function onError(error) {
   console.log(`Error: ${error}`);
+}
+
+function getCounts(arr) {
+  return arr.reduce((acc, curr) => {
+    acc[curr] = curr in acc ? acc[curr] + 1 : 1;
+    return acc;
+  }, {});
 }
