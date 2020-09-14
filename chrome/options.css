@@ -1,0 +1,20 @@
+body {
+	width: 300px;
+}
+
+#button_container {
+	text-align: center;
+}
+
+#help-box {
+	text-align: left;
+	padding: 8px;
+	border-style: ridge;
+	border-color: gray;
+
+	margin: 4px 2px 1px 2px;
+}
+
+#help-header {
+	text-align: center;
+}

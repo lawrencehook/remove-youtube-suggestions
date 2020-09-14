@@ -1,0 +1,40 @@
+{
+  "description": "Removes all suggestions from Youtube.",
+  "manifest_version": 2,
+  "name": "Remove Youtube Suggestions",
+  "version": "3.2.1",
+  "homepage_url": "https://github.com/emumoo/remove-youtube-suggestions",
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["remove-homepage-suggestions.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["remove-other-suggestions.js"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+
+  "page_action": {
+    "browser_style": true,
+    "show_matches": ["*://*.youtube.com/*"],
+    "default_popup": "options.html",
+    "default_title": "Options",
+    "default_icon": {
+      "16": "icons/no-16.png",
+      "32": "icons/no-32.png",
+      "64": "icons/no-64.png"
+    },
+    "default_title": "Remove Youtube Suggestions"
+  },
+
+  "permissions": ["storage"]
+}
