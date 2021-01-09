@@ -32,8 +32,7 @@
       "16": "icons/no-16.png",
       "32": "icons/no-32.png",
       "64": "icons/no-64.png"
-    },
-    "default_title": "Remove Youtube Suggestions"
+    }
   },
 
   "permissions": ["storage"]
