@@ -7,14 +7,20 @@
 
   "content_scripts": [
     {
+      "js": ["js/remove-homepage-suggestions.js"],
       "matches": ["*://*.youtube.com/*"],
-      "js": ["remove-homepage-suggestions.js"],
       "run_at": "document_start"
     },
     {
+      "js": ["js/remove-other-suggestions.js"],
       "matches": ["*://*.youtube.com/*"],
-      "js": ["remove-other-suggestions.js"],
       "run_at": "document_end"
+    },
+    {
+      "css": ["css/main.css"],
+      "all_frames": true,
+      "matches": ["*://*.youtube.com/*"],
+      "run_at": "document_start"
     }
   ],
 
@@ -29,9 +35,9 @@
     "default_popup": "options.html",
     "default_title": "Options",
     "default_icon": {
-      "16": "icons/no-16.png",
-      "32": "icons/no-32.png",
-      "64": "icons/no-64.png"
+      "16": "images/16.png",
+      "32": "images/32.png",
+      "64": "images/64.png"
     }
   },
 
