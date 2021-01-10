@@ -2,19 +2,14 @@
   "description": "Removes all suggestions from Youtube.",
   "manifest_version": 2,
   "name": "Remove Youtube Suggestions",
-  "version": "3.2.2",
+  "version": "3.3.0",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
 
   "content_scripts": [
     {
-      "js": ["js/remove-homepage-suggestions.js"],
+      "js": ["js/main.js"],
       "matches": ["*://*.youtube.com/*"],
       "run_at": "document_start"
-    },
-    {
-      "js": ["js/remove-other-suggestions.js"],
-      "matches": ["*://*.youtube.com/*"],
-      "run_at": "document_end"
     },
     {
       "css": ["css/main.css"],

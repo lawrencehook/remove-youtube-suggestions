@@ -1,47 +1,39 @@
-// document.querySelectorAll("RYS_setting_checkbox");
-const homepageCheckbox = document.getElementById('homepage');
-const sidebarCheckbox = document.getElementById('sidebar');
-const videoEndCheckbox = document.getElementById('videoEnd');
-const commentsCheckbox = document.getElementById('comments');
-homepageCheckbox.addEventListener("change", saveHomepageSetting);
-sidebarCheckbox.addEventListener("change", saveSidebarSetting);
-videoEndCheckbox.addEventListener("change", saveVideoEndSetting);
-commentsCheckbox.addEventListener("change", saveCommentsSetting);
-
-document.addEventListener("DOMContentLoaded", restoreOptions);
-
-function saveHomepageSetting(e) {
-	browser.storage.local.set({ homepage: e.target.checked });
+const HTML = document.documentElement;
+const DEFAULT_SETTINGS = {
+  "remove_homepage": true,
+  "remove_sidebar": true,
+  "remove_end_of_video": true,
+  "remove_trending": false,
+  "remove_comments": false
 }
 
-function saveSidebarSetting(e) {
-	browser.storage.local.set({ sidebar: e.target.checked });
-}
-
-function saveVideoEndSetting(e) {
-  browser.storage.local.set({ videoEnd: e.target.checked });
-}
-
-function saveCommentsSetting(e) {
-  browser.storage.local.set({ comments: e.target.checked });
-}
-
-function restoreOptions() {
-
-  function setCurrentChoice(result) {
-    for (let key in result) {
-      document.getElementById(key).checked = result[key];
-    }
-  }
-
-  function onError(error) {
-    console.log(`Error: ${error}`);
-  }
-
-  const settings = ["homepage", "sidebar", "videoEnd", "comments"];
-  settings.forEach(setting => {
-    browser.storage.local.
-      get(setting).
-      then(setCurrentChoice, onError);
+// Make checkboxes reflect local settings
+document.addEventListener("DOMContentLoaded", () => {
+  browser.storage.local.get(localSettings => {
+    console.log(localSettings);
+    Object.keys(localSettings).forEach(settingKey => {
+      if (!Object.keys(DEFAULT_SETTINGS).includes(settingKey)) return;
+      document.getElementById(settingKey).checked = localSettings[settingKey];
+    });
   });
-}
+});
+
+// Handle check/uncheck events
+Object.keys(DEFAULT_SETTINGS).forEach(settingKey => {
+  const settingCheckbox = document.getElementById(settingKey);
+  settingCheckbox.addEventListener("change", async e => {
+    const settingKey = e.target.id;
+    const settingValue = e.target.checked;
+
+    // 1. Save changes to local storage
+    const saveObj = { [settingKey]: settingValue };
+    browser.storage.local.set(saveObj);
+
+    // 2. Update running tabs with the changed setting
+    const messageObj = { key: settingKey, value: settingValue };
+    const tabs = await browser.tabs.query({});
+    tabs.forEach(tab => {
+      browser.tabs.sendMessage(tab.id, messageObj);
+    });
+  });
+});
