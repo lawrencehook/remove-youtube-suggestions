@@ -15,7 +15,7 @@ If you'd like to contribute to the development of this add-on, the following com
 
 ```
 $ git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
-$ cd remove-youtube-suggestions
+$ cd remove-youtube-suggestions/firefox
 $ npm install --global web-ext
 $ web-ext run
 ```
