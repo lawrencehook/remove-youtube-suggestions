@@ -1,6 +1,6 @@
 {
   "name": "Remove Youtube Suggestions",
-  "description": "Stop the \"YouTube rabbit hole\", customize YouTube's UI for fewer distractions. This add-on gives you the option to remove YouTube video recommendations that appear on the homepage, sidebar, and display that appears at the end of videos.",
+  "description": "Stop the \"YouTube rabbit hole\", customize YouTube's UI for fewer distractions.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
   "version": "1.1.0",
