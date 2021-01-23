@@ -1,5 +1,5 @@
 # Remove Youtube Suggestions
-#### A Firefox Extension
+#### A Browser Extension
 
 
 ### What does it do?
