@@ -1,0 +1,15 @@
+html[remove_homepage="true"] ytd-browse[page-subtype="home"],
+html[remove_sidebar="true"] #secondary > div.circle,
+html[remove_sidebar="true"] #related,
+html[remove_end_of_video="true"] .html5-endscreen,
+
+html[remove_trending="true"] a[href="/feed/trending"],
+html[remove_comments="true"] #comments,
+
+html[foo=bar]
+
+{
+
+	display: none !important;
+
+}

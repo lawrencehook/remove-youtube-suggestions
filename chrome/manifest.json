@@ -1,42 +1,43 @@
 {
   "name": "Remove Youtube Suggestions",
-  "description": "Removes all suggestions from Youtube.",
+  "description": "Stop the \"YouTube rabbit hole\", customize YouTube's UI for fewer distractions. This add-on gives you the option to remove YouTube video recommendations that appear on the homepage, sidebar, and display that appears at the end of videos.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   "content_scripts": [
     {
+      "css": ["css/main.css"],
+      "all_frames": true,
       "matches": ["*://*.youtube.com/*"],
-      "js": ["activate-page-action.js"],
       "run_at": "document_start"
     },
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["remove-homepage-suggestions.js"],
+      "js": ["js/activate-page-action.js"],
       "run_at": "document_start"
     },
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["remove-other-suggestions.js"],
-      "run_at": "document_end"
+      "js": ["js/main.js"],
+      "run_at": "document_start"
     }
   ],
 
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["js/background.js"],
     "persistent": false
   },
 
   "page_action": {
     "browser_style": true,
-    "show_matches": ["*youtube*"],
+    "show_matches": ["*://*.youtube.com/*"],
     "default_popup": "options.html",
     "default_title": "Options",
     "default_icon": {
-      "16": "icons/no-16.png",
-      "32": "icons/no-32.png",
-      "64": "icons/no-64.png"
+      "16": "images/16.png",
+      "32": "images/32.png",
+      "64": "images/64.png"
     }
   },
 

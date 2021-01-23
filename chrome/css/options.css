@@ -1,0 +1,32 @@
+body {
+	width: 300px;
+}
+
+#reload_header {
+	text-align: center;
+}
+
+#reload_container {
+	text-align: center;
+
+	padding: 4px;
+	border-width: 2px;
+	border-style: groove;
+	border-color: gray;
+
+	margin: 4px 2px 1px 2px;
+}
+
+#help_container {
+	text-align: left;
+	padding: 8px;
+	border-width: 2px;
+	border-style: groove;
+	border-color: gray;
+
+	margin: 4px 2px 1px 2px;
+}
+
+#help_header {
+	text-align: center;
+}

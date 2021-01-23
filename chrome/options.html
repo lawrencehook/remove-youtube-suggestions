@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="options.css">
+    <link rel="stylesheet" type="text/css" href="css/options.css">
   </head>
 
   <body>
@@ -11,50 +11,59 @@
       <legend>Choose which suggestions to remove</legend>
 
       <div>
-          <input type="checkbox" id="homepage" class="RYS_setting_checkbox" name="feature"
-                 value="homepage" checked />
-          <label for="homepage">Homepage</label>
+          <input type="checkbox" id="remove_homepage" name="feature"
+                 value="remove_homepage" checked />
+          <label for="remove_homepage">Homepage</label>
       </div>
 
       <div>
-          <input type="checkbox" id="sidebar" class="RYS_setting_checkbox" name="feature"
-                 value="sidebar" checked />
-          <label for="sidebar">Sidebar</label>
+          <input type="checkbox" id="remove_sidebar" name="feature"
+                 value="remove_sidebar" checked />
+          <label for="remove_sidebar">Sidebar</label>
       </div>
 
       <div>
-          <input type="checkbox" id="videoEnd" class="RYS_setting_checkbox" name="feature"
-                 value="videoEnd" checked />
-          <label for="videoEnd">End of Video</label>
-      </div>
-
-      <hr>
-
-      <div>
-          <input type="checkbox" id="comments" class="RYS_setting_checkbox" name="feature"
-                 value="comments" unchecked />
-          <label for="comments">Comments</label>
-      </div>
-
-      <hr>
-
-      <div id="button_container">
-        <button id="reload_button">Reload</button>
+          <input type="checkbox" id="remove_end_of_video" name="feature"
+                 value="remove_end_of_video" checked />
+          <label for="remove_end_of_video">End of Video</label>
       </div>
     </fieldset>
 
-    <div id="help-box">
-      <div id="help-header">
+    <fieldset>
+      <legend>Bonus options</legend>
+
+      <div>
+          <input type="checkbox" id="remove_trending" name="feature"
+                 value="remove_trending" unchecked />
+          <label for="remove_trending">Link to Trending Page</label>
+      </div>
+
+      <div>
+          <input type="checkbox" id="remove_comments" name="feature"
+                 value="remove_comments" unchecked />
+          <label for="remove_comments">Comments</label>
+      </div>
+    </fieldset>
+
+    <div id="reload_container">
+      <div id="reload_header">
+        Not loading correctly?
+      </div>
+      <button id="reload_button">Refresh</button>
+    </div>
+
+    <div id="help_container">
+      <div id="help_header">
       Help us make this addon better!
       </div>
       <hr>
       Submit feedback <a href="https://docs.google.com/forms/d/e/1FAIpQLScdrPlVKpJTGeDhD85HdYD2opsedlPqaMdN3ZW-ZSRwhqBZpw/viewform">here</a>.
       <br>
-      Donate <a href="https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&amount=5">here</a>.
+      Donate <a href="https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD">here</a>.
     </div>
 
-    <script src="reload.js"></script>
-    <script src="options.js"></script>
+    <script src="js/reload.js"></script>
+    <script src="js/options.js"></script>
   </body>
 
 </html>
