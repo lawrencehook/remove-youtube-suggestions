@@ -8,7 +8,9 @@ This project hides Youtube recommendations, motivated by an attempt to stymie th
 ### Why should I use this plugin?
 Google optimizes recommendations to be the most _engaging_ videos. Their ideal recommendation sets in motion the brain's automatic response to click — regardless if you are interested or not. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove them as you please!
 
-Available for install here: https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
+Available for install here:
+- Firefox https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
+- Chrome https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae
 
 ### Contributing
 If you'd like to contribute to the development of this add-on, the following commands should get you started with a dev environment.
