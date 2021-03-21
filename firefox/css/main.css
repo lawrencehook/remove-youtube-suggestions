@@ -4,6 +4,8 @@ html[remove_sidebar="true"] #related,
 html[remove_end_of_video="true"] .html5-endscreen,
 
 html[remove_trending="true"] a[href="/feed/trending"],
+html[remove_trending="true"] a[href="/feed/explore"],
+
 html[remove_comments="true"] #comments,
 
 html[foo=bar]
