@@ -8,6 +8,12 @@ html[remove_trending="true"] a[href="/feed/explore"],
 
 html[remove_comments="true"] #comments,
 
+html[remove_chat="true"] #chat,
+
+html[remove_embedded_video="true"] .ytp-ce-element.ytp-ce-video,
+
+html[remove_embedded_channel="true"] .ytp-ce-element.ytp-ce-channel,
+
 html[foo=bar]
 
 {

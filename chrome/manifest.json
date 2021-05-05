@@ -3,7 +3,7 @@
   "description": "Stop the \"YouTube rabbit hole\", customize YouTube's UI for fewer distractions.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "1.1.2",
+  "version": "1.2.0",
 
   "content_scripts": [
     {

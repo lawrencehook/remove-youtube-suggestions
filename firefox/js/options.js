@@ -3,8 +3,11 @@ const DEFAULT_SETTINGS = {
   "remove_homepage": true,
   "remove_sidebar": true,
   "remove_end_of_video": true,
+  "remove_embedded_video": true,
+  "remove_embedded_channel": true,
   "remove_trending": false,
-  "remove_comments": false
+  "remove_comments": false,
+  "remove_chat": false,
 }
 
 // Make checkboxes reflect local settings
