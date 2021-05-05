@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS = {
   "remove_trending": false,
   "remove_comments": false,
   "remove_chat": false,
+  "redirect_home_to_subs": false,
 }
 
 try {

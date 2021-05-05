@@ -8,12 +8,12 @@ const DEFAULT_SETTINGS = {
   "remove_trending": false,
   "remove_comments": false,
   "remove_chat": false,
+  "redirect_home_to_subs": false,
 }
 
 // Make checkboxes reflect local settings
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(localSettings => {
-    console.log(localSettings);
     Object.keys(localSettings).forEach(settingKey => {
       if (!Object.keys(DEFAULT_SETTINGS).includes(settingKey)) return;
       document.getElementById(settingKey).checked = localSettings[settingKey];
@@ -34,6 +34,7 @@ Object.keys(DEFAULT_SETTINGS).forEach(settingKey => {
 
     // 2. Update running tabs with the changed setting
     const messageObj = { key: settingKey, value: settingValue };
+    chrome.runtime.sendMessage({ "message": "key_change", ...messageObj });
     chrome.tabs.query({}, tabs => {
       tabs.forEach(tab => {
         chrome.tabs.sendMessage(tab.id, messageObj);
