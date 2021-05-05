@@ -8,12 +8,12 @@ const DEFAULT_SETTINGS = {
   "remove_trending": false,
   "remove_comments": false,
   "remove_chat": false,
+  "redirect_home_to_subs": false,
 }
 
 // Make checkboxes reflect local settings
 document.addEventListener("DOMContentLoaded", () => {
   browser.storage.local.get(localSettings => {
-    console.log(localSettings);
     Object.keys(localSettings).forEach(settingKey => {
       if (!Object.keys(DEFAULT_SETTINGS).includes(settingKey)) return;
       document.getElementById(settingKey).checked = localSettings[settingKey];

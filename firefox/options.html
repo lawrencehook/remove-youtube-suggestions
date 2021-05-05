@@ -8,7 +8,7 @@
 
   <body>
     <fieldset>
-      <legend>Choose which suggestions to remove</legend>
+      <legend>Choose suggestions to remove</legend>
 
       <div>
           <input type="checkbox" id="remove_homepage" name="feature"
@@ -28,38 +28,52 @@
           <label for="remove_end_of_video">End of Video</label>
       </div>
 
-      <div>
-          <input type="checkbox" id="remove_embedded_video" name="feature"
-                 value="remove_embedded_video" checked />
-          <label for="remove_embedded_video">Video Embedded Suggestions</label>
-      </div>
     </fieldset>
 
     <fieldset>
-      <legend>Bonus options</legend>
-
+      <legend>Near end-of-video embedded overlays</legend>
       <div>
-          <input type="checkbox" id="remove_trending" name="feature"
-                 value="remove_trending" unchecked />
-          <label for="remove_trending">Link to Trending/Explore</label>
-      </div>
-
-      <div>
-          <input type="checkbox" id="remove_comments" name="feature"
-                 value="remove_comments" unchecked />
-          <label for="remove_comments">Comments</label>
-      </div>
-
-      <div>
-          <input type="checkbox" id="remove_chat" name="feature"
-                 value="remove_chat" unchecked />
-          <label for="remove_chat">Chat</label>
+          <input type="checkbox" id="remove_embedded_video" name="feature"
+                 value="remove_embedded_video" checked />
+          <label for="remove_embedded_video">More Videos</label>
       </div>
 
       <div>
           <input type="checkbox" id="remove_embedded_channel" name="feature"
                  value="remove_embedded_channel" checked />
-          <label for="remove_embedded_channel">Video Embedded Channel</label>
+          <label for="remove_embedded_channel">Channel</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>More removal options</legend>
+
+      <div>
+          <input type="checkbox" id="remove_trending" name="feature"
+                 value="remove_trending" unchecked />
+          <label for="remove_trending">Link to Trending/Explore Page</label>
+      </div>
+
+      <div>
+          <input type="checkbox" id="remove_comments" name="feature"
+                 value="remove_comments" unchecked />
+          <label for="remove_comments">Video Comments</label>
+      </div>
+
+      <div>
+          <input type="checkbox" id="remove_chat" name="feature"
+                 value="remove_chat" unchecked />
+          <label for="remove_chat">Live-Stream Chat</label>
+      </div>
+
+    </fieldset>
+
+    <fieldset>
+      <legend>Redirects (beta)</legend>
+      <div>
+          <input type="checkbox" id="redirect_home_to_subs" name="feature"
+                 value="redirect_home_to_subs" unchecked />
+          <label for="redirect_home_to_subs">Redirect Homepage to Subscriptions</label>
       </div>
     </fieldset>
 
