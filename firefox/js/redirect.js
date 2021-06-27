@@ -6,6 +6,9 @@ browser.webRequest.onBeforeRequest.addListener(async details => {
       return { redirectUrl: subscriptionsUrl };
     }
   },
-  { urls: [ "*://*.youtube.com/" ] },
+  { urls: [
+      "*://youtube.com/",
+      "*://www.youtube.com/",
+    ] },
   ["blocking"]
 );
