@@ -1,10 +1,7 @@
-const subscriptionsUrl = 'https://www.youtube.com/feed/subscriptions';
-
 browser.webRequest.onBeforeRequest.addListener(async details => {
-    const setting = await browser.storage.local.get('redirect_home_to_subs');
-    if (('redirect_home_to_subs' in setting) && setting['redirect_home_to_subs']) {
-      return { redirectUrl: subscriptionsUrl };
-    }
+    const setting = await browser.storage.local.get('redirect');
+    const redirectUrl = setting['redirect'];
+    if (redirectUrl) return { redirectUrl };
   },
   { urls: [
       "*://youtube.com/",

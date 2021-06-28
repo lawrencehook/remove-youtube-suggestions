@@ -27,36 +27,20 @@
                  value="remove_end_of_video" checked />
           <label for="remove_end_of_video">End of Video</label>
       </div>
-
     </fieldset>
-
-    <!-- <fieldset> -->
-      <!-- <legend>Near end-of-video embedded overlays</legend> -->
-      <!-- <div> -->
-          <!-- <input type="checkbox" id="remove_embedded_video" name="feature" -->
-                 <!-- value="remove_embedded_video" checked /> -->
-          <!-- <label for="remove_embedded_video">More Videos</label> -->
-      <!-- </div> -->
-
-      <!-- <div> -->
-          <!-- <input type="checkbox" id="remove_embedded_channel" name="feature" -->
-                 <!-- value="remove_embedded_channel" checked /> -->
-          <!-- <label for="remove_embedded_channel">Channel</label> -->
-      <!-- </div> -->
-    <!-- </fieldset> -->
 
     <fieldset>
       <legend>More removal options</legend>
 
       <div>
-          <input style="visibility:hidden;" type="checkbox" checked />
-          Video-Embedded <a href="https://www.youtube.com/account_playback">Info Cards</a>
+          <input type="checkbox" disabled="true" unchecked />
+          <a href="https://www.youtube.com/account_playback">Info Cards</a> (YouTube setting)
       </div>
 
       <div>
           <input type="checkbox" id="remove_trending" name="feature"
                  value="remove_trending" unchecked />
-          <label for="remove_trending">Link to Trending/Explore Page</label>
+          <label for="remove_trending">Link to Explore Page</label>
       </div>
 
       <div>
@@ -70,15 +54,26 @@
                  value="remove_chat" unchecked />
           <label for="remove_chat">Live-Stream Chat</label>
       </div>
-
     </fieldset>
 
     <fieldset>
-      <legend>Redirects (beta)</legend>
+      <legend>Redirect Homepage</legend>
       <div>
-          <input type="checkbox" id="redirect_home_to_subs" name="feature"
-                 value="redirect_home_to_subs" unchecked />
-          <label for="redirect_home_to_subs">Redirect Homepage to Subscriptions</label>
+          <input type="radio" id="redirect_off" name="redirect"
+                 value="redirect_off" checked />
+          <label for="redirect_off">Off</label>
+      </div>
+
+      <div>
+          <input type="radio" id="redirect_to_subs" name="redirect"
+                 value="redirect_to_subs" unchecked />
+          <label for="redirect_to_subs">to Subscriptions</label>
+      </div>
+
+      <div>
+          <input type="radio" id="redirect_to_wl" name="redirect"
+                 value="redirect_to_wl" unchecked />
+          <label for="redirect_to_wl">to Watch Later</label>
       </div>
     </fieldset>
 
