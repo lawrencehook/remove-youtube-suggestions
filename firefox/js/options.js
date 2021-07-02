@@ -3,6 +3,7 @@ const DEFAULT_SETTINGS = {
   "remove_homepage": true,
   "remove_sidebar": true,
   "remove_end_of_video": true,
+  "remove_info_cards": false,
   "remove_trending": false,
   "remove_comments": false,
   "remove_chat": false,
