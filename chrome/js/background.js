@@ -1,26 +1,20 @@
 /*
- * Homepage Redirect to Subscriptions
+ * Redirect logic
  */
-const subscriptionsUrl = 'https://www.youtube.com/feed/subscriptions';
-let redirect_home_to_subs = false;
-chrome.storage.local.get('redirect_home_to_subs', result => {
-  redirect_home_to_subs = result['redirect_home_to_subs'];
+let redirectUrl;
+chrome.storage.local.get('redirectUrl', setting => {
+  redirectUrl = setting['redirectUrl'];
 });
 
 chrome.webRequest.onBeforeRequest.addListener(details => {
-    if (redirect_home_to_subs) {
-      return { redirectUrl: subscriptionsUrl };
-    }
+    if (redirectUrl) return { redirectUrl };
   },
-  { urls: [ '*://*.youtube.com/' ] },
-  ['blocking']
+  { urls: [
+      "*://youtube.com/",
+      "*://www.youtube.com/",
+    ] },
+  ["blocking"]
 );
-
-function loadRedirectSetting() {
-  return new Promise(resolve => {
-  });
-}
-
 
 /*
  * Message Handlers
@@ -43,10 +37,8 @@ chrome.extension.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 
-  // Listen for changes to the redirect_home_to_subs option
-  if (request.message === 'key_change') {
-    if (request.key === 'redirect_home_to_subs') {
-      redirect_home_to_subs = request.value;
-    }
+  // Listen for changes to redirectUrl
+  if (request.message === 'change_redirect') {
+    redirectUrl = request.redirectUrl;
   }
 });

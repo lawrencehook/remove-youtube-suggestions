@@ -3,16 +3,14 @@ html[remove_sidebar="true"] #secondary > div.circle,
 html[remove_sidebar="true"] #related,
 html[remove_end_of_video="true"] .html5-endscreen,
 
+html[remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
+
 html[remove_trending="true"] a[href="/feed/trending"],
 html[remove_trending="true"] a[href="/feed/explore"],
 
 html[remove_comments="true"] #comments,
 
 html[remove_chat="true"] #chat,
-
-html[remove_embedded_video="true"] .ytp-ce-element.ytp-ce-video,
-
-html[remove_embedded_channel="true"] .ytp-ce-element.ytp-ce-channel,
 
 html[foo=bar]
 
