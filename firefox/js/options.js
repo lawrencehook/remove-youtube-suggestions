@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       settingButton.checked = value;
 
       if (key === 'global_enable') {
-        settingButton.innerHTML = value ? 'Disable' : 'Enable';
+        settingButton.value = value ? 'Disable' : 'Enable';
         HTML.setAttribute(key, value);
       }
     });
@@ -81,7 +81,7 @@ Object.keys(SETTINGS_LIST).forEach(key => {
 
     // Handle changes to a global option.
     if (key === 'global_enable') {
-      const value = settingButton.innerHTML === "Enable";
+      const value = settingButton.value === "Enable";
 
       const saveObj = { [key]: value };
       browser.storage.local.set(saveObj);
@@ -94,7 +94,7 @@ Object.keys(SETTINGS_LIST).forEach(key => {
       });
 
       // Update button text, and change option page's HTML attribute.
-      settingButton.innerHTML = value ? "Disable" : "Enable";
+      settingButton.value = value ? "Disable" : "Enable";
       HTML.setAttribute(key, value);
       return;
     }
