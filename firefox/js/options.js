@@ -1,16 +1,16 @@
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
   "global_enable":        { default: true,  eventType: 'click'  },
-  "remove_homepage":      { default: true,  eventType: 'change' },
-  "remove_sidebar":       { default: true,  eventType: 'change' },
-  "remove_end_of_video":  { default: true,  eventType: 'change' },
-  "remove_info_cards":    { default: false, eventType: 'change' },
-  "remove_trending":      { default: false, eventType: 'change' },
-  "remove_comments":      { default: false, eventType: 'change' },
-  "remove_chat":          { default: false, eventType: 'change' },
-  "redirect_off":         { default: true,  eventType: 'change' },
-  "redirect_to_subs":     { default: false, eventType: 'change' },
-  "redirect_to_wl":       { default: false, eventType: 'change' },
+  "remove_homepage":      { default: true,  eventType: 'click' },
+  "remove_sidebar":       { default: true,  eventType: 'click' },
+  "remove_end_of_video":  { default: true,  eventType: 'click' },
+  "remove_info_cards":    { default: false, eventType: 'click' },
+  "remove_trending":      { default: false, eventType: 'click' },
+  "remove_comments":      { default: false, eventType: 'click' },
+  "remove_chat":          { default: false, eventType: 'click' },
+  "redirect_off":         { default: true,  eventType: 'click' },
+  "redirect_to_subs":     { default: false, eventType: 'click' },
+  "redirect_to_wl":       { default: false, eventType: 'click' },
 };
 
 const REDIRECT_URLS = {
@@ -24,13 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.keys(localSettings).forEach(key => {
       const value = localSettings[key];
       if (!Object.keys(SETTINGS_LIST).includes(key)) return;
-      const settingButton = document.getElementById(key);
-      settingButton.checked = value;
-
-      if (key === 'global_enable') {
-        settingButton.value = value ? 'Disable' : 'Enable';
-        HTML.setAttribute(key, value);
-      }
+      HTML.setAttribute(key, value);
     });
   });
 });
@@ -40,11 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
 //    2. Send messages to main.js which updates the HTML attributes.
 //    3. (optional) Dynamically change options.html.
 Object.keys(SETTINGS_LIST).forEach(key => {
-  const settingButton = document.getElementById(key);
   const { eventType } = SETTINGS_LIST[key];
-  settingButton.addEventListener(eventType, async e => {
-    const key = e.target.id;
-    const value = e.target.checked;
+  const settingElements = Array.from(document.getElementsByClassName(key));
+  settingElements.forEach(button => button.addEventListener(eventType, async e => {
+
+    const value = !(String(HTML.getAttribute(key)).toLowerCase() === "true");
+    HTML.setAttribute(key, value);
 
     // Handle changes to a standard option.
     if (key.includes('remove')) {
@@ -68,8 +63,10 @@ Object.keys(SETTINGS_LIST).forEach(key => {
         filter(key => key.includes('redirect'));
       const saveObj = redirectKeys.reduce((acc, curr) => {
         acc[curr] = false;
+        HTML.setAttribute(curr, false);
         return acc;
       }, { redirect: false });
+      HTML.setAttribute(key, true);
       saveObj[key] = true;
 
       // Set the redirect URL.
@@ -81,7 +78,6 @@ Object.keys(SETTINGS_LIST).forEach(key => {
 
     // Handle changes to a global option.
     if (key === 'global_enable') {
-      const value = settingButton.value === "Enable";
 
       const saveObj = { [key]: value };
       browser.storage.local.set(saveObj);
@@ -92,11 +88,7 @@ Object.keys(SETTINGS_LIST).forEach(key => {
       tabs.forEach(tab => {
         browser.tabs.sendMessage(tab.id, messageObj);
       });
-
-      // Update button text, and change option page's HTML attribute.
-      settingButton.value = value ? "Disable" : "Enable";
-      HTML.setAttribute(key, value);
       return;
     }
-  });
+  }));
 });

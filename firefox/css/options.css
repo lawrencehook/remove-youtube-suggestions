@@ -1,10 +1,58 @@
-body {
-	border-width: 4.5px;
-	border-style: solid;
-	border-color: black;
-
-	padding: 2px 2px 2px 2px;
+.active {
+	display: inline;
 }
+
+/* Setting is enabled. */
+html[remove_homepage="true"] .remove_homepage .inactive,
+html[remove_sidebar="true"] .remove_sidebar .inactive,
+html[remove_sidebar="true"] .remove_sidebar .inactive,
+html[remove_end_of_video="true"] .remove_end_of_video .inactive,
+html[remove_info_cards="true"] .remove_info_cards .inactive,
+html[remove_trending="true"] .remove_trending .inactive,
+html[remove_trending="true"] .remove_trending .inactive,
+html[remove_comments="true"] .remove_comments .inactive,
+html[remove_chat="true"] .remove_chat .inactive,
+html[redirect_off="true"] .redirect_off .inactive,
+html[redirect_to_subs="true"] .redirect_to_subs .inactive,
+html[redirect_to_wl="true"] .redirect_to_wl .inactive,
+html[foo=bar]
+{
+	display:  none;
+}
+
+/* Setting is not enabled. */
+html[remove_homepage="false"] .remove_homepage .active,
+html[remove_sidebar="false"] .remove_sidebar .active,
+html[remove_sidebar="false"] .remove_sidebar .active,
+html[remove_end_of_video="false"] .remove_end_of_video .active,
+html[remove_info_cards="false"] .remove_info_cards .active,
+html[remove_trending="false"] .remove_trending .active,
+html[remove_trending="false"] .remove_trending .active,
+html[remove_comments="false"] .remove_comments .active,
+html[remove_chat="false"] .remove_chat .active,
+html[global_enable="false"] .active,
+html[foo=bar]
+{
+	display: none;
+}
+
+html[redirect_off="false"] .redirect_off .active,
+html[redirect_to_subs="false"] .redirect_to_subs .active,
+html[redirect_to_wl="false"] .redirect_to_wl .active,
+html[foo=bar]
+{
+	visibility: hidden;
+}
+
+html[global_enable="false"] input.global_enable.enabled, 
+html[global_enable="true"] input.global_enable.disabled,
+
+html[foo=bar]
+{
+	display: none !important;
+	background-color: gray;
+}
+
 
 html[global_enable="false"] #primary_options
 {
@@ -14,7 +62,17 @@ html[global_enable="false"] #primary_options
 
 html[global_enable="false"] #primary_options *
 {
+	background-color: gray;
+	color:  white;
 	pointer-events: none;
+}
+
+body {
+	border-width: 4.5px;
+	border-style: solid;
+	border-color: black;
+
+	padding: 2px 2px 2px 2px;
 }
 
 #header_legend {
