@@ -1,7 +1,10 @@
 browser.webRequest.onBeforeRequest.addListener(async details => {
-    const setting = await browser.storage.local.get('redirect');
-    const redirectUrl = setting['redirect'];
-    if (redirectUrl) return { redirectUrl };
+
+    const { global_enable } = await browser.storage.local.get('global_enable');
+    if (global_enable === false) return;
+
+    const { redirect } = await browser.storage.local.get('redirect');
+    if (redirect) return { redirectUrl: redirect };
   },
   { urls: [
       "*://youtube.com/",

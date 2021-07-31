@@ -1,5 +1,34 @@
+body {
+	border-width: 4.5px;
+	border-style: solid;
+	border-color: black;
+
+	padding: 2px 2px 2px 2px;
+}
+
+html[global_enable="false"] #primary_options
+{
+	background-color: gray;
+	color:  white;
+}
+
+html[global_enable="false"] #primary_options *
+{
+	pointer-events: none;
+}
+
+#header_legend {
+	font-size: larger;
+	text-align: center;
+}
+
+#header_container * {
+	text-align: center;
+}
+
 #reload_header {
 	text-align: center;
+	margin-bottom: 5px;
 }
 
 #reload_container {
