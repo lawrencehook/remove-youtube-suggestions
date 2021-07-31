@@ -6,7 +6,7 @@
 This project hides Youtube recommendations, motivated by an attempt to stymie the "YouTube rabbit hole."
 
 ### Why should I use this plugin?
-The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless if you are interested or not. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please!
+The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please!
 
 Available for install here:
 - Firefox https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
