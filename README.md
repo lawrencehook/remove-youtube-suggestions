@@ -13,7 +13,7 @@ Available for install here:
 - Chrome https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae
 
 ### Contributing
-If you'd like to contribute to the development of this add-on, the following commands should get you started with a dev environment.
+If you'd like to contribute to the development of this add-on, the following commands will get you started with a dev environment.
 
 ```
 $ git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
@@ -22,7 +22,7 @@ $ npm install --global web-ext
 $ web-ext run
 ```
 
-The commands above will open Firefox with the current state of the add-on installed.
+The commands above will open Firefox with an installation of the current state of the add-on.
 https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
 
 ### Donations
