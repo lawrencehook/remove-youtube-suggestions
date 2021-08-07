@@ -1,8 +1,5 @@
-.active {
-	display: inline;
-}
 
-/* Setting is enabled. */
+/* Setting is enabled. Hide "inactive" class elements. */
 html[remove_homepage="true"] .remove_homepage .inactive,
 html[remove_sidebar="true"] .remove_sidebar .inactive,
 html[remove_sidebar="true"] .remove_sidebar .inactive,
@@ -20,7 +17,7 @@ html[foo=bar]
 	display:  none;
 }
 
-/* Setting is not enabled. */
+/* Setting is not enabled. Hide "active" class elements. */
 html[remove_homepage="false"] .remove_homepage .active,
 html[remove_sidebar="false"] .remove_sidebar .active,
 html[remove_sidebar="false"] .remove_sidebar .active,
@@ -30,43 +27,49 @@ html[remove_trending="false"] .remove_trending .active,
 html[remove_trending="false"] .remove_trending .active,
 html[remove_comments="false"] .remove_comments .active,
 html[remove_chat="false"] .remove_chat .active,
-html[global_enable="false"] .active,
-html[foo=bar]
-{
-	display: none;
-}
-
 html[redirect_off="false"] .redirect_off .active,
 html[redirect_to_subs="false"] .redirect_to_subs .active,
 html[redirect_to_wl="false"] .redirect_to_wl .active,
 html[foo=bar]
 {
-	visibility: hidden;
+	display: none;
 }
 
+/* Global enable/disable buttons  */
 html[global_enable="false"] input.global_enable.enabled, 
 html[global_enable="true"] input.global_enable.disabled,
-
 html[foo=bar]
 {
 	display: none !important;
 	background-color: gray;
 }
 
-
+/* Enable visual cues when the extension is disabled */
 html[global_enable="false"] #primary_options
 {
 	background-color: gray;
-	color:  white;
 }
-
 html[global_enable="false"] #primary_options *
 {
-	background-color: gray;
-	color:  white;
 	pointer-events: none;
+	color: white;
+}
+html[global_enable="false"] #primary_options .inactive,
+html[global_enable="false"] #primary_options .active,
+html[foo=bar]
+{
+	visibility: hidden;
 }
 
+/* Redirect options */
+.redirect_link {
+	text-decoration: none;
+}
+.redirect_off, .redirect_to_subs, .redirect_to_wl {
+	display: inline-block;
+}
+
+/* General formatting */
 body {
 	border-width: 4.5px;
 	border-style: solid;
