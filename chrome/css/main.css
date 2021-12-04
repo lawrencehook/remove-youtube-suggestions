@@ -1,5 +1,5 @@
 html[remove_homepage="true"] ytd-browse[page-subtype="home"],
-html[remove_homepage="true"] a[href="/"],
+html[remove_homepage="true"] ytd-mini-guide-entry-renderer > a[href="/"],
 html[remove_sidebar="true"] #secondary > div.circle,
 html[remove_sidebar="true"] #related,
 html[remove_end_of_video="true"] .html5-endscreen,
