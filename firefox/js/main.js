@@ -5,6 +5,7 @@ const SETTINGS_LIST = {
   "remove_sidebar":       { default: true,  eventType: 'change' },
   "remove_end_of_video":  { default: true,  eventType: 'change' },
   "remove_info_cards":    { default: false, eventType: 'change' },
+  "remove_home_sidebar":  { default: false, eventType: 'change'  },
   "remove_trending":      { default: false, eventType: 'change' },
   "remove_comments":      { default: false, eventType: 'change' },
   "remove_chat":          { default: false, eventType: 'change' },

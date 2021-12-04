@@ -1,11 +1,11 @@
 html[remove_homepage="true"] ytd-browse[page-subtype="home"],
-html[remove_homepage="true"] ytd-mini-guide-entry-renderer > a[href="/"],
 html[remove_sidebar="true"] #secondary > div.circle,
 html[remove_sidebar="true"] #related,
 html[remove_end_of_video="true"] .html5-endscreen,
 
 html[remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 
+html[remove_home_sidebar="true"] ytd-mini-guide-entry-renderer > a[href="/"],
 html[remove_trending="true"] a[href="/feed/trending"],
 html[remove_trending="true"] a[href="/feed/explore"],
 
