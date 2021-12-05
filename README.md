@@ -13,7 +13,7 @@ Available for install here:
 - Chrome https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae
 
 ### Contributing
-Feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
+Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
 
 The following commands will get you started with a Firefox dev environment.
 
