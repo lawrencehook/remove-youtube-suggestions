@@ -11,6 +11,7 @@ const SETTINGS_LIST = {
   "remove_end_of_video":  { defaultValue: true,  eventType: 'click' },
   "remove_info_cards":    { defaultValue: false, eventType: 'click' },
   "remove_home_link":     { defaultValue: false, eventType: 'click' },
+  "remove_logo_link":     { defaultValue: false, eventType: 'click' },
   "remove_explore_link":  { defaultValue: false, eventType: 'click' },
   "remove_comments":      { defaultValue: false, eventType: 'click' },
   "remove_chat":          { defaultValue: false, eventType: 'click' },

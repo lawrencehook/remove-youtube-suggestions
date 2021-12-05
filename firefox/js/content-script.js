@@ -6,6 +6,7 @@ const SETTINGS_LIST = {
   "remove_end_of_video":  { defaultValue: true,  eventType: 'change' },
   "remove_info_cards":    { defaultValue: false, eventType: 'change' },
   "remove_home_link":     { defaultValue: false, eventType: 'change' },
+  "remove_logo_link":     { defaultValue: false, eventType: 'change' },
   "remove_explore_link":  { defaultValue: false, eventType: 'change' },
   "remove_comments":      { defaultValue: false, eventType: 'change' },
   "remove_chat":          { defaultValue: false, eventType: 'change' },
