@@ -22,8 +22,7 @@ $ npm install --global web-ext
 $ web-ext run
 ```
 
-The commands above will open Firefox with an installation of the current state of the add-on.
-https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
+More info on [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext).
 
 ### Feedback and Support
 Leave a review! [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions) [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)  
