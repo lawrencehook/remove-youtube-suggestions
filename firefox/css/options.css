@@ -38,7 +38,7 @@ html[foo=bar]
 }
 
 /* Global enable/disable buttons  */
-html[global_enable="false"] input.global_enable.enabled, 
+html[global_enable="false"] input.global_enable.enabled,
 html[global_enable="true"] input.global_enable.disabled,
 html[foo=bar]
 {
@@ -63,6 +63,14 @@ html[foo=bar]
 	visibility: hidden;
 }
 
+#primary_options div {
+	height: 16px;
+}
+
+.option_name_container {
+	cursor: default;
+}
+
 /* Redirect options */
 .redirect_link {
 	text-decoration: none;
@@ -73,6 +81,7 @@ html[foo=bar]
 
 /* General formatting */
 body {
+	min-width: 300px;
 	max-width: 800px;
 	max-height: 600px;
 

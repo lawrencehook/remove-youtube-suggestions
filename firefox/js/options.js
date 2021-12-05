@@ -1,11 +1,12 @@
 
-// Useful for local testing.
-if (typeof browser === 'undefined') browser = null;
+if (typeof browser === 'undefined') {
+  browser = typeof chrome !== 'undefined' ? chrome : null;
+}
 
 // Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
-  "global_enable":        { defaultValue: true,  eventType: 'click'  },
+  "global_enable":        { defaultValue: true,  eventType: 'click' },
   "remove_homepage":      { defaultValue: true,  eventType: 'click' },
   "remove_sidebar":       { defaultValue: true,  eventType: 'click' },
   "remove_end_of_video":  { defaultValue: true,  eventType: 'click' },
@@ -65,25 +66,38 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
       saveObj = { [key]: value };
       messageObj = [{ key, value }];
 
+      // Update background script with globalEnable.
+      if (key === 'global_enable') {
+        browser && browser.runtime.sendMessage({ globalEnable: value });
+      }
+
     // Handle redirect settings
     } else {
+      const redirectUrl = REDIRECT_URLS[key];
       saveObj = {
         ...REDIRECT_OPTIONS_TEMPLATE,
         [key]: true,
-        redirect: REDIRECT_URLS[key]
+        redirect: redirectUrl
       };
+
+      // Update background script with changed redirectUrl.
+      browser && browser.runtime.sendMessage({ redirectUrl });
     }
 
     // Update options page.
     Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));
 
-    // Update local storage.
-    browser && browser.storage.local.set(saveObj);
+    if (browser) {
 
-    // Update running tabs.
-    if (messageObj) {
-      const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" });
-      tabs.forEach(tab => browser.tabs.sendMessage(tab.id, messageObj));
+      // Update local storage.
+      browser.storage.local.set(saveObj);
+
+      // Update running tabs.
+      if (messageObj) {
+        browser.tabs.query({}, tabs => {
+          tabs.forEach(tab => browser.tabs.sendMessage(tab.id, messageObj));
+        });
+      }
     }
 
   }));
