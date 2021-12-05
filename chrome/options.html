@@ -3,86 +3,98 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>Remove Youtube Suggestions</title>
     <link rel="stylesheet" type="text/css" href="css/options.css">
   </head>
 
   <body>
     <fieldset>
-      <legend>Choose suggestions to remove</legend>
-
-      <div>
-          <input type="checkbox" id="remove_homepage" name="feature"
-                 value="remove_homepage" checked />
-          <label for="remove_homepage">Homepage</label>
-      </div>
-
-      <div>
-          <input type="checkbox" id="remove_sidebar" name="feature"
-                 value="remove_sidebar" checked />
-          <label for="remove_sidebar">Sidebar</label>
-      </div>
-
-      <div>
-          <input type="checkbox" id="remove_end_of_video" name="feature"
-                 value="remove_end_of_video" checked />
-          <label for="remove_end_of_video">End of Video</label>
+      <legend id="header_legend">Remove Youtube Suggestions</legend>
+      <div id="header_container">
+        <div id="logo_container">
+          <img src="images/64.png"></img>
+        </div>
+        <div id="enable_container">
+          <input type=button class="global_enable enabled" value=Disable />
+          <input type=button class="global_enable disabled" value=Enable />
+        </div>
       </div>
     </fieldset>
 
-    <fieldset>
-      <legend>More removal options</legend>
+    <div id="primary_options">
+      <fieldset>
+        <legend>Choose suggestions to remove</legend>
 
-      <div>
-          <input type="checkbox" id="remove_info_cards" name="feature"
-                 value="remove_info_cards" unchecked />
-          <label for="remove_info_cards">In-Video Info Cards</label>
-      </div>
+        <div class="remove_homepage">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Homepage</div>
+        </div>
 
-      <div>
-        <input type="checkbox" id="remove_home_sidebar" name="feature"
-               value="remove_home_sidebar" unchecked />
-        <label for="remove_home_sidebar">Link to Home Page</label>
-      </div>
+        <div class="remove_sidebar">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Sidebar</div>
+        </div>
 
-      <div>
-          <input type="checkbox" id="remove_trending" name="feature"
-                 value="remove_trending" unchecked />
-          <label for="remove_trending">Link to Explore Page</label>
-      </div>
+        <div class="remove_end_of_video">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> End of video</div>
+        </div>
+      </fieldset>
 
-      <div>
-          <input type="checkbox" id="remove_comments" name="feature"
-                 value="remove_comments" unchecked />
-          <label for="remove_comments">Video Comments</label>
-      </div>
+      <fieldset>
+        <legend>Site navigation</legend>
 
-      <div>
-          <input type="checkbox" id="remove_chat" name="feature"
-                 value="remove_chat" unchecked />
-          <label for="remove_chat">Live-Stream Chat</label>
-      </div>
-    </fieldset>
+        <div class="remove_logo_link">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Logo link</div>
+        </div>
 
-    <fieldset>
-      <legend>Redirect Homepage</legend>
-      <div>
-          <input type="radio" id="redirect_off" name="redirect"
-                 value="redirect_off" checked />
-          <label for="redirect_off">Off</label>
-      </div>
+        <div class="remove_home_link">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Home link</div>
+        </div>
 
-      <div>
-          <input type="radio" id="redirect_to_subs" name="redirect"
-                 value="redirect_to_subs" unchecked />
-          <label for="redirect_to_subs">to Subscriptions</label>
-      </div>
+        <div class="remove_explore_link">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Explore link</div>
+        </div>
 
-      <div>
-          <input type="radio" id="redirect_to_wl" name="redirect"
-                 value="redirect_to_wl" unchecked />
-          <label for="redirect_to_wl">to Watch Later</label>
-      </div>
-    </fieldset>
+      </fieldset>
+
+      <fieldset>
+        <legend>More removal options</legend>
+
+        <div class="remove_comments">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Comments</div>
+        </div>
+
+        <div class="remove_chat">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Chat <a class='minor_text'>streaming</a></div>
+        </div>
+
+        <div class="remove_info_cards">
+          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Info cards <a class='minor_text'>in-video</a></div>
+        </div>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>Redirect the<a class="redirect_link" href="https://www.youtube.com/" target="_blank"> homepage ↗️</a></legend>
+
+        <div class="redirect_off">
+          <div class="option_name_container"><a class="active">➡️</a><a class="inactive">⬜</a> off</div>
+        </div>
+
+        <div>
+          <div class="redirect_to_subs">
+            <div class="option_name_container"><a class="active">➡️</a><a class="inactive">⬜</a> to Subscriptions</div>
+          </div>
+          <a class="redirect_link" href="https://www.youtube.com/feed/subscriptions" target="_blank">↗️</a>
+        </div>
+
+        <div>
+          <div class="redirect_to_wl">
+            <div class="option_name_container"><a class="active">➡️</a><a class="inactive">⬜</a> to Watch Later </div>
+          </div>
+          <a class="redirect_link" href="https://www.youtube.com/playlist/?list=WL" target="_blank">↗️</a>
+        </div>
+
+      </fieldset>
+    </div>
 
     <div id="reload_container">
       <div id="reload_header">
@@ -93,12 +105,15 @@
 
     <div id="help_container">
       <div id="help_header">
-      Help us make this addon better!
+        Give Feedback
       </div>
       <hr>
-      Submit feedback <a href="https://docs.google.com/forms/d/e/1FAIpQLScdrPlVKpJTGeDhD85HdYD2opsedlPqaMdN3ZW-ZSRwhqBZpw/viewform">here</a>.
+      <a href="https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae" target="_blank">Reviews</a> and <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5" target="_blank">donations</a> appreciated.
       <br>
-      Donate <a href="https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&amount=5">here</a>.
+      <br>
+      btc <a id='bitcoin' class='crypto_address'>bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve</a>
+      <br>
+      eth <a id='ethereum' class='crypto_address'>0xDC40d2Ac2DBC76cd9507A9f578e3166e3ae1292D</a>
     </div>
 
     <script src="js/reload.js"></script>

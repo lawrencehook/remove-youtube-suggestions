@@ -3,7 +3,7 @@
   "description": "Stop the \"YouTube rabbit hole\", customize YouTube's UI for fewer distractions.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "2.0.0",
+  "version": "3.0.0",
 
   "content_scripts": [
     {
@@ -14,12 +14,7 @@
     },
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["js/activate-page-action.js"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["js/main.js"],
+      "js": ["js/content-script.js"],
       "run_at": "document_start"
     }
   ],
@@ -31,15 +26,14 @@
     "persistent": true
   },
 
-  "page_action": {
-    "browser_style": true,
-    "show_matches": ["*://*.youtube.com/*"],
+  "browser_action": {
     "default_popup": "options.html",
-    "default_title": "Options",
+    "default_title": "Remove Youtube Suggestions",
     "default_icon": {
       "16": "images/16.png",
       "32": "images/32.png",
-      "64": "images/64.png"
+      "64": "images/64.png",
+      "128": "images/128.png"
     }
   },
 
