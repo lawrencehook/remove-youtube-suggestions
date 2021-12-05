@@ -2,15 +2,17 @@
 #### A Browser Extension
 
 
-### What does it do?
-This project hides Youtube recommendations, motivated by an attempt to stymie the "YouTube rabbit hole."
+### What?
+This project hides recommended videos on YouTube and provides options to customize the user interface to be less engaging.
 
-### Why should I use this plugin?
-The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please!
+### Why?
+Motivated by an attempt to stymie the YouTube rabbit hole.
 
-Available for install here:
-- Firefox https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/
-- Chrome https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae
+The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please.
+
+Available for download at the links below:
+- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
+- [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
 
 ### Contributing
 Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
@@ -27,7 +29,9 @@ $ web-ext run
 More info on [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext).
 
 ### Feedback and Support
-Leave a review! [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions) [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)  
+Leave a review!
+- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
+- [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
 
 Donations appreciated. [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5).  
 btc `bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve`  
