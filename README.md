@@ -17,7 +17,7 @@ Available for download at the links below:
 ### Contributing
 Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
 
-The following commands will get you started with a Firefox dev environment.
+The following commands start up a Firefox dev environment.
 
 ```
 $ git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
@@ -25,8 +25,6 @@ $ cd remove-youtube-suggestions/firefox
 $ npm install --global web-ext
 $ web-ext run
 ```
-
-More info on [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext).
 
 ### Feedback and Support
 Leave a review!
