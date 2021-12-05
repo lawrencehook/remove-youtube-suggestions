@@ -2,10 +2,10 @@
 #### A Browser Extension
 
 
-### What?
+### What
 This extension hides recommended videos on YouTube and allows customization of the user interface to be less engaging.
 
-### Why?
+### Why
 Motivated by an attempt to stymie the YouTube rabbit hole.
 
 The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please.
