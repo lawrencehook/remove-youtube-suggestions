@@ -19,7 +19,7 @@ This project was created and is maintained by me, [Lawrence Hook](https://lawren
 
 Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
 
-The following commands start up a Firefox dev environment.
+The following commands will set up a Firefox dev environment.
 
 ```
 $ git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
