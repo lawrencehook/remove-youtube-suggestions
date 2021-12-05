@@ -25,5 +25,9 @@ $ web-ext run
 The commands above will open Firefox with an installation of the current state of the add-on.
 https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
 
-### Donations
-Show support for this project by donating [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5).
+### Feedback and Support
+Leave a review! [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions) [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)  
+
+Donations appreciated: [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5)  
+btc `bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve`  
+eth `0xDC40d2Ac2DBC76cd9507A9f578e3166e3ae1292D`  
