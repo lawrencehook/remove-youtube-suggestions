@@ -62,7 +62,7 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
     // Handle standard settings.
     if (!key.includes('redirect')) {
       saveObj = { [key]: value };
-      messageObj = [{ key, value }];      
+      messageObj = [{ key, value }];
 
     // Handle redirect settings
     } else {
@@ -74,7 +74,7 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
     }
 
     // Update options page.
-    Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));  
+    Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));
 
     // Update local storage.
     browser && browser.storage.local.set(saveObj);
