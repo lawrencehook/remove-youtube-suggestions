@@ -3,7 +3,7 @@
 
 
 ### What?
-This project hides recommended videos on YouTube and provides options to customize the user interface to be less engaging.
+This extension hides recommended videos on YouTube and allows customization of the user interface to be less engaging.
 
 ### Why?
 Motivated by an attempt to stymie the YouTube rabbit hole.
