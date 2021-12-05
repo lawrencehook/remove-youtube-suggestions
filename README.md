@@ -14,7 +14,9 @@ Available for download at the links below:
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
 
-### Contributing
+### Development
+This project was created and is maintained by me, [Lawrence Hook](https://lawrencehook.com).  
+
 Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
 
 The following commands start up a Firefox dev environment.
