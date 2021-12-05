@@ -1,95 +1,89 @@
+
+// Useful for local testing.
+if (typeof browser === 'undefined') browser = null;
+
+// Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
-  "global_enable":        { default: true,  eventType: 'click'  },
-  "remove_homepage":      { default: true,  eventType: 'click' },
-  "remove_sidebar":       { default: true,  eventType: 'click' },
-  "remove_end_of_video":  { default: true,  eventType: 'click' },
-  "remove_info_cards":    { default: false, eventType: 'click' },
-  "remove_home_sidebar":  { default: false, eventType: 'click' },
-  "remove_trending":      { default: false, eventType: 'click' },
-  "remove_comments":      { default: false, eventType: 'click' },
-  "remove_chat":          { default: false, eventType: 'click' },
-  "redirect_off":         { default: true,  eventType: 'click' },
-  "redirect_to_subs":     { default: false, eventType: 'click' },
-  "redirect_to_wl":       { default: false, eventType: 'click' },
+  "global_enable":        { defaultValue: true,  eventType: 'click'  },
+  "remove_homepage":      { defaultValue: true,  eventType: 'click' },
+  "remove_sidebar":       { defaultValue: true,  eventType: 'click' },
+  "remove_end_of_video":  { defaultValue: true,  eventType: 'click' },
+  "remove_info_cards":    { defaultValue: false, eventType: 'click' },
+  "remove_home_link":     { defaultValue: false, eventType: 'click' },
+  "remove_explore_link":  { defaultValue: false, eventType: 'click' },
+  "remove_comments":      { defaultValue: false, eventType: 'click' },
+  "remove_chat":          { defaultValue: false, eventType: 'click' },
+  "redirect_off":         { defaultValue: true,  eventType: 'click' },
+  "redirect_to_subs":     { defaultValue: false, eventType: 'click' },
+  "redirect_to_wl":       { defaultValue: false, eventType: 'click' },
 };
+const VALID_SETTINGS = Object.keys(SETTINGS_LIST);
 
+// Redirect setting constants.
 const REDIRECT_URLS = {
+  "redirect_off":     false,
   "redirect_to_subs": 'https://www.youtube.com/feed/subscriptions',
-  "redirect_to_wl": 'https://www.youtube.com/playlist/?list=WL',
+  "redirect_to_wl":   'https://www.youtube.com/playlist/?list=WL',
 };
+const REDIRECT_KEYS = VALID_SETTINGS.filter(key => key.includes('redirect'));
+const REDIRECT_OPTIONS_TEMPLATE = REDIRECT_KEYS.reduce((options, key) => {
+  options[key] = false;
+  return options;
+}, { redirect: false });
 
-// Sync options page with local settings.
+
+// Load the options menu with our settings.
 document.addEventListener("DOMContentLoaded", () => {
-  browser.storage.local.get(localSettings => {
-    Object.keys(localSettings).forEach(key => {
-      const value = localSettings[key];
-      if (!Object.keys(SETTINGS_LIST).includes(key)) return;
+
+  // Defaults.
+  Object.entries(SETTINGS_LIST).forEach(([key, { defaultValue: value }]) => HTML.setAttribute(key, value));
+
+  // Sync with local settings.
+  browser && browser.storage.local.get(localSettings => {
+    Object.entries(localSettings).forEach(([key, value]) => {
+      if (!VALID_SETTINGS.includes(key)) return;
       HTML.setAttribute(key, value);
     });
   });
 });
 
-// Handle click/change events from the options menu.
-//    1. Save changes to local storage.
-//    2. Send messages to main.js which updates the HTML attributes.
-//    3. (optional) Dynamically change options.html.
-Object.keys(SETTINGS_LIST).forEach(key => {
-  const { eventType } = SETTINGS_LIST[key];
+
+// Change settings with the options menu.
+Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
   const settingElements = Array.from(document.getElementsByClassName(key));
   settingElements.forEach(button => button.addEventListener(eventType, async e => {
 
+    // Toggle on click: new value is opposite of old value.
     const value = !(String(HTML.getAttribute(key)).toLowerCase() === "true");
-    HTML.setAttribute(key, value);
 
-    // Handle changes to a standard option.
-    if (key.includes('remove')) {
-      const saveObj = { [key]: value };
-      browser.storage.local.set(saveObj);
+    let saveObj, messageObj;
 
-      // Update running tabs with the changed setting
-      const messageObj = [{ key, value }];
-      const tabs = await browser.tabs.query({});
-      tabs.forEach(tab => {
-        browser.tabs.sendMessage(tab.id, messageObj);
-      });
-      return;
+    // Handle standard settings.
+    if (!key.includes('redirect')) {
+      saveObj = { [key]: value };
+      messageObj = [{ key, value }];      
+
+    // Handle redirect settings
+    } else {
+      saveObj = {
+        ...REDIRECT_OPTIONS_TEMPLATE,
+        [key]: true,
+        redirect: REDIRECT_URLS[key]
+      };
     }
 
-    // Handle changes to a redirect option.
-    if (key.includes('redirect')) {
+    // Update options page.
+    Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));  
 
-      // Deactive the "other" redirect options.
-      const redirectKeys = Object.keys(SETTINGS_LIST).
-        filter(key => key.includes('redirect'));
-      const saveObj = redirectKeys.reduce((acc, curr) => {
-        acc[curr] = false;
-        HTML.setAttribute(curr, false);
-        return acc;
-      }, { redirect: false });
-      HTML.setAttribute(key, true);
-      saveObj[key] = true;
+    // Update local storage.
+    browser && browser.storage.local.set(saveObj);
 
-      // Set the redirect URL.
-      if (REDIRECT_URLS[key]) saveObj['redirect'] = REDIRECT_URLS[key];
-
-      browser.storage.local.set(saveObj);
-      return;
+    // Update running tabs.
+    if (messageObj) {
+      const tabs = await browser.tabs.query({ url: "*://*.youtube.com/*" });
+      tabs.forEach(tab => browser.tabs.sendMessage(tab.id, messageObj));
     }
 
-    // Handle changes to a global option.
-    if (key === 'global_enable') {
-
-      const saveObj = { [key]: value };
-      browser.storage.local.set(saveObj);
-
-      // Update running tabs with the changed setting
-      const messageObj = [{ key, value }];
-      const tabs = await browser.tabs.query({});
-      tabs.forEach(tab => {
-        browser.tabs.sendMessage(tab.id, messageObj);
-      });
-      return;
-    }
   }));
 });

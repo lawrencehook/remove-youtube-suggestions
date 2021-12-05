@@ -5,9 +5,9 @@ html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
 
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 
-html[global_enable="true"][remove_home_sidebar="true"] ytd-mini-guide-entry-renderer > a[href="/"],
-html[global_enable="true"][remove_trending="true"] a[href="/feed/trending"],
-html[global_enable="true"][remove_trending="true"] a[href="/feed/explore"],
+html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
+html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
+html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
 
 html[global_enable="true"][remove_comments="true"] #comments,
 
@@ -19,4 +19,9 @@ html[global_enable="true"][foo=bar]
 
 	display: none !important;
 
+}
+
+/* Disable Youtube logo's link to the homepage */
+html[global_enable="true"][remove_home_link="true"] a[href="/"] {
+  pointer-events: none;
 }
