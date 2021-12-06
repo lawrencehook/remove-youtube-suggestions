@@ -15,7 +15,7 @@ Available for download below:
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
 
 ### Development
-This project 100% open source. Created and maintained by me, [Lawrence Hook](https://lawrencehook.com).  
+This project is 100% open source. Created and maintained by me, [Lawrence Hook](https://lawrencehook.com).  
 
 Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
 
