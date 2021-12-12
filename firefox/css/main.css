@@ -9,7 +9,11 @@ html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
 
+html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
+
 html[global_enable="true"][remove_comments="true"] #comments,
+html[global_enable="true"][remove_comments="true"] #comment-teaser,
+html[global_enable="true"][remove_comments="true"] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"],
 
 html[global_enable="true"][remove_chat="true"] #chat,
 
