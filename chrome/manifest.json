@@ -12,26 +12,24 @@
     "128": "images/128.png"
   },
 
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": true
+  },
+
   "content_scripts": [
+    {
+      "js": ["js/content-script.js"],
+      "matches": ["*://*.youtube.com/*"],
+      "run_at": "document_start"
+    },
     {
       "css": ["css/main.css"],
       "all_frames": true,
       "matches": ["*://*.youtube.com/*"],
       "run_at": "document_start"
-    },
-    {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["js/content-script.js"],
-      "run_at": "document_start"
     }
   ],
-
-  "background": {
-    "scripts": [
-      "js/background.js"
-    ],
-    "persistent": true
-  },
 
   "browser_action": {
     "default_popup": "options.html",
