@@ -9,6 +9,8 @@ html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
 
+html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
+
 html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
 
 html[global_enable="true"][remove_comments="true"] #comments,

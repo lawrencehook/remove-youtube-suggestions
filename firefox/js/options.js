@@ -6,20 +6,21 @@ if (typeof browser === 'undefined') {
 // Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
-  "global_enable":           { defaultValue: true,  eventType: 'click' },
-  "remove_homepage":         { defaultValue: true,  eventType: 'click' },
-  "remove_sidebar":          { defaultValue: true,  eventType: 'click' },
-  "remove_end_of_video":     { defaultValue: true,  eventType: 'click' },
-  "remove_info_cards":       { defaultValue: false, eventType: 'click' },
-  "remove_home_link":        { defaultValue: false, eventType: 'click' },
-  "remove_logo_link":        { defaultValue: false, eventType: 'click' },
-  "remove_explore_link":     { defaultValue: false, eventType: 'click' },
-  "remove_play_next_button": { defaultValue: false, eventType: 'click' },
-  "remove_comments":         { defaultValue: false, eventType: 'click' },
-  "remove_chat":             { defaultValue: false, eventType: 'click' },
-  "redirect_off":            { defaultValue: true,  eventType: 'click' },
-  "redirect_to_subs":        { defaultValue: false, eventType: 'click' },
-  "redirect_to_wl":          { defaultValue: false, eventType: 'click' },
+  "global_enable":                     { defaultValue: true,  eventType: 'click' },
+  "remove_homepage":                   { defaultValue: true,  eventType: 'click' },
+  "remove_sidebar":                    { defaultValue: true,  eventType: 'click' },
+  "remove_end_of_video":               { defaultValue: true,  eventType: 'click' },
+  "remove_info_cards":                 { defaultValue: false, eventType: 'click' },
+  "remove_home_link":                  { defaultValue: false, eventType: 'click' },
+  "remove_logo_link":                  { defaultValue: false, eventType: 'click' },
+  "remove_explore_link":               { defaultValue: false, eventType: 'click' },
+  "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'click' },
+  "remove_play_next_button":           { defaultValue: false, eventType: 'click' },
+  "remove_comments":                   { defaultValue: false, eventType: 'click' },
+  "remove_chat":                       { defaultValue: false, eventType: 'click' },
+  "redirect_off":                      { defaultValue: true,  eventType: 'click' },
+  "redirect_to_subs":                  { defaultValue: false, eventType: 'click' },
+  "redirect_to_wl":                    { defaultValue: false, eventType: 'click' },
 };
 const VALID_SETTINGS = Object.keys(SETTINGS_LIST);
 
