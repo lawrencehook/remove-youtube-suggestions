@@ -147,10 +147,6 @@ body * {
 	margin: 4px 2px 1px 2px;
 }
 
-#help_header {
-	text-align: center;
-}
-
 .crypto_address {
 	font-size: 7px;
 	font-family: monospace;

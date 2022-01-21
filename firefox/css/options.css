@@ -108,7 +108,7 @@ body * {
 }
 
 #logo_container img {
-	width: 50px;
+	width: 32px;
 	height: auto;
 }
 
@@ -145,10 +145,6 @@ body * {
 	border-color: gray;
 
 	margin: 4px 2px 1px 2px;
-}
-
-#help_header {
-	text-align: center;
 }
 
 .crypto_address {
