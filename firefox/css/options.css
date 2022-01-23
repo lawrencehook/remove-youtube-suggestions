@@ -1,162 +1,175 @@
 
-/* Setting is enabled. Hide "inactive" class elements. */
-html[remove_homepage="true"] .remove_homepage .inactive,
-html[remove_sidebar="true"] .remove_sidebar .inactive,
-html[remove_sidebar="true"] .remove_sidebar .inactive,
-html[remove_end_of_video="true"] .remove_end_of_video .inactive,
-html[remove_info_cards="true"] .remove_info_cards .inactive,
-html[remove_home_link="true"] .remove_home_link .inactive,
-html[remove_logo_link="true"] .remove_logo_link .inactive,
-html[remove_explore_link="true"] .remove_explore_link .inactive,
-html[remove_infinite_scroll="true"] .remove_infinite_scroll .inactive,
-html[remove_all_but_one="true"] .remove_all_but_one .inactive,
-html[remove_shorts="true"] .remove_shorts .inactive,
-html[remove_thumbnail_mouseover_effect="true"] .remove_thumbnail_mouseover_effect .inactive,
-html[remove_play_next_button="true"] .remove_play_next_button .inactive,
-html[remove_comments="true"] .remove_comments .inactive,
-html[remove_chat="true"] .remove_chat .inactive,
-html[redirect_off="true"] .redirect_off .inactive,
-html[redirect_to_subs="true"] .redirect_to_subs .inactive,
-html[redirect_to_wl="true"] .redirect_to_wl .inactive,
-html[foo=bar]
-{
-	display:  none;
-}
-
-/* Setting is not enabled. Hide "active" class elements. */
-html[remove_homepage="false"] .remove_homepage .active,
-html[remove_sidebar="false"] .remove_sidebar .active,
-html[remove_sidebar="false"] .remove_sidebar .active,
-html[remove_end_of_video="false"] .remove_end_of_video .active,
-html[remove_info_cards="false"] .remove_info_cards .active,
-html[remove_home_link="false"] .remove_home_link .active,
-html[remove_logo_link="false"] .remove_logo_link .active,
-html[remove_explore_link="false"] .remove_explore_link .active,
-html[remove_infinite_scroll="false"] .remove_infinite_scroll .active,
-html[remove_all_but_one="false"] .remove_all_but_one .active,
-html[remove_shorts="false"] .remove_shorts .active,
-html[remove_thumbnail_mouseover_effect="false"] .remove_thumbnail_mouseover_effect .active,
-html[remove_play_next_button="false"] .remove_play_next_button .active,
-html[remove_comments="false"] .remove_comments .active,
-html[remove_chat="false"] .remove_chat .active,
-html[redirect_off="false"] .redirect_off .active,
-html[redirect_to_subs="false"] .redirect_to_subs .active,
-html[redirect_to_wl="false"] .redirect_to_wl .active,
-html[foo=bar]
-{
-	display: none;
-}
-
 /* Global enable/disable buttons  */
 html[global_enable="false"] input.global_enable.enabled,
-html[global_enable="true"] input.global_enable.disabled,
+html[global_enable="true"]  input.global_enable.disabled,
 html[foo=bar]
 {
-	display: none !important;
-	background-color: gray;
+  display: none !important;
+  background-color: gray;
 }
 
-/* Enable visual cues when the extension is disabled */
-html[global_enable="false"] #primary_options
-{
-	background-color: gray;
-}
+/* Visual cues when the extension is enabled vs. disabled */
+/*#toggle-svg-outer-path { transition: fill 0.1s }*/
+#toggle-svg-circle { transition: cx 0.1s }
+html[global_enable="true"] #toggle-svg-circle { cx: 11px }
+html[global_enable="true"] #toggle-svg-outer-path { fill: green }
+/*html[global_enable="true"] #toggle-svg-inner-path { opacity: 0 }*/
+
+#primary_options { transition: background-color 0.2s }
+#primary_options * { transition: color 0.2s }
+html[global_enable="false"] #primary_options { background-color: gray }
 html[global_enable="false"] #primary_options *
 {
-	pointer-events: none;
-	color: white;
+  pointer-events: none;
+  color: white;
 }
 html[global_enable="false"] #primary_options .inactive,
 html[global_enable="false"] #primary_options .active,
-html[foo=bar]
-{
-	visibility: hidden;
+html[foo=bar] { visibility: hidden }
+
+
+/* Begin Main styling */
+html, body { height: 100% }
+
+/* Begin header */
+#header {
+  overflow: auto;
+}
+#header-contents {
+  position: relative;
+  overflow: auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+#header-logo {
+  position: absolute;
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+#header-logo:hover {
+  height: 98%;
+}
+#header-text {
+  margin-left: 30px;
+  font-size: 16px;
+}
+.header-toggle {
+  position: absolute;
+  left: calc(100% - 30px);
+  /*float: right;*/
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+
+/* Begin options  */
+#primary_options {
+  height: 300px;
+  overflow: scroll;
+  transition: box-shadow 0.1s;
+  padding: 2px;
+}
+#primary_options:hover {
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.30);
 }
 
 #primary_options div {
-	height: 16px;
+  height: 16px;
+}
+
+#primary_options fieldset:not(:nth-child(1)) {
+  margin-top: 5px;
 }
 
 .option_name_container {
-	cursor: default;
+  cursor: default;
 }
 
 /* Redirect options */
 .redirect_link {
-	text-decoration: none;
+  text-decoration: none;
 }
 .redirect_off, .redirect_to_subs, .redirect_to_wl {
-	display: inline-block;
+  display: inline-block;
 }
 
 /* General formatting */
 body {
-	min-width: 300px;
-	max-width: 800px;
-	max-height: 600px;
+  min-width: 300px;
+  max-width: 800px;
+  max-height: 600px;
 
-	/*border-width: 4.5px;*/
-	/*border-style: solid;*/
-	/*border-color: rgba(0,0,0,0.7);*/
+  /*border-width: 4.5px;*/
+  /*border-style: solid;*/
+  /*border-color: rgba(0,0,0,0.7);*/
 
-	padding: 2px 2px 2px 2px;
+  padding: 2px 2px 2px 2px;
 }
 
-body * {
-	font-size: 12px;
-	font-family: Helvetica;
+body, body * {
+  font-size: 12px;
+  font-family: Helvetica;
 }
 
 #logo_container img {
-	width: 32px;
-	height: auto;
+  width: 32px;
+  height: auto;
 }
 
 #header_legend {
-	font-size: larger;
-	text-align: center;
+  font-size: larger;
+  text-align: center;
 }
 
 #header_container * {
-	text-align: center;
+  text-align: center;
 }
 
 #reload_header {
-	text-align: center;
-	margin-bottom: 5px;
+  text-align: center;
+  margin-bottom: 5px;
 }
 
 #reload_container {
-	text-align: center;
+  text-align: center;
 
-	padding: 4px;
-	border-width: 2px;
-	border-style: groove;
-	border-color: gray;
+  padding: 4px;
+  border-width: 2px;
+  border-style: groove;
+  border-color: gray;
 
-	margin: 4px 2px 1px 2px;
+  margin: 4px 2px 1px 2px;
 }
 
 #help_container {
-	text-align: left;
-	padding: 8px;
-	border-width: 2px;
-	border-style: groove;
-	border-color: gray;
+  text-align: left;
+  padding: 8px;
+  border-width: 2px;
+  border-style: groove;
+  border-color: gray;
 
-	margin: 4px 2px 1px 2px;
+  margin: 4px 2px 1px 2px;
 }
 
 .crypto_address {
-	font-size: 7px;
-	font-family: monospace;
+  font-size: 7px;
+  font-family: monospace;
 }
 
 a {
-	color: #000000;
+  color: #000000;
 }
 
 .minor_text {
-	font-size: 10px;
-	font-style: italic;
+  font-size: 10px;
+  font-style: italic;
 }

@@ -44,12 +44,18 @@ const REDIRECT_OPTIONS_TEMPLATE = REDIRECT_KEYS.reduce((options, key) => {
 document.addEventListener("DOMContentLoaded", () => {
 
   // Defaults.
-  Object.entries(SETTINGS_LIST).forEach(([key, { defaultValue: value }]) => HTML.setAttribute(key, value));
+  Object.entries(SETTINGS_LIST).forEach(([key, { defaultValue: value }]) => {
+    const settingButton = document.getElementById(key);
+    if (settingButton) settingButton.checked = value;
+    HTML.setAttribute(key, value);
+  });
 
   // Sync with local settings.
   browser && browser.storage.local.get(localSettings => {
     Object.entries(localSettings).forEach(([key, value]) => {
       if (!VALID_SETTINGS.includes(key)) return;
+      const settingButton = document.getElementById(key);
+      if (settingButton) settingButton.checked = value;
       HTML.setAttribute(key, value);
     });
   });
@@ -66,7 +72,7 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
 
     let saveObj, messageObj;
 
-    // Handle standard settings.
+    // Handle standard (non-redirect) settings.
     if (!key.includes('redirect')) {
       saveObj = { [key]: value };
       messageObj = [{ key, value }];
@@ -91,6 +97,11 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
 
     // Update options page.
     Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));
+    if ('checked' in button) button.checked = value;
+    if (key === 'global_enable') {
+      const inputs = Array.from(document.querySelectorAll('input'));
+      inputs.forEach(input => input.disabled = !value );
+    }
 
     if (browser) {
 
@@ -100,7 +111,9 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
       // Update running tabs.
       if (messageObj) {
         browser.tabs.query({}, tabs => {
-          tabs.forEach(tab => browser.tabs.sendMessage(tab.id, messageObj));
+          tabs.forEach(tab => {
+            browser.tabs.sendMessage(tab.id, messageObj).catch(e => console.log(e));
+          });
         });
       }
     }

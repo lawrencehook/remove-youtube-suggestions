@@ -1,0 +1,9 @@
+html[global_enable="true"][remove_embedded_end_of_video="true"] .html5-endscreen,
+
+html[global_enable="true"][foo=bar]
+
+{
+
+	display: none !important;
+
+}

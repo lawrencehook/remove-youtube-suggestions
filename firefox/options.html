@@ -8,65 +8,82 @@
   </head>
 
   <body>
-    <fieldset>
-      <legend id="header_legend">Remove Youtube Suggestions</legend>
-      <div id="header_container">
-        <div id="logo_container">
-          <img src="images/64.png"></img>
-        </div>
-        <div id="enable_container">
-          <input type=button class="global_enable enabled" value=Disable />
-          <input type=button class="global_enable disabled" value=Enable />
-        </div>
+    <div id='header'>
+      <div id='header-contents'>
+        <img id='header-logo' src="images/rys.svg"></img>
+        <div id='header-text'>Remove Youtube Suggestions</div>
+        <svg id="toggle-svg" class='global_enable header-toggle' version="1.1" viewBox="0 0 16 16" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path id='toggle-svg-outer-path' fill="gray"  d="M 11,  3 H 5 C 2.239, 3, 0, 5.239, 0,  8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761,  3, 11,  3 z"/>
+          <!-- <path id='toggle-svg-inner-path' fill="white" d="M 11, 12 H 5 c -2.206, 0 -4 -1.794 -4 -4 s 1.794 -4, 4 -4 h 6 c 2.206, 0, 4, 1.794, 4, 4 S 13.206, 12, 11, 12 z"/> -->
+          <circle id='toggle-svg-circle' fill="white" cx="5" cy="8" r="3"/>
+        </svg>
       </div>
-    </fieldset>
+    </div>
 
     <div id="primary_options">
       <fieldset>
-        <legend>Remove Suggestions</legend>
+        <legend></legend>
 
-        <div class="remove_homepage">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Homepage</div>
+        <div>
+            <input type="checkbox" id="remove_homepage" class="remove_homepage"
+                   value="remove_homepage" checked />
+            <label for="remove_homepage">Homepage</label>
         </div>
 
-        <div class="remove_sidebar">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Sidebar</div>
+        <div>
+            <input type="checkbox" id="remove_sidebar" class="remove_sidebar"
+                   value="remove_sidebar" checked />
+            <label for="remove_sidebar">Sidebar</label>
         </div>
 
-        <div class="remove_end_of_video">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> End of video</div>
+        <div>
+            <input type="checkbox" id="remove_end_of_video" class="remove_end_of_video"
+                   value="remove_end_of_video" checked />
+            <label for="remove_end_of_video">End of video</label>
         </div>
       </fieldset>
 
       <fieldset>
         <legend>Homepage</legend>
 
-        <div class="remove_all_but_one">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> All but first row</div>
+        <div>
+            <input type="checkbox" id="remove_all_but_one" class="remove_all_but_one"
+                   value="remove_all_but_one" unchecked />
+            <label for="remove_all_but_one">All but first row</label>
         </div>
 
-        <div class="remove_infinite_scroll">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Infinite scroll</div>
+        <div>
+            <input type="checkbox" id="remove_infinite_scroll" class="remove_infinite_scroll"
+                   value="remove_infinite_scroll" unchecked />
+            <label for="remove_infinite_scroll">Infinite scroll</label>
         </div>
 
-        <div class="remove_shorts">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Shorts</div>
+        <div>
+            <input type="checkbox" id="remove_shorts" class="remove_shorts"
+                   value="remove_shorts" unchecked />
+            <label for="remove_shorts">Shorts</label>
         </div>
       </fieldset>
 
       <fieldset>
         <legend>Navigation</legend>
 
-        <div class="remove_logo_link">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Logo link</div>
+        <div>
+            <input type="checkbox" id="remove_logo_link" class="remove_logo_link"
+                   value="remove_logo_link" unchecked />
+            <label for="remove_logo_link">Logo link</label>
         </div>
 
-        <div class="remove_home_link">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Home link</div>
+        <div>
+            <input type="checkbox" id="remove_home_link" class="remove_home_link"
+                   value="remove_home_link" unchecked />
+            <label for="remove_home_link">Home link</label>
         </div>
 
-        <div class="remove_explore_link">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Explore link</div>
+        <div>
+            <input type="checkbox" id="remove_explore_link" class="remove_explore_link"
+                   value="remove_explore_link" unchecked />
+            <label for="remove_explore_link">Explore link</label>
         </div>
 
       </fieldset>
@@ -74,50 +91,64 @@
       <fieldset>
         <legend>More</legend>
 
-        <div class="remove_thumbnail_mouseover_effect">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Thumbnail mouseover effect</div>
+        <div>
+            <input type="checkbox" id="remove_info_cards" class="remove_info_cards"
+                   value="remove_info_cards" unchecked />
+            <label for="remove_info_cards">Info cards <a class='minor_text'>in-video</a></label>
         </div>
 
-        <div class="remove_play_next_button">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Play next button</div>
+        <div>
+            <input type="checkbox" id="remove_play_next_button" class="remove_play_next_button"
+                   value="remove_play_next_button" unchecked />
+            <label for="remove_play_next_button">Play next button</label>
         </div>
 
-        <div class="remove_comments">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Comments</div>
+        <div>
+            <input type="checkbox" id="remove_comments" class="remove_comments"
+                   value="remove_comments" unchecked />
+            <label for="remove_comments">Comments</label>
         </div>
 
-        <div class="remove_chat">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Chat <a class='minor_text'>streaming</a></div>
+        <div>
+            <input type="checkbox" id="remove_thumbnail_mouseover_effect" class="remove_thumbnail_mouseover_effect"
+                   value="remove_thumbnail_mouseover_effect" unchecked />
+            <label for="remove_thumbnail_mouseover_effect">Thumbnail slideshow</label>
         </div>
 
-        <div class="remove_info_cards">
-          <div class="option_name_container"><a class="active">🚫</a><a class="inactive">🟢</a> Info cards <a class='minor_text'>in-video</a></div>
+        <div>
+            <input type="checkbox" id="remove_chat" class="remove_chat"
+                   value="remove_chat" unchecked />
+            <label for="remove_chat">Chat <a class='minor_text'>streaming</a></label>
         </div>
       </fieldset>
 
       <fieldset>
         <legend>Redirect the<a class="redirect_link" href="https://www.youtube.com/" target="_blank"> homepage ↗️</a></legend>
 
-        <div class="redirect_off">
-          <div class="option_name_container"><a class="active">➡️</a><a class="inactive">⬜</a> off</div>
+        <div>
+            <input type="radio" id="redirect_to_subs" class="redirect_to_subs" name="redirect"
+                   value="redirect_to_subs" unchecked />
+            <label for="redirect_to_subs">to Subscriptions</label>
+            <a class="redirect_link" href="https://www.youtube.com/feed/subscriptions" target="_blank">↗️</a>
         </div>
 
         <div>
-          <div class="redirect_to_subs">
-            <div class="option_name_container"><a class="active">➡️</a><a class="inactive">⬜</a> to Subscriptions</div>
-          </div>
-          <a class="redirect_link" href="https://www.youtube.com/feed/subscriptions" target="_blank">↗️</a>
+            <input type="radio" id="redirect_to_wl" class="redirect_to_wl" name="redirect"
+                   value="redirect_to_wl" unchecked />
+            <label for="redirect_to_wl">to Watch Later </label>
+            <a class="redirect_link" href="https://www.youtube.com/playlist/?list=WL" target="_blank">↗️</a>
         </div>
 
         <div>
-          <div class="redirect_to_wl">
-            <div class="option_name_container"><a class="active">➡️</a><a class="inactive">⬜</a> to Watch Later </div>
-          </div>
-          <a class="redirect_link" href="https://www.youtube.com/playlist/?list=WL" target="_blank">↗️</a>
+            <input type="radio" id="redirect_off" class="redirect_off" name="redirect"
+                   value="redirect_off" checked />
+            <label for="redirect_off">off</label>
         </div>
 
       </fieldset>
+
     </div>
+
 
     <div id="reload_container">
       <div id="reload_header">
