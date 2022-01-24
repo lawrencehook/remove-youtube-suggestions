@@ -6,6 +6,7 @@ if (typeof browser === 'undefined') {
 // Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
+  // "dark_mode":                         { defaultValue: true,  eventType: 'click' },
   "global_enable":                     { defaultValue: true,  eventType: 'click' },
   "remove_homepage":                   { defaultValue: true,  eventType: 'click' },
   "remove_sidebar":                    { defaultValue: true,  eventType: 'click' },
@@ -48,15 +49,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const settingButton = document.getElementById(key);
     if (settingButton) settingButton.checked = value;
     HTML.setAttribute(key, value);
+    const button = document.getElementById(key);
+    if (button && 'checked' in button) button.checked = value;
+    if (key === 'global_enable') {
+      const inputs = Array.from(document.querySelectorAll('input'));
+      inputs.forEach(input => input.disabled = !value );
+    }
   });
 
   // Sync with local settings.
   browser && browser.storage.local.get(localSettings => {
     Object.entries(localSettings).forEach(([key, value]) => {
       if (!VALID_SETTINGS.includes(key)) return;
-      const settingButton = document.getElementById(key);
-      if (settingButton) settingButton.checked = value;
       HTML.setAttribute(key, value);
+      const button = document.getElementById(key);
+      if (button && 'checked' in button) button.checked = value;
+      if (key === 'global_enable') {
+        const inputs = Array.from(document.querySelectorAll('input'));
+        inputs.forEach(input => input.disabled = !value );
+      }
     });
   });
 });

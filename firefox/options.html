@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html dark_mode='on'>
   <head>
     <meta charset="utf-8">
     <title>Remove Youtube Suggestions</title>
@@ -10,13 +10,39 @@
   <body>
     <div id='header'>
       <div id='header-contents'>
-        <img id='header-logo' src="images/rys.svg"></img>
+        <a href='https://lawrencehook.com/rys' target='_blank'>
+          <img id='header-logo' src="images/rys.svg"></img>
+        </a>
+
         <div id='header-text'>Remove Youtube Suggestions</div>
-        <svg id="toggle-svg" class='global_enable header-toggle' version="1.1" viewBox="0 0 16 16" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <path id='toggle-svg-outer-path' fill="gray"  d="M 11,  3 H 5 C 2.239, 3, 0, 5.239, 0,  8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761,  3, 11,  3 z"/>
-          <!-- <path id='toggle-svg-inner-path' fill="white" d="M 11, 12 H 5 c -2.206, 0 -4 -1.794 -4 -4 s 1.794 -4, 4 -4 h 6 c 2.206, 0, 4, 1.794, 4, 4 S 13.206, 12, 11, 12 z"/> -->
-          <circle id='toggle-svg-circle' fill="white" cx="5" cy="8" r="3"/>
-        </svg>
+
+        <!-- <div id='dark_mode'>
+          <a id='header-light' title='Dark Mode'>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle fill="#464646" cx="12" cy="12" r="5"/>
+              <path fill="#464646" d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z"/>
+              <path fill="#464646" d="M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z"/>
+              <path fill="#464646" d="M17.66,7.34A1,1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,7.34Z"/>
+              <path fill="#464646" d="M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,1.41l-.71.71A1,1,0,0,1,5.64,19.36Z"/>
+              <path fill="#464646" d="M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z"/>
+              <path fill="#464646" d="M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,22Z"/>
+              <path fill="#464646" d="M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,6.34,7.34Z"/>
+              <path fill="#464646" d="M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
+            </svg>
+          </a>
+          <a id='header-dark' title='Light Mode'>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#464646" d="M20.21,15.32A8.56,8.56,0,1,1,11.29,3.5a.5.5,0,0,1,.51.28.49.49,0,0,1-.09.57A6.46,6.46,0,0,0,9.8,9a6.57,6.57,0,0,0,9.71,5.72.52.52,0,0,1,.58.07A.52.52,0,0,1,20.21,15.32Z"/>
+            </svg>
+          </a>
+        </div> -->
+
+        <a title='On/Off'>
+          <svg id="header-toggle" class='global_enable header-toggle' viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path id='header-toggle-outer-path' fill="gray"  d="M 11, 3 H 5 C 2.239, 3, 0, 5.239, 0, 8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761, 3, 11, 3 z"/>
+            <circle id='header-toggle-circle' fill="white" cx="5" cy="8" r="3"/>
+          </svg>
+        </a>
       </div>
     </div>
 
@@ -149,22 +175,47 @@
 
     </div>
 
+    <div id='footer'>
 
-    <div id="reload_container">
-      <div id="reload_header">
-        Not loading correctly?
-      </div>
-      <button id="reload_button">Refresh</button>
+      <a id='info_button' href='https://lawrencehook.com/rys/' title='Info'>
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <path class='footer-path' d="M16,12a2,2,0,1,1,2-2A2,2,0,0,1,16,12Zm0-2Z"/>
+          <path class='footer-path' d="M16,29A13,13,0,1,1,29,16,13,13,0,0,1,16,29ZM16,5A11,11,0,1,0,27,16,11,11,0,0,0,16,5Z"/>
+          <path class='footer-path' d="M16,24a2,2,0,0,1-2-2V16a2,2,0,0,1,4,0v6A2,2,0,0,1,16,24Zm0-8v0Z"/>
+        </svg>
+      </a>
+
+      <a id='bug_button' href='https://docs.google.com/forms/d/1AzQQxTWgG6M5N87jinvXKQkGS6Mehzg19XV4mjteTK0' title='Report a Bug / Feature Request'>
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <path class='footer-path' d="M6.188,52.173A2,2,0,0,0,5,54v8H9V55.3l6.992-3.108a17.968,17.968,0,0,0,32.016,0L55,55.3V62h4V54a2,2,0,0,0-1.188-1.827l-8.39-3.729a17.858,17.858,0,0,0,.511-3.115l7.879-3.5A2,2,0,0,0,59,40V32H55v6.7l-5,2.223V30.3l7.812-3.472A2,2,0,0,0,59,25V17H55v6.7l-5.325,2.367A6.006,6.006,0,0,0,44,22H42V18a7.941,7.941,0,0,0-.99-3.847l3.239-2.591A2,2,0,0,0,45,10V5H41V9.039l-2.747,2.2A7.939,7.939,0,0,0,34,10H30a7.939,7.939,0,0,0-4.253,1.237L23,9.039V5H19v5a2,2,0,0,0,.751,1.562l3.239,2.591A7.941,7.941,0,0,0,22,18v4H20a6.006,6.006,0,0,0-5.675,4.067L9,23.7V17H5v8a2,2,0,0,0,1.188,1.827L14,30.3V40.923L9,38.7V32H5v8a2,2,0,0,0,1.188,1.827l7.879,3.5a17.858,17.858,0,0,0,.511,3.115ZM18,44V34H30V57.84A14.009,14.009,0,0,1,18,44ZM34,57.84V34H46V44A14.009,14.009,0,0,1,34,57.84ZM26,18a4,4,0,0,1,4-4h4a4,4,0,0,1,4,4v4H26Zm-6,8H44a2,2,0,0,1,2,2v2H18V28A2,2,0,0,1,20,26Z"/>
+        </svg>
+      </a>
+
+      <a id='reload_button' title='Refresh Page'>
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path class='footer-path' d="M35.3 12.7c-2.89-2.9-6.88-4.7-11.3-4.7-8.84 0-15.98 7.16-15.98 16s7.14 16 15.98 16c7.45 0 13.69-5.1 15.46-12h-4.16c-1.65 4.66-6.07 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.31 0 6.28 1.38 8.45 3.55l-6.45 6.45h14v-14l-4.7 4.7z"/>
+        </svg>
+      </a>
+
     </div>
 
-    <div id="help_container">
-      <a href="https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/" target="_blank">Reviews</a> and <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5" target="_blank">donations</a> appreciated.
-      <br>
-      <br>
-      btc <a id='bitcoin' class='crypto_address'>bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve</a>
-      <br>
-      eth <a id='ethereum' class='crypto_address'>0xDC40d2Ac2DBC76cd9507A9f578e3166e3ae1292D</a>
-    </div>
+
+    <!-- <div id="reload_container"> -->
+      <!-- <div id="reload_header"> -->
+        <!-- Not loading correctly? -->
+      <!-- </div> -->
+      <!-- <button id="reload_button">Refresh</button> -->
+      
+    <!-- </div> -->
+
+    <!-- <div id="help_container"> -->
+      <!-- <a href="https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/" target="_blank">Reviews</a> and <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5" target="_blank">donations</a> appreciated. -->
+      <!-- <br> -->
+      <!-- <br> -->
+      <!-- btc <a id='bitcoin' class='crypto_address'>bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve</a> -->
+      <!-- <br> -->
+      <!-- eth <a id='ethereum' class='crypto_address'>0xDC40d2Ac2DBC76cd9507A9f578e3166e3ae1292D</a> -->
+    <!-- </div> -->
 
     <script src="js/reload.js"></script>
     <script src="js/options.js"></script>
