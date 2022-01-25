@@ -14,14 +14,14 @@ const cache = {
   redirectUrl: null,
 };
 browser.storage.local.get(cache, setting => {
-  Object.entries(setting).forEach((key, val) => {
+  Object.entries(setting).forEach(([key, val]) => {
     cache[key] = val;
   })
 });
 
 // Listen for changes to cached values.
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  request && Object.entries(cache).forEach((key, val) => {
+  request && Object.entries(cache).forEach(([key, val]) => {
     cache[key] = request[key] ?? val;
   });
 });
