@@ -40,6 +40,7 @@ a {
 body {
   min-width: 300px;
   max-width: 800px;
+  height: fit-content;
   max-height: 600px;
 
   padding: 2px 2px 2px 2px;

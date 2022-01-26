@@ -1,4 +1,7 @@
 #!/bin/bash
 
+cp -r extension chrome_extension
+rm -rf chrome_extension/web-ext-artifacts/
 rm extension.zip
-zip -r extension.zip chrome
+zip -r extension.zip chrome_extension
+rm -rf chrome_extension

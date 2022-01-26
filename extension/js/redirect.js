@@ -10,8 +10,7 @@ if (typeof browser === 'undefined') {
 //  Cache values needed for redirect
 const cache = {
   globalEnable: true,
-  redirect: false,
-  redirectUrl: null,
+  redirectUrl: false,
 };
 browser.storage.local.get(cache, setting => {
   Object.entries(setting).forEach(([key, val]) => {
@@ -28,9 +27,9 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Redirect
 browser.webRequest.onBeforeRequest.addListener(details => {
-  const { globalEnable, redirect, redirectUrl } = cache;
+  const { globalEnable, redirectUrl } = cache;
   if (globalEnable === false) return;
-  if (redirect) return { redirectUrl };
+  if (redirectUrl) return { redirectUrl };
 }, { urls: [
       "*://youtube.com/",
       "*://www.youtube.com/",

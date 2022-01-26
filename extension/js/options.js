@@ -38,7 +38,7 @@ const REDIRECT_KEYS = VALID_SETTINGS.filter(key => key.includes('redirect'));
 const REDIRECT_OPTIONS_TEMPLATE = REDIRECT_KEYS.reduce((options, key) => {
   options[key] = false;
   return options;
-}, { redirect: false });
+}, {});
 
 
 // Load the options menu with our settings.
@@ -99,7 +99,7 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
       saveObj = {
         ...REDIRECT_OPTIONS_TEMPLATE,
         [key]: true,
-        redirect: redirectUrl
+        redirectUrl
       };
 
       // Update background script with changed redirectUrl.
@@ -123,7 +123,7 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
       if (messageObj) {
         browser.tabs.query({}, tabs => {
           tabs.forEach(tab => {
-            browser.tabs.sendMessage(tab.id, messageObj).catch(e => console.log(e));
+            browser.tabs.sendMessage(tab.id, messageObj);
           });
         });
       }
