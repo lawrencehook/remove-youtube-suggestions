@@ -34,5 +34,3 @@ Leave a review!
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
 
 Donations appreciated. [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5)  
-btc `bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve`  
-eth `0xDC40d2Ac2DBC76cd9507A9f578e3166e3ae1292D`  
