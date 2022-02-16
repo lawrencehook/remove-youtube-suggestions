@@ -8,6 +8,8 @@ html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
 /* Site Navigation */
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
+html[global_enable="true"][remove_shorts_link="true"] a[title="Shorts"],
+html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
 
 /* More Removal Options */
