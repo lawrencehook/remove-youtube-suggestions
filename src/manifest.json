@@ -3,7 +3,7 @@
   "description": "Stop the YouTube rabbit hole. Customize YouTube's user interface to be less engaging.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "4.2.2",
+  "version": "4.2.3",
 
   "icons": {
     "16": "images/16.png",
@@ -23,6 +23,12 @@
       "css": ["css/main.css"],
       "all_frames": true,
       "matches": ["*://*.youtube.com/*"],
+      "run_at": "document_start"
+    },
+    {
+      "css": ["css/search.css"],
+      "all_frames": true,
+      "matches": ["*://*.youtube.com/results*"],
       "run_at": "document_start"
     }
   ],
