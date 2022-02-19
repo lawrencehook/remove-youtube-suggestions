@@ -13,7 +13,7 @@ const SETTINGS_LIST = {
   "remove_end_of_video":               { defaultValue: true,  eventType: 'change' },
   "remove_all_but_one":                { defaultValue: false, eventType: 'change' },
   "remove_infinite_scroll":            { defaultValue: false, eventType: 'change' },
-  "remove_shorts":                     { defaultValue: false, eventType: 'change' },
+  "remove_extra_rows":                 { defaultValue: false, eventType: 'change' },
   "remove_logo_link":                  { defaultValue: false, eventType: 'change' },
   "remove_home_link":                  { defaultValue: false, eventType: 'change' },
   "remove_shorts_link":                { defaultValue: false, eventType: 'change' },

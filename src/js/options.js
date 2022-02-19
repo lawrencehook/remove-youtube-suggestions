@@ -17,7 +17,7 @@ const SETTINGS_LIST = {
   "remove_explore_link":               { defaultValue: false, eventType: 'click' },
   "remove_infinite_scroll":            { defaultValue: false, eventType: 'click' },
   "remove_all_but_one":                { defaultValue: false, eventType: 'click' },
-  "remove_shorts":                     { defaultValue: false, eventType: 'click' },
+  "remove_extra_rows":                 { defaultValue: false, eventType: 'click' },
   "remove_extra_results":              { defaultValue: false, eventType: 'click' },
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'click' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'click' },
