@@ -6,6 +6,7 @@ if (typeof browser === 'undefined') {
 // Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
+  "dark_mode":                         { defaultValue: false, eventType: 'click' },
   "global_enable":                     { defaultValue: true,  eventType: 'click'  },
   "remove_homepage":                   { defaultValue: true,  eventType: 'change' },
   "remove_sidebar":                    { defaultValue: true,  eventType: 'change' },
@@ -18,6 +19,7 @@ const SETTINGS_LIST = {
   "remove_shorts_link":                { defaultValue: false, eventType: 'change' },
   "remove_explore_link":               { defaultValue: false, eventType: 'change' },
   "remove_extra_results":              { defaultValue: false, eventType: 'change' },
+  "remove_entire_sidebar":             { defaultValue: false, eventType: 'change' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'change' },
   "remove_play_next_button":           { defaultValue: false, eventType: 'change' },
   "remove_comments":                   { defaultValue: false, eventType: 'change' },

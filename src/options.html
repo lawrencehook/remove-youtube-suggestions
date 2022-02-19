@@ -16,9 +16,9 @@
 
         <div id='header-text'>Remove Youtube Suggestions</div>
 
-        <!-- <div id='dark_mode'>
-          <a id='header-light' title='Dark Mode'>
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <div id='dark_mode'>
+          <a title='Dark Mode'>
+            <svg id='header-light' class='dark_mode' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <circle fill="#464646" cx="12" cy="12" r="5"/>
               <path fill="#464646" d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z"/>
               <path fill="#464646" d="M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z"/>
@@ -30,12 +30,12 @@
               <path fill="#464646" d="M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
             </svg>
           </a>
-          <a id='header-dark' title='Light Mode'>
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#464646" d="M20.21,15.32A8.56,8.56,0,1,1,11.29,3.5a.5.5,0,0,1,.51.28.49.49,0,0,1-.09.57A6.46,6.46,0,0,0,9.8,9a6.57,6.57,0,0,0,9.71,5.72.52.52,0,0,1,.58.07A.52.52,0,0,1,20.21,15.32Z"/>
+          <a title='Light Mode'>
+            <svg id='header-dark' class='dark_mode' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#f9f871" d="M20.21,15.32A8.56,8.56,0,1,1,11.29,3.5a.5.5,0,0,1,.51.28.49.49,0,0,1-.09.57A6.46,6.46,0,0,0,9.8,9a6.57,6.57,0,0,0,9.71,5.72.52.52,0,0,1,.58.07A.52.52,0,0,1,20.21,15.32Z"/>
             </svg>
           </a>
-        </div> -->
+        </div>
 
         <a title='On/Off'>
           <svg id="header-toggle" class='global_enable header-toggle' viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -127,6 +127,12 @@
             <input type="checkbox" id="remove_extra_results" class="remove_extra_results"
                    value="remove_extra_results" unchecked />
             <label for="remove_extra_results">Extra search results <a class='minor_text'>for you, also watched, etc.</a></label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="remove_entire_sidebar" class="remove_entire_sidebar"
+                   value="remove_entire_sidebar" checked />
+            <label for="remove_entire_sidebar">Entire Sidebar <a class='minor_text'>centers the video player</a></label>
         </div>
 
         <div>

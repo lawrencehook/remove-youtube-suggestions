@@ -13,6 +13,7 @@ html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-rende
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
 
 /* More Removal Options */
+html[global_enable="true"][remove_entire_sidebar="true"] #secondary,
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row:nth-child(n+2),
 html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
@@ -36,4 +37,9 @@ html[global_enable="true"][foo=bar]
 /* Disable Youtube logo's link to the homepage */
 html[global_enable="true"][remove_logo_link="true"] #logo[href="/"] {
   pointer-events: none;
+}
+
+/* Center contents when the sidebar is entirely hidden */
+html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy]:not([fullscreen]):not([theater]) {
+	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important
 }
