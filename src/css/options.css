@@ -144,36 +144,18 @@ body, body * {
   display: inline-block;
 }
 
-/*#reload_header {*/
-  /*text-align: center;*/
-  /*margin-bottom: 5px;*/
-/*}*/
-
-/*#reload_container {*/
-  /*text-align: center;*/
-
-  /*padding: 4px;*/
-  /*border-width: 2px;*/
-  /*border-style: groove;*/
-  /*border-color: gray;*/
-
-  /*margin: 4px 2px 1px 2px;*/
-/*}*/
-
-/*#help_container {*/
-  /*text-align: left;*/
-  /*padding: 8px;*/
-  /*border-width: 2px;*/
-  /*border-style: groove;*/
-  /*border-color: gray;*/
-
-  /*margin: 4px 2px 1px 2px;*/
-/*}*/
-
-/*.crypto_address {*/
-  /*font-size: 7px;*/
-  /*font-family: monospace;*/
-/*}*/
+/* Manage history */
+#manage_history_container {
+  text-align: center;
+  height: 20px;
+  padding-top: 5px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: 1px groove gray;
+}
+#manage_history {
+  text-align: right;
+}
 
 /* Begin footer */
 #footer {
@@ -186,9 +168,7 @@ body, body * {
 
   border: 1px groove gray;
 
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 100%;
+  display: flex;
 }
 
 #footer a {
@@ -198,8 +178,6 @@ body, body * {
   height: 95%;
 
   cursor: pointer;
-
-
 }
 
 svg > rect {
