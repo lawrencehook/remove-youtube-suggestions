@@ -17,6 +17,15 @@ html[dark_mode='true'] body { background-color: #393939 }
 html[dark_mode='true'] body * { color: #B9B9B9 }
 html[dark_mode='true'] .footer-path { fill: #B9B9B9 }
 
+html[dark_mode='true'] {
+  --hover-box-shadow-color: rgba(0, 0, 0, 0.95);
+  --hover-fieldset-legend-color: white;
+}
+html[dark_mode='false'] {
+  --hover-box-shadow-color: rgba(0, 0, 0, 0.30);
+  --hover-fieldset-legend-color: black;
+}
+
 /* Begin Main styling */
 html, body { height: 100% }
 
@@ -28,7 +37,7 @@ body {
   min-width: 349px;
   max-width: 350px;
   height: fit-content;
-  max-height: 600px;
+  max-height: 700px;
 
   padding: 2px 2px 2px 2px;
   margin: 2px 2px 2px 2px;
@@ -39,9 +48,23 @@ body, body * {
   font-family: Helvetica;
 }
 
-.minor_text {
-  font-size: 10px;
-  font-style: italic;
+label {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  margin-left: 1px;
+}
+.tooltip:hover {
+  height: 110%;
 }
 
 /* Begin header */
@@ -113,18 +136,28 @@ body, body * {
   -moz-transition: box-shadow 0.1s;
   -o-transition: box-shadow 0.1s;
   transition: box-shadow 0.1s;
-  padding: 2px;
-}
-#primary_options:hover {
-  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.30);
+  padding: 1px;
 }
 
 #primary_options div {
-  height: 16px;
+  height: 15px;
 }
 
 #primary_options fieldset:not(:nth-child(1)) {
   margin-top: 5px;
+}
+
+fieldset {
+  padding-bottom: 5px;
+  box-sizing: border-box;
+}
+fieldset:hover legend, fieldset:hover legend * {
+  font-weight: bold;
+  color: var(--hover-fieldset-legend-color);
+}
+fieldset:hover {
+  box-shadow: 10px 5px 10px 1px var(--hover-box-shadow-color);
+  box-sizing: border-box;
 }
 
 .option_name_container {

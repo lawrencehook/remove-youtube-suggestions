@@ -6,25 +6,32 @@ if (typeof browser === 'undefined') {
 // Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
-  "dark_mode":                         { defaultValue: false,  eventType: 'click' },
+  "dark_mode":                         { defaultValue: false, eventType: 'click' },
   "global_enable":                     { defaultValue: true,  eventType: 'click' },
+
   "remove_homepage":                   { defaultValue: true,  eventType: 'click' },
   "remove_sidebar":                    { defaultValue: true,  eventType: 'click' },
   "remove_end_of_video":               { defaultValue: true,  eventType: 'click' },
-  "remove_logo_link":                  { defaultValue: false, eventType: 'click' },
-  "remove_home_link":                  { defaultValue: false, eventType: 'click' },
-  "remove_shorts_link":                { defaultValue: false, eventType: 'click' },
-  "remove_explore_link":               { defaultValue: false, eventType: 'click' },
+
   "remove_infinite_scroll":            { defaultValue: false, eventType: 'click' },
   "remove_all_but_one":                { defaultValue: false, eventType: 'click' },
   "remove_extra_rows":                 { defaultValue: false, eventType: 'click' },
-  "remove_extra_results":              { defaultValue: false, eventType: 'click' },
+
+  "remove_logo_link":                  { defaultValue: false, eventType: 'click' },
+  "remove_home_link":                  { defaultValue: false, eventType: 'click' },
+  "remove_explore_link":               { defaultValue: false, eventType: 'click' },
+  "remove_shorts_link":                { defaultValue: false, eventType: 'click' },
+
+  "auto_skip_ads":                     { defaultValue: false, eventType: 'click' },
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'click' },
+  "disable_autoplay":                  { defaultValue: false, eventType: 'click' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'click' },
   "remove_play_next_button":           { defaultValue: false, eventType: 'click' },
   "remove_comments":                   { defaultValue: false, eventType: 'click' },
+
+  "remove_extra_results":              { defaultValue: false, eventType: 'click' },
   "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'click' },
-  "remove_chat":                       { defaultValue: false, eventType: 'click' },
+
   "redirect_off":                      { defaultValue: true,  eventType: 'click' },
   "redirect_to_subs":                  { defaultValue: false, eventType: 'click' },
   "redirect_to_wl":                    { defaultValue: false, eventType: 'click' },

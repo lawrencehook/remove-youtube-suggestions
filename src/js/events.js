@@ -2,14 +2,12 @@ if (typeof browser === 'undefined') {
   browser = typeof chrome !== 'undefined' ? chrome : null;
 }
 
+const uninstallUrl = "http://lawrencehook.com/rys/👋";
+browser.runtime.setUninstallURL(uninstallUrl);
 
-browser.runtime.onInstalled.addListener(function (object) {
-  const installUrl = "http://lawrencehook.com/rys/welcome";
-  const uninstallUrl = "http://lawrencehook.com/rys/👋";
-
+browser.runtime.onInstalled.addListener(object => {
+  const url = "http://lawrencehook.com/rys/welcome";
   if (object.reason === browser.runtime.OnInstalledReason.INSTALL) {
-    browser.runtime.setUninstallURL(uninstallUrl);
-    browser.tabs.create({ url: installUrl }, tab => {});
+    browser.tabs.create({ url }, tab => {});
   }
-
 });

@@ -48,24 +48,30 @@
 
     <div id="primary_options">
       <fieldset>
-        <legend></legend>
+        <legend>Basic</legend>
 
         <div>
             <input type="checkbox" id="remove_homepage" class="remove_homepage"
                    value="remove_homepage" checked />
-            <label for="remove_homepage">Homepage</label>
+            <label for="remove_homepage">
+              Homepage
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_sidebar" class="remove_sidebar"
                    value="remove_sidebar" checked />
-            <label for="remove_sidebar">Sidebar</label>
+            <label for="remove_sidebar">
+              Sidebar
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_end_of_video" class="remove_end_of_video"
                    value="remove_end_of_video" checked />
-            <label for="remove_end_of_video">End of video</label>
+            <label for="remove_end_of_video">
+              End of video
+            </label>
         </div>
       </fieldset>
 
@@ -75,20 +81,28 @@
         <div>
             <input type="checkbox" id="remove_all_but_one" class="remove_all_but_one"
                    value="remove_all_but_one" unchecked />
-            <label for="remove_all_but_one">All but first row</label>
+            <label for="remove_all_but_one">
+              All but first row
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_infinite_scroll" class="remove_infinite_scroll"
                    value="remove_infinite_scroll" unchecked />
-            <label for="remove_infinite_scroll">Infinite scroll</label>
+            <label for="remove_infinite_scroll">
+              Infinite scroll
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_extra_rows" class="remove_extra_rows"
                    value="remove_extra_rows" unchecked />
-            <label for="remove_extra_rows">Extra rows <a class='minor_text'>shorts, trending, etc.</a></label>
+            <label for="remove_extra_rows">
+              Extra rows
+              <img class="tooltip" src="images/tooltip.svg" title="Shorts, trending, etc.">
+            </label>
         </div>
+
       </fieldset>
 
       <fieldset>
@@ -97,105 +111,156 @@
         <div>
             <input type="checkbox" id="remove_logo_link" class="remove_logo_link"
                    value="remove_logo_link" unchecked />
-            <label for="remove_logo_link">Logo link</label>
+            <label for="remove_logo_link">
+              Logo link
+              <img class="tooltip" src="images/tooltip.svg" title="Shortcut to the homepage from the YouTube logo.">
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_home_link" class="remove_home_link"
                    value="remove_home_link" unchecked />
-            <label for="remove_home_link">Home link</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="remove_shorts_link" class="remove_shorts_link"
-                   value="remove_shorts_link" unchecked />
-            <label for="remove_shorts_link">Shorts link</label>
+            <label for="remove_home_link">
+              Home link
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_explore_link" class="remove_explore_link"
                    value="remove_explore_link" unchecked />
-            <label for="remove_explore_link">Explore link</label>
+            <label for="remove_explore_link">
+              Explore link
+            </label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="remove_shorts_link" class="remove_shorts_link"
+                   value="remove_shorts_link" unchecked />
+            <label for="remove_shorts_link">
+              Shorts link
+            </label>
         </div>
 
       </fieldset>
 
       <fieldset>
-        <legend>More</legend>
+        <legend>Video Player</legend>
 
         <div>
-            <input type="checkbox" id="remove_extra_results" class="remove_extra_results"
-                   value="remove_extra_results" unchecked />
-            <label for="remove_extra_results">Extra search results <a class='minor_text'>for you, also watched, etc.</a></label>
+            <input type="checkbox" id="auto_skip_ads" class="auto_skip_ads"
+                   value="auto_skip_ads" unchecked />
+            <label for="auto_skip_ads">
+              Auto-skip ads
+              <img class="tooltip" src="images/tooltip.svg" title="Clicks the 'skip-ad' button if it exists.">
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_entire_sidebar" class="remove_entire_sidebar"
-                   value="remove_entire_sidebar" checked />
-            <label for="remove_entire_sidebar">Entire Sidebar <a class='minor_text'>centers the video player</a></label>
+                   value="remove_entire_sidebar" unchecked />
+            <label for="remove_entire_sidebar">
+              Center contents
+              <img class="tooltip" src="images/tooltip.svg" title="Removes the entire sidebar.">
+            </label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="disable_autoplay" class="disable_autoplay"
+                   value="disable_autoplay" unchecked />
+            <label for="disable_autoplay">
+              Disable autoplay
+              <img class="tooltip" src="images/tooltip.svg" title="Always toggles 'autoplay' to off.">
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_info_cards" class="remove_info_cards"
                    value="remove_info_cards" unchecked />
-            <label for="remove_info_cards">Info cards <a class='minor_text'>in-video</a></label>
+            <label for="remove_info_cards">
+              Info cards
+              <img class="tooltip" src="images/tooltip.svg" title="Often appear at the end of a video.">
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_play_next_button" class="remove_play_next_button"
                    value="remove_play_next_button" unchecked />
-            <label for="remove_play_next_button">Play next button</label>
+            <label for="remove_play_next_button">
+              Play next button
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_comments" class="remove_comments"
                    value="remove_comments" unchecked />
-            <label for="remove_comments">Comments</label>
+            <label for="remove_comments">
+              Comments
+            </label>
+        </div>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>Search Results Page</legend>
+
+        <div>
+            <input type="checkbox" id="remove_extra_results" class="remove_extra_results"
+                   value="remove_extra_results" unchecked />
+            <label for="remove_extra_results">
+              Extra search results
+              <img class="tooltip" src="images/tooltip.svg" title="For you, also watched, etc.">
+            </label>
         </div>
 
         <div>
             <input type="checkbox" id="remove_thumbnail_mouseover_effect" class="remove_thumbnail_mouseover_effect"
                    value="remove_thumbnail_mouseover_effect" unchecked />
-            <label for="remove_thumbnail_mouseover_effect">Thumbnail slideshow</label>
+            <label for="remove_thumbnail_mouseover_effect">
+              Thumbnail slideshow
+              <img class="tooltip" src="images/tooltip.svg" title="Loop of images when hovering over a thumbnail.">
+            </label>
         </div>
 
-        <div>
-            <input type="checkbox" id="remove_chat" class="remove_chat"
-                   value="remove_chat" unchecked />
-            <label for="remove_chat">Chat <a class='minor_text'>streaming</a></label>
-        </div>
       </fieldset>
 
       <fieldset>
-        <legend>Redirect the<a class="redirect_link" href="https://www.youtube.com/" target="_blank"> homepage ↗️</a></legend>
+        <legend>Redirect the<a class="redirect_link" href="https://www.youtube.com/" target="_blank"> Homepage ↗️</a></legend>
 
         <div>
             <input type="radio" id="redirect_to_subs" class="redirect_to_subs" name="redirect"
                    value="redirect_to_subs" unchecked />
-            <label for="redirect_to_subs">to Subscriptions</label>
+            <label for="redirect_to_subs">
+              to Subscriptions
+            </label>
             <a class="redirect_link" href="https://www.youtube.com/feed/subscriptions" target="_blank">↗️</a>
         </div>
 
         <div>
             <input type="radio" id="redirect_to_wl" class="redirect_to_wl" name="redirect"
                    value="redirect_to_wl" unchecked />
-            <label for="redirect_to_wl">to Watch Later </label>
+            <label for="redirect_to_wl">
+              to Watch Later
+            </label>
             <a class="redirect_link" href="https://www.youtube.com/playlist/?list=WL" target="_blank">↗️</a>
         </div>
 
         <div>
             <input type="radio" id="redirect_off" class="redirect_off" name="redirect"
                    value="redirect_off" checked />
-            <label for="redirect_off">off</label>
+            <label for="redirect_off">
+              off
+            </label>
         </div>
 
       </fieldset>
 
     </div>
 
+
     <div id='manage_history_container'>
       <a id='manage_history' href='https://myactivity.google.com/product/youtube' title="Too many cat video suggestions? Try removing cat videos from your watch history." target="_blank">Manage YouTube History</a>
     </div>
+
 
     <div id='footer'>
 
@@ -221,23 +286,6 @@
 
     </div>
 
-
-    <!-- <div id="reload_container"> -->
-      <!-- <div id="reload_header"> -->
-        <!-- Not loading correctly? -->
-      <!-- </div> -->
-      <!-- <button id="reload_button">Refresh</button> -->
-      
-    <!-- </div> -->
-
-    <!-- <div id="help_container"> -->
-      <!-- <a href="https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions/" target="_blank">Reviews</a> and <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url&amount=5" target="_blank">donations</a> appreciated. -->
-      <!-- <br> -->
-      <!-- <br> -->
-      <!-- btc <a id='bitcoin' class='crypto_address'>bc1qkypls3kpr73sncxag5h6z9vr6xg27nranf22ve</a> -->
-      <!-- <br> -->
-      <!-- eth <a id='ethereum' class='crypto_address'>0xDC40d2Ac2DBC76cd9507A9f578e3166e3ae1292D</a> -->
-    <!-- </div> -->
 
     <script src="js/reload.js"></script>
     <script src="js/options.js"></script>
