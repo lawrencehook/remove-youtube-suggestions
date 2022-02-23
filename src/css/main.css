@@ -46,6 +46,6 @@ html[global_enable="true"][remove_logo_link="true"] #logo[href="/"] {
 }
 
 /* Center contents when the sidebar is entirely hidden */
-html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy]:not([fullscreen]):not([theater]) {
+html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy][is-two-columns_]:not([fullscreen]):not([theater]) {
 	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important
 }

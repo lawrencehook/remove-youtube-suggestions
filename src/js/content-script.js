@@ -63,16 +63,47 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
 
 // Dynamic settings (i.e. js instead of css)
+let counter = 0, hyper = false, originalPlayback;
 document.addEventListener("DOMContentLoaded", event => {
   const observer = new MutationObserver(mutations => {
     if (cache['global_enable'] !== true) return;
 
+    // Give the browser time to breathe
+    if (counter++ % 2 === 0) return;
+
+    // Disable autoplay
     if (cache['disable_autoplay'] === true) {
       document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]')?.[0]?.click();
     }
 
+    // Skip through ads
     if (cache['auto_skip_ads'] === true) {
-      document.querySelectorAll('.ytp-ad-skip-button')?.[0]?.click();
+
+      // Close overlay ads.
+      Array.from(document.querySelectorAll('.ytp-ad-overlay-close-button'))?.forEach(e => e?.click());
+
+      // Click on "Skip ad" button
+      const skippableAd = document.querySelectorAll('.ytp-ad-skip-button').length;
+      if (skippableAd) {
+        document.querySelectorAll('.ytp-ad-skip-button')?.[0]?.click();
+        return;
+      }
+
+      // Speed through ads that can't be skipped (yet).
+      const adElement = document.querySelectorAll('.video-ads.ytp-ad-module')[0];
+      const adActive = adElement && window.getComputedStyle(adElement).display !== 'none';
+      if (adActive) {
+        if (!hyper) {
+          originalPlayback = document.getElementsByTagName("video")[0].playbackRate;
+          hyper = true;
+        }
+        document.getElementsByTagName("video")[0].playbackRate = 5;
+      } else {
+        if (hyper) {
+          document.getElementsByTagName("video")[0].playbackRate = originalPlayback;
+          hyper = false;
+        }
+      }
     }
 
     // if (cache['change_playback_speed']) {

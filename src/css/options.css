@@ -8,7 +8,10 @@
 }
 html[global_enable="true"] #header-toggle-circle { cx: 11px }
 html[global_enable="true"] #header-toggle-outer-path { fill: green }
-html[global_enable="false"] #primary_options { visibility: hidden; }
+html[global_enable="true"] #disabled { display: none; }
+html[global_enable="false"] #primary_options {
+  display: none;
+}
 
 /* Dark mode styling */
 html[dark_mode='true']  #header-light { display: none }
@@ -46,25 +49,6 @@ body {
 body, body * {
   font-size: 12px;
   font-family: Helvetica;
-}
-
-label {
-  position: relative;
-}
-
-.tooltip {
-  position: absolute;
-  height: 95%;
-
-  /* center vertically */
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-
-  margin-left: 1px;
-}
-.tooltip:hover {
-  height: 110%;
 }
 
 /* Begin header */
@@ -127,6 +111,16 @@ label {
   transform: translateY(-50%);
 }
 
+#disabled {
+  text-align: center;
+  height: 300px;
+  padding: 1px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
 /* Begin options  */
 #primary_options {
   min-height: 300px;
@@ -158,6 +152,25 @@ fieldset:hover legend, fieldset:hover legend * {
 fieldset:hover {
   box-shadow: 10px 5px 10px 1px var(--hover-box-shadow-color);
   box-sizing: border-box;
+}
+
+label {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  margin-left: 1px;
+}
+.tooltip:hover {
+  height: 110%;
 }
 
 .option_name_container {
