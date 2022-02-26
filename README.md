@@ -30,7 +30,7 @@ The following commands will set up a Firefox dev environment.
 
 ```
 $ git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
-$ cd remove-youtube-suggestions/firefox
+$ cd remove-youtube-suggestions/src
 $ npm install --global web-ext
 $ web-ext run
 ```
