@@ -7,14 +7,14 @@ if (typeof browser === 'undefined') {
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
   "dark_mode":                         { defaultValue: false, eventType: 'click' },
-  "global_enable":                     { defaultValue: true,  eventType: 'click' },
+  "global_enable":                     { defaultValue: false, eventType: 'click' },
 
   "remove_homepage":                   { defaultValue: true,  eventType: 'click' },
   "remove_sidebar":                    { defaultValue: true,  eventType: 'click' },
   "remove_end_of_video":               { defaultValue: true,  eventType: 'click' },
 
-  "remove_infinite_scroll":            { defaultValue: false, eventType: 'click' },
   "remove_all_but_one":                { defaultValue: false, eventType: 'click' },
+  "remove_infinite_scroll":            { defaultValue: false, eventType: 'click' },
   "remove_extra_rows":                 { defaultValue: false, eventType: 'click' },
 
   "remove_logo_link":                  { defaultValue: false, eventType: 'click' },

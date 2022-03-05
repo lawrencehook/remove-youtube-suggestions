@@ -6,8 +6,8 @@ if (typeof browser === 'undefined') {
 // Some global constants.
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
-  "dark_mode":                         { defaultValue: false, eventType: 'click' },
-  "global_enable":                     { defaultValue: true,  eventType: 'click'  },
+  "dark_mode":                         { defaultValue: false, eventType: 'click'  },
+  "global_enable":                     { defaultValue: false, eventType: 'click'  },
 
   "remove_homepage":                   { defaultValue: true,  eventType: 'change' },
   "remove_sidebar":                    { defaultValue: true,  eventType: 'change' },
@@ -67,6 +67,10 @@ let counter = 0, hyper = false, originalPlayback;
 document.addEventListener("DOMContentLoaded", event => {
   const observer = new MutationObserver(mutations => {
     if (cache['global_enable'] !== true) return;
+
+    // Mark whether or not we're on the "results" page
+    const onResultsPage = new RegExp('.*://.*\.youtube\.com/results.*', 'i').test(location.href);
+    HTML.setAttribute('on_results_page', onResultsPage);
 
     // Give the browser time to breathe
     if (counter++ % 2 === 0) return;

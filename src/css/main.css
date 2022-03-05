@@ -30,6 +30,7 @@ html[global_enable="true"][remove_comments="true"] ytd-engagement-panel-section-
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 
 /* Search Results Page */
+html[global_enable="true"][on_results_page="true"][remove_extra_results="true"] ytd-shelf-renderer,
 html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
 
 html[global_enable="true"][foo=bar]
