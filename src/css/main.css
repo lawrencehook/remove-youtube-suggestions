@@ -27,6 +27,7 @@ html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
 html[global_enable="true"][remove_comments="true"] #comments,
 html[global_enable="true"][remove_comments="true"] #comment-teaser,
 html[global_enable="true"][remove_comments="true"] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"],
+html[global_enable="true"][remove_chat="true"] #chat,
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 
 /* Search Results Page */

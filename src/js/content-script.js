@@ -22,12 +22,13 @@ const SETTINGS_LIST = {
   "remove_explore_link":               { defaultValue: false, eventType: 'change' },
   "remove_shorts_link":                { defaultValue: false, eventType: 'change' },
 
-  "auto_skip_ads":                     { defaultValue: true,  eventType: 'change' },
+  "auto_skip_ads":                     { defaultValue: false,  eventType: 'change' },
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'change' },
   "disable_autoplay":                  { defaultValue: false, eventType: 'change' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'change' },
   "remove_play_next_button":           { defaultValue: false, eventType: 'change' },
   "remove_comments":                   { defaultValue: false, eventType: 'change' },
+  "remove_chat":                       { defaultValue: false, eventType: 'change' },
 
   "remove_extra_results":              { defaultValue: false, eventType: 'change' },
   "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'change' },
