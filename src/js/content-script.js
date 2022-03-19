@@ -7,7 +7,7 @@ if (typeof browser === 'undefined') {
 const HTML = document.documentElement;
 const SETTINGS_LIST = {
   "dark_mode":                         { defaultValue: false, eventType: 'click'  },
-  "global_enable":                     { defaultValue: false, eventType: 'click'  },
+  "global_enable":                     { defaultValue: true,  eventType: 'click'  },
 
   "remove_homepage":                   { defaultValue: true,  eventType: 'change' },
   "remove_sidebar":                    { defaultValue: true,  eventType: 'change' },
