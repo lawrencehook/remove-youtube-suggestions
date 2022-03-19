@@ -29,6 +29,7 @@ const SETTINGS_LIST = {
   "remove_play_next_button":           { defaultValue: false, eventType: 'change' },
   "remove_comments":                   { defaultValue: false, eventType: 'change' },
   "remove_chat":                       { defaultValue: false, eventType: 'change' },
+  "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
 
   "remove_extra_results":              { defaultValue: false, eventType: 'change' },
   "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'change' },
