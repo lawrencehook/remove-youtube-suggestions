@@ -78,35 +78,43 @@ browser.runtime.onMessage.addListener((data, sender) => {
   }
 
   if (urlChange) {
-    const currentUrl = location.href;
-
-    // Mark whether or not we're on the "results" page
-    const onResultsPage = resultsPageRegex.test(currentUrl);
-    HTML.setAttribute('on_results_page', onResultsPage);
-
-    // Redirect homepage
-    const onHomepage = homepageRegex.test(currentUrl);
-    if (onHomepage && !cache['redirect_off']) {
-      if (cache['redirect_to_subs']) location.replace(REDIRECT_URLS['redirect_to_subs']);
-      if (cache['redirect_to_wl'])   location.replace(REDIRECT_URLS['redirect_to_wl']);
-    }
-
-    // Redirect shorts
-    const onShorts = shortsRegex.test(currentUrl);
-    if (onShorts && cache['normalize_shorts']) {
-      const newUrl = currentUrl.replace('shorts', 'watch');
-      location.replace(newUrl);
-    }
+    handleRedirects();
   }
 
   return true;
 });
+
+function handleRedirects() {
+  const currentUrl = location.href;
+
+  // Mark whether or not we're on the "results" page
+  const onResultsPage = resultsPageRegex.test(currentUrl);
+  HTML.setAttribute('on_results_page', onResultsPage);
+
+  // Redirect homepage
+  const onHomepage = homepageRegex.test(currentUrl);
+  if (onHomepage && !cache['redirect_off']) {
+    if (cache['redirect_to_subs']) location.replace(REDIRECT_URLS['redirect_to_subs']);
+    if (cache['redirect_to_wl'])   location.replace(REDIRECT_URLS['redirect_to_wl']);
+  }
+
+  // Redirect shorts
+  const onShorts = shortsRegex.test(currentUrl);
+  if (onShorts && cache['normalize_shorts']) {
+    const newUrl = currentUrl.replace('shorts', 'watch');
+    location.replace(newUrl);
+  }
+}
 
 
 // Dynamic settings (i.e. js instead of css)
 let counter = 0, hyper = false, originalPlayback;
 
 document.addEventListener("DOMContentLoaded", event => {
+
+  // Do redirects on initial load. (not a SPA URL change)
+  handleRedirects();
+
   const observer = new MutationObserver(mutations => {
     if (cache['global_enable'] !== true) return;
 
