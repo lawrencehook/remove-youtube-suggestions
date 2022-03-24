@@ -77,14 +77,12 @@ browser.runtime.onMessage.addListener((data, sender) => {
     });
   }
 
-  if (urlChange) {
-    handleRedirects();
-  }
-
   return true;
 });
 
 function handleRedirects() {
+  if (cache['global_enable'] !== true) return;
+
   const currentUrl = location.href;
 
   // Mark whether or not we're on the "results" page
@@ -109,17 +107,20 @@ function handleRedirects() {
 
 // Dynamic settings (i.e. js instead of css)
 let counter = 0, hyper = false, originalPlayback;
-
 document.addEventListener("DOMContentLoaded", event => {
-
-  // Do redirects on initial load. (not a SPA URL change)
   handleRedirects();
 
+  let url = location.href;
   const observer = new MutationObserver(mutations => {
     if (cache['global_enable'] !== true) return;
 
     // Give the browser time to breathe
     if (counter++ % 2 === 0) return;
+
+    if (url !== location.href) {
+      url = location.href;
+      handleRedirects();
+    }
 
     // Disable autoplay
     if (cache['disable_autoplay'] === true) {
