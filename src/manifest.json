@@ -43,8 +43,6 @@
   },
   "permissions": [
     "storage",
-    "webRequest",
-    "webRequestBlocking",
     "webNavigation",
     "*://*.youtube.com/*"
   ]
