@@ -22,6 +22,7 @@ const SETTINGS_LIST = {
   "remove_explore_link":               { defaultValue: false, eventType: 'click' },
   "remove_shorts_link":                { defaultValue: false, eventType: 'click' },
 
+  "normalize_shorts":                  { defaultValue: false, eventType: 'click' },
   "auto_skip_ads":                     { defaultValue: false, eventType: 'click' },
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'click' },
   "disable_autoplay":                  { defaultValue: false, eventType: 'click' },
@@ -93,12 +94,12 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
     // Toggle on click: new value is opposite of old value.
     const value = !(String(HTML.getAttribute(key)).toLowerCase() === "true");
 
-    let saveObj, messageObj;
+    // Communicate changes (to local settings, content-script.js, etc.)
+    let saveObj;
 
     // Handle standard (non-redirect) settings.
     if (!key.includes('redirect')) {
       saveObj = { [key]: value };
-      messageObj = [{ key, value }];
 
       // Update background script with globalEnable.
       if (key === 'global_enable') {
@@ -107,35 +108,34 @@ Object.entries(SETTINGS_LIST).forEach(([key, { eventType }]) => {
 
     // Handle redirect settings
     } else {
-      const redirectUrl = REDIRECT_URLS[key];
+      const redirect_url = REDIRECT_URLS[key];
       saveObj = {
         ...REDIRECT_OPTIONS_TEMPLATE,
         [key]: true,
-        redirectUrl
+        redirect_url
       };
 
-      // Update background script with changed redirectUrl.
-      browser && browser.runtime.sendMessage({ redirectUrl });
+      // Update background script with changed redirect_url.
+      browser && browser.runtime.sendMessage({ redirect_url });
     }
 
     // Update options page.
     Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));
     if ('checked' in button) button.checked = value;
-    if (key === 'global_enable') {
-      const inputs = Array.from(document.querySelectorAll('input'));
-      inputs.forEach(input => input.disabled = !value );
-    }
 
     if (browser) {
 
       // Update local storage.
       browser.storage.local.set(saveObj);
+      const messageObj = Object.entries(saveObj).map(([key, value]) => {
+        return { key, value };
+      });
 
       // Update running tabs.
       if (messageObj) {
         browser.tabs.query({}, tabs => {
           tabs.forEach(tab => {
-            browser.tabs.sendMessage(tab.id, messageObj);
+            browser.tabs.sendMessage(tab.id, { settingChanges: messageObj });
           });
         });
       }
