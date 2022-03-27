@@ -64,10 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
     HTML.setAttribute(key, value);
     const button = document.getElementById(key);
     if (button && 'checked' in button) button.checked = value;
-    if (key === 'global_enable') {
-      const inputs = Array.from(document.querySelectorAll('input'));
-      inputs.forEach(input => input.disabled = !value );
-    }
   });
 
   // Sync with local settings.
@@ -77,10 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
       HTML.setAttribute(key, value);
       const button = document.getElementById(key);
       if (button && 'checked' in button) button.checked = value;
-      if (key === 'global_enable') {
-        const inputs = Array.from(document.querySelectorAll('input'));
-        inputs.forEach(input => input.disabled = !value );
-      }
     });
   });
 });
