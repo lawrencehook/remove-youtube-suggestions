@@ -1,9 +1,9 @@
 {
   "name": "Remove YouTube Suggestions",
-  "description": "Stop the YouTube rabbit hole. Customize YouTube's user interface to be less engaging.",
+  "description": "Spend less time on YouTube. Customize YouTube's user interface to be less engaging.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "4.2.16",
+  "version": "4.2.17",
 
   "icons": {
     "16": "images/16.png",

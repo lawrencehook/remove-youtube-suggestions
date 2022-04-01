@@ -33,6 +33,7 @@ const SETTINGS_LIST = {
   "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
 
   "remove_extra_results":              { defaultValue: false, eventType: 'click' },
+  "remove_shorts_results":             { defaultValue: false, eventType: 'click' },
   "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'click' },
 
   "redirect_off":                      { defaultValue: true,  eventType: 'click' },

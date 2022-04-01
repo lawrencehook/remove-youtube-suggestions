@@ -33,6 +33,7 @@ const SETTINGS_LIST = {
   "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
 
   "remove_extra_results":              { defaultValue: false, eventType: 'change' },
+  "remove_shorts_results":             { defaultValue: false, eventType: 'change' },
   "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'change' },
 
   "redirect_off":                      { defaultValue: true,  eventType: 'change' },
@@ -107,6 +108,7 @@ function handleRedirects() {
 
 // Dynamic settings (i.e. js instead of css)
 let counter = 0, hyper = false, originalPlayback;
+let onResultsPage = resultsPageRegex.test(location.href);
 document.addEventListener("DOMContentLoaded", event => {
   handleRedirects();
 
@@ -119,7 +121,18 @@ document.addEventListener("DOMContentLoaded", event => {
 
     if (url !== location.href) {
       url = location.href;
+      onResultsPage = resultsPageRegex.test(location.href);
       handleRedirects();
+    }
+
+    // Hide shorts on the results page
+    if (onResultsPage) {
+      const shortResults = Array.from(document.querySelectorAll('a[href^="/shorts/"]:not([marked_as_short])'));
+      shortResults.forEach(sr => {
+        sr.setAttribute('marked_as_short', true);
+        const result = sr.closest('ytd-video-renderer');
+        result.setAttribute('is_short', true);
+      })
     }
 
     // Disable autoplay
