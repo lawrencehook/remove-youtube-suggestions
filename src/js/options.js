@@ -28,9 +28,10 @@ const SETTINGS_LIST = {
   "disable_autoplay":                  { defaultValue: false, eventType: 'click' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'click' },
   "remove_play_next_button":           { defaultValue: false, eventType: 'click' },
+  "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
   "remove_comments":                   { defaultValue: false, eventType: 'click' },
   "remove_chat":                       { defaultValue: false, eventType: 'click' },
-  "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
+  "remove_embedded_more_videos":       { defaultValue: false, eventType: 'click' },
 
   "remove_extra_results":              { defaultValue: false, eventType: 'click' },
   "remove_shorts_results":             { defaultValue: false, eventType: 'click' },
