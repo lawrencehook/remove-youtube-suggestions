@@ -1,0 +1,57 @@
+
+html[dark_mode='true'] .footer-path {
+  fill: var(--body-color);
+}
+
+html[dark_mode='true'] #donate_button .footer-path  {
+  stroke: var(--body-color);
+  fill: var(--body-background-color);
+}
+
+#footer {
+  position: relative;
+  text-align: center;
+  height: 25px;
+  margin-top: 4px;
+  border: 1px groove gray;
+
+  display: flex;
+  align-items: center;
+  /*justify-content: center;*/
+}
+
+#footer svg {
+  width: 20px;
+  /*height: 90%;*/
+  cursor: pointer;
+}
+
+#footer a {
+  flex: 1;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+
+#footer a:hover {
+ cursor: pointer;
+}
+
+#donate_button:hover > svg > .footer-path {
+  -webkit-transition: stroke 0.1s;
+  -moz-transition: stroke 0.1s;
+  -o-transition: stroke 0.1s;
+  transition: stroke 0.1s;
+
+  -webkit-transition: fill 0.1s;
+  -moz-transition: fill 0.1s;
+  -o-transition: fill 0.1s;
+  transition: fill 0.1s;
+
+  stroke: #F6000B;
+}
+
+#donate_button:active > svg > .footer-path {
+  stroke: #F6000B;
+  fill: #F6000B;
+}
+

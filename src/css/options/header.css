@@ -1,0 +1,70 @@
+
+/* Visual cues when the extension is enabled vs. disabled */
+#header-toggle-circle {
+  -webkit-transition: cx 0.1s;
+  -moz-transition: cx 0.1s;
+  -o-transition: cx 0.1s;
+  transition: cx 0.1s;
+}
+html[global_enable="true"] #header-toggle-circle { cx: 11px }
+html[global_enable="true"] #header-toggle-outer-path { fill: green }
+
+/* Dark mode styling */
+html[dark_mode='true']  #header-light { display: none }
+html[dark_mode='false'] #header-dark  { display: none }
+
+#header-contents {
+  position: relative;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+#header-logo {
+  position: absolute;
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+#header-logo:hover {
+  height: 98%;
+}
+#header-text {
+  font-weight: bold;
+  margin-left: 30px;
+  font-size: 16px;
+}
+#header svg {
+  height: 95%;
+}
+
+#dark_mode {
+  position: absolute;
+  left: calc(100% - 75px);
+  height: 100%;
+  width: 30px;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+#header-light, #header-dark {
+  cursor: pointer;
+}
+
+#header-toggle {
+  cursor: pointer;
+
+  position: absolute;
+  left: calc(100% - 45px);
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}

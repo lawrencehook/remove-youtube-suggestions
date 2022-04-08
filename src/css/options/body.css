@@ -1,0 +1,92 @@
+
+:root {
+  --body-height: 400px;
+}
+
+#disabled {
+  text-align: center;
+  height: var(--body-height);
+  padding: 1px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+#primary_options {
+  height: var(--body-height);
+  /*min-height: var(--body-height);*/
+  /*max-height: var(--body-height);*/
+  overflow: scroll;
+  -webkit-transition: box-shadow 0.1s;
+  -moz-transition: box-shadow 0.1s;
+  -o-transition: box-shadow 0.1s;
+  transition: box-shadow 0.1s;
+  padding: 1px;
+}
+
+#primary_options div {
+  height: 15px;
+}
+
+#primary_options div:not(:last-child) {
+  margin-bottom: 4px;
+}
+
+#primary_options fieldset {
+  margin-bottom: 10px;
+}
+
+fieldset {
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+
+fieldset legend, fieldset legend * {
+  font-weight: bold;
+  color: var(--hover-fieldset-legend-color);
+}
+
+label {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  height: 95%;
+
+  /* center vertically */
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  margin-left: 1px;
+}
+.tooltip:hover {
+  height: 110%;
+}
+
+.option_name_container {
+  cursor: default;
+}
+
+/* Redirect options */
+.redirect_link {
+  text-decoration: none;
+}
+.redirect_off, .redirect_to_subs, .redirect_to_wl {
+  display: inline-block;
+}
+
+/* Manage history */
+#manage_history_container {
+  text-align: center;
+  height: 20px;
+  padding-top: 5px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: 1px groove gray;
+}
+#manage_history {
+  text-align: right;
+}
