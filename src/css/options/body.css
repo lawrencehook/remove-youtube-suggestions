@@ -18,6 +18,8 @@
   /*min-height: var(--body-height);*/
   /*max-height: var(--body-height);*/
   overflow: scroll;
+  overflow-x: hidden;
+
   -webkit-transition: box-shadow 0.1s;
   -moz-transition: box-shadow 0.1s;
   -o-transition: box-shadow 0.1s;
