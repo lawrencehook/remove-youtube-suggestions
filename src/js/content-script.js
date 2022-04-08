@@ -22,7 +22,7 @@ const SETTINGS_LIST = {
   "remove_explore_link":               { defaultValue: false, eventType: 'change' },
   "remove_shorts_link":                { defaultValue: false, eventType: 'change' },
 
-  "normalize_shorts":                   { defaultValue: false, eventType: 'change' },
+  "normalize_shorts":                  { defaultValue: false, eventType: 'change' },
   "auto_skip_ads":                     { defaultValue: false, eventType: 'change' },
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'change' },
   "disable_autoplay":                  { defaultValue: false, eventType: 'change' },
