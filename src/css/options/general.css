@@ -12,7 +12,7 @@ html[dark_mode='false'], html:not[dark_mode] {
   --hover-fieldset-legend-color: #000000;
 }
 
-html, body { height: 100% }
+/*html, body { height: 100% }*/
 
 html[global_enable="true"] #disabled { display: none; }
 html[global_enable="false"] #primary_options {
