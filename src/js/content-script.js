@@ -50,7 +50,7 @@ const REDIRECT_URLS = {
 };
 
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
-const homepageRegex =    new RegExp('.*://.*youtube\.com/$',         'i');
+const homepageRegex =    new RegExp('.*://www\.youtube\.com/$',         'i');
 const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
 
 
