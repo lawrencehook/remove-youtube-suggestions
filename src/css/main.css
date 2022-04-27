@@ -14,6 +14,13 @@ html[global_enable="true"][remove_shorts_link="true"] a[title="Shorts"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
 html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
+html[global_enable="true"][remove_premium_link="true"] a[href="/premium"],
+html[global_enable="true"][remove_films_link="true"] a[href="/feed/storefront?bp=ogUCKAI%3D"],
+html[global_enable="true"][remove_gaming_link="true"] a[href="/gaming"],
+html[global_enable="true"][remove_live_link="true"] a[href="/channel/UC4R8DWoMoI7CAwX8_LjQHig"],
+html[global_enable="true"][remove_fashion_link="true"] a[href="/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ"],
+html[global_enable="true"][remove_learning_link="true"] a[href="/channel/UCtFRv9O2AHqOZjjynzrv-xg"],
+html[global_enable="true"][remove_sports_link="true"] a[href="/channel/UCEgdi0XIXXZ-qJOFPf4JSKw"],
 
 /* Homepage */
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,

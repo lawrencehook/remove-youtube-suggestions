@@ -1,3 +1,5 @@
 keys/
 web-ext-artifacts/
 extension.zip
+chrome_extension/
+.DS_Store

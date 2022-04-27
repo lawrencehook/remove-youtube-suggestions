@@ -21,6 +21,13 @@ const SETTINGS_LIST = {
   "remove_home_link":                  { defaultValue: false, eventType: 'change' },
   "remove_explore_link":               { defaultValue: false, eventType: 'change' },
   "remove_shorts_link":                { defaultValue: false, eventType: 'change' },
+  "remove_premium_link":                { defaultValue: false, eventType: 'change' },
+  "remove_films_link":                { defaultValue: false, eventType: 'change' },
+  "remove_gaming_link":                { defaultValue: false, eventType: 'change' },
+  "remove_live_link":                { defaultValue: false, eventType: 'change' },
+  "remove_fashion_link":                { defaultValue: false, eventType: 'change' },
+  "remove_learning_link":                { defaultValue: false, eventType: 'change' },
+  "remove_sports_link":                { defaultValue: false, eventType: 'change' },
 
   "normalize_shorts":                  { defaultValue: false, eventType: 'change' },
   "auto_skip_ads":                     { defaultValue: false, eventType: 'change' },
