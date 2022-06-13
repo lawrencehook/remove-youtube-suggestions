@@ -33,6 +33,7 @@ const SETTINGS_LIST = {
   "remove_chat":                       { defaultValue: false, eventType: 'change' },
   "remove_embedded_more_videos":       { defaultValue: false, eventType: 'change' },
 
+  "remove_search_suggestions":         { defaultValue: false, eventType: 'change' },
   "remove_extra_results":              { defaultValue: false, eventType: 'change' },
   "remove_shorts_results":             { defaultValue: false, eventType: 'change' },
   "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'change' },

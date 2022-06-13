@@ -36,6 +36,7 @@ html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-ove
 html[global_enable="true"][on_results_page="true"][remove_extra_results="true"] ytd-shelf-renderer,
 html[global_enable="true"][on_results_page="true"][remove_shorts_results="true"] ytd-video-renderer[is_short="true"],
 html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
+html[global_enable="true"][remove_search_suggestions="true"] div.sbdd_a,
 
 html[global_enable="true"][foo=bar]
 
