@@ -27,6 +27,7 @@ const SETTINGS_LIST = {
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'change' },
   "disable_autoplay":                  { defaultValue: false, eventType: 'change' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'change' },
+  "remove_overlay_suggestions":        { defaultValue: false, eventType: 'change' },
   "remove_play_next_button":           { defaultValue: false, eventType: 'change' },
   "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
   "remove_comments":                   { defaultValue: false, eventType: 'change' },
@@ -156,7 +157,8 @@ document.addEventListener("DOMContentLoaded", event => {
       }
 
       // Speed through ads that can't be skipped (yet).
-      const adElement = document.querySelectorAll('.video-ads.ytp-ad-module')[0];
+      const adSelector = '.ytp-ad-player-overlay-instream-info';
+      const adElement = document.querySelectorAll(adSelector)[0];
       const adActive = adElement && window.getComputedStyle(adElement).display !== 'none';
       if (adActive) {
         if (!hyper) {

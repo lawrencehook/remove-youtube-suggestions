@@ -27,6 +27,7 @@ const SETTINGS_LIST = {
   "remove_entire_sidebar":             { defaultValue: false, eventType: 'click' },
   "disable_autoplay":                  { defaultValue: false, eventType: 'click' },
   "remove_info_cards":                 { defaultValue: false, eventType: 'click' },
+  "remove_overlay_suggestions":        { defaultValue: false, eventType: 'click' },
   "remove_play_next_button":           { defaultValue: false, eventType: 'click' },
   "remove_menu_buttons":               { defaultValue: false, eventType: 'click' },
   "remove_comments":                   { defaultValue: false, eventType: 'click' },
