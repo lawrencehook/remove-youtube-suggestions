@@ -57,3 +57,38 @@ html[global_enable="true"][remove_logo_link="true"] #logo[href="/"] {
 html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy][is-two-columns_]:not([fullscreen]):not([theater]) {
 	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important
 }
+
+
+
+
+/* Mobile */
+html[global_enable="true"] ytm-companion-ad-renderer,
+html[global_enable="true"] ytm-promoted-sparkles-web-renderer,
+
+/* Main */
+html[global_enable="true"][remove_homepage="true"] .rich-grid-renderer-contents,
+html[global_enable="true"][remove_sidebar="true"] ytm-item-section-renderer[section-identifier="related-items"],
+
+/* Left Bar Navigation */
+html[global_enable="true"][remove_home_link="true"] ytm-pivot-bar-item-renderer:nth-child(1),
+html[global_enable="true"][remove_shorts_link="true"] ytm-pivot-bar-item-renderer:nth-child(2),
+html[global_enable="true"][remove_explore_link="true"] ytm-chip-cloud-chip-renderer[chip-style="STYLE_EXPLORE_LAUNCHER_CHIP"],
+
+/* Homepage */
+html[global_enable="true"][remove_infinite_scroll="true"] div.rich-grid-renderer-contents > ytm-continuation-item-renderer,
+
+/* Video Player */
+html[global_enable="true"][remove_comments="true"] ytm-comments-entry-point-header-renderer,
+html[global_enable="true"][remove_menu_buttons="true"] ytm-slim-video-action-bar-renderer,
+
+/* Search Results Page */
+html[global_enable="true"][remove_search_suggestions="true"] .searchbox-dropdown,
+html[global_enable="true"][on_results_page="true"][remove_shorts_results="true"] ytd-video-renderer[is_short="true"],
+
+html[global_enable="true"][foo=bar]
+
+{
+
+	display: none !important;
+
+}

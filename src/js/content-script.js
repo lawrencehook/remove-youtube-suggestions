@@ -52,7 +52,7 @@ const REDIRECT_URLS = {
 };
 
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
-const homepageRegex =    new RegExp('.*://www\.youtube\.com/$',         'i');
+const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com/$',         'i');
 const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
 
 
@@ -141,6 +141,9 @@ document.addEventListener("DOMContentLoaded", event => {
     // Disable autoplay
     if (cache['disable_autoplay'] === true) {
       document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]')?.[0]?.click();
+
+      // mobile
+      document.querySelectorAll('.ytm-autonav-toggle-button-container[aria-pressed=true]')?.[0]?.click();
     }
 
     // Skip through ads
