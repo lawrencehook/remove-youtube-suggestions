@@ -32,8 +32,8 @@ a {
 }
 
 body {
-  min-width: 349px;
-  max-width: 350px;
+  min-width: 449px;
+  max-width: 450px;
   height: fit-content;
   max-height: 700px;
 
@@ -42,6 +42,6 @@ body {
 }
 
 body, body * {
-  font-size: 14px;
+  font-size: 15px;
   font-family: Helvetica;
 }

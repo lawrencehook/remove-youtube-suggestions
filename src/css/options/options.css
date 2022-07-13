@@ -1,0 +1,106 @@
+.removed {
+	display: none;
+}
+
+/* Visual cues when the extension is enabled vs. disabled */
+.option_toggle {
+  -webkit-transition: cx 0.1s;
+  -moz-transition: cx 0.1s;
+  -o-transition: cx 0.1s;
+  transition: cx 0.1s;
+}
+.option_toggle[active] .option-toggle-circle { cx: 11px }
+.option_toggle[active] .option-toggle-outer-path { fill: #094DD6 }
+
+.option_toggle {
+	width:  20px;
+}
+
+.option_label {
+	position: relative;
+	top: -5px;
+	margin-left: 5px;
+}
+
+/*
+html[remove_homepage="true"]  label[for=remove_homepage] a.active,
+html[remove_homepage="false"] label[for=remove_homepage] a.inactive,
+
+html[remove_sidebar="true"]  label[for=remove_sidebar] a.active,
+html[remove_sidebar="false"] label[for=remove_sidebar] a.inactive,
+
+html[remove_end_of_video="true"]  label[for=remove_end_of_video] a.active,
+html[remove_end_of_video="false"] label[for=remove_end_of_video] a.inactive,
+
+html[remove_all_but_one="true"]  label[for=remove_all_but_one] a.active,
+html[remove_all_but_one="false"] label[for=remove_all_but_one] a.inactive,
+
+html[remove_infinite_scroll="true"]  label[for=remove_infinite_scroll] a.active,
+html[remove_infinite_scroll="false"] label[for=remove_infinite_scroll] a.inactive,
+
+html[remove_extra_rows="true"]  label[for=remove_extra_rows] a.active,
+html[remove_extra_rows="false"] label[for=remove_extra_rows] a.inactive,
+
+html[remove_logo_link="true"]  label[for=remove_logo_link] a.active,
+html[remove_logo_link="false"] label[for=remove_logo_link] a.inactive,
+
+html[remove_home_link="true"]  label[for=remove_home_link] a.active,
+html[remove_home_link="false"] label[for=remove_home_link] a.inactive,
+
+html[remove_explore_link="true"]  label[for=remove_explore_link] a.active,
+html[remove_explore_link="false"] label[for=remove_explore_link] a.inactive,
+
+html[remove_shorts_link="true"]  label[for=remove_shorts_link] a.active,
+html[remove_shorts_link="false"] label[for=remove_shorts_link] a.inactive,
+
+html[normalize_shorts="true"]  label[for=normalize_shorts] a.active,
+html[normalize_shorts="false"] label[for=normalize_shorts] a.inactive,
+
+html[auto_skip_ads="true"]  label[for=auto_skip_ads] a.active,
+html[auto_skip_ads="false"] label[for=auto_skip_ads] a.inactive,
+
+html[remove_entire_sidebar="true"]  label[for=remove_entire_sidebar] a.active,
+html[remove_entire_sidebar="false"] label[for=remove_entire_sidebar] a.inactive,
+
+html[disable_autoplay="true"]  label[for=disable_autoplay] a.active,
+html[disable_autoplay="false"] label[for=disable_autoplay] a.inactive,
+
+html[remove_info_cards="true"]  label[for=remove_info_cards] a.active,
+html[remove_info_cards="false"] label[for=remove_info_cards] a.inactive,
+
+html[remove_overlay_suggestions="true"]  label[for=remove_overlay_suggestions] a.active,
+html[remove_overlay_suggestions="false"] label[for=remove_overlay_suggestions] a.inactive,
+
+html[remove_play_next_button="true"]  label[for=remove_play_next_button] a.active,
+html[remove_play_next_button="false"] label[for=remove_play_next_button] a.inactive,
+
+html[remove_menu_buttons="true"]  label[for=remove_menu_buttons] a.active,
+html[remove_menu_buttons="false"] label[for=remove_menu_buttons] a.inactive,
+
+html[remove_comments="true"]  label[for=remove_comments] a.active,
+html[remove_comments="false"] label[for=remove_comments] a.inactive,
+
+html[remove_chat="true"]  label[for=remove_chat] a.active,
+html[remove_chat="false"] label[for=remove_chat] a.inactive,
+
+html[remove_embedded_more_videos="true"]  label[for=remove_embedded_more_videos] a.active,
+html[remove_embedded_more_videos="false"] label[for=remove_embedded_more_videos] a.inactive,
+
+html[remove_search_suggestions="true"]  label[for=remove_search_suggestions] a.active,
+html[remove_search_suggestions="false"] label[for=remove_search_suggestions] a.inactive,
+
+html[remove_extra_results="true"]  label[for=remove_extra_results] a.active,
+html[remove_extra_results="false"] label[for=remove_extra_results] a.inactive,
+
+html[remove_shorts_results="true"]  label[for=remove_shorts_results] a.active,
+html[remove_shorts_results="false"] label[for=remove_shorts_results] a.inactive,
+
+html[remove_thumbnail_mouseover_effect="true"]  label[for=remove_thumbnail_mouseover_effect] a.active,
+html[remove_thumbnail_mouseover_effect="false"] label[for=remove_thumbnail_mouseover_effect] a.inactive,
+
+html[foo=bar]
+{
+	display: none;
+}
+
+*/

@@ -6,6 +6,7 @@
     <title>Remove Youtube Suggestions</title>
     <link rel="stylesheet" type="text/css" href="css/options/general.css">
     <link rel="stylesheet" type="text/css" href="css/options/header.css">
+    <link rel="stylesheet" type="text/css" href="css/options/options.css">
     <link rel="stylesheet" type="text/css" href="css/options/body.css">
     <link rel="stylesheet" type="text/css" href="css/options/footer.css">
   </head>
@@ -41,6 +42,7 @@
         </div>
 
         <a title='On/Off'>
+          <!-- <img src='images/power.svg'> -->
           <svg id="header-toggle" class='global_enable header-toggle' viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
             <path id='header-toggle-outer-path' fill="gray"  d="M 11, 3 H 5 C 2.239, 3, 0, 5.239, 0, 8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761, 3, 11, 3 z"/>
             <circle id='header-toggle-circle' fill="white" cx="5" cy="8" r="3"/>
@@ -54,13 +56,28 @@
     </div>
 
     <div id="primary_options">
-      <fieldset>
+
+      <fieldset id='template_fieldset' class='removed'>
+        <legend></legend>
+      </fieldset>
+
+      <div id='template_option' class='removed'>
+        <svg class='option_toggle' viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path class='option-toggle-outer-path' fill="gray"  d="M 11, 3 H 5 C 2.239, 3, 0, 5.239, 0, 8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761, 3, 11, 3 z"/>
+          <circle class='option-toggle-circle' fill="white" cx="5" cy="8" r="3"/>
+        </svg><a class='option_label'></a>
+      </div>
+
+      <!-- <fieldset>
         <legend>Basic</legend>
+
 
         <div>
             <input type="checkbox" id="remove_homepage" class="remove_homepage"
                    value="remove_homepage" checked />
             <label for="remove_homepage">
+              <a class='active'>Hide </a>
+              <a class='inactive'>Show </a>
               Homepage
             </label>
         </div>
@@ -291,7 +308,7 @@
             </label>
         </div>
 
-      </fieldset>
+      </fieldset> 
 
       <fieldset>
         <legend>Redirect the<a class="redirect_link" href="https://www.youtube.com/" target="_blank"> Homepage ↗️</a></legend>
@@ -322,7 +339,7 @@
             </label>
         </div>
 
-      </fieldset>
+      </fieldset> -->
 
     </div>
 
