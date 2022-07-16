@@ -51,279 +51,73 @@ const REDIRECT_URLS = {
   "redirect_to_subs": 'https://www.youtube.com/feed/subscriptions',
   "redirect_to_wl":   'https://www.youtube.com/playlist/?list=WL',
 };
-const REDIRECT_KEYS = VALID_SETTINGS.filter(key => key.includes('redirect'));
-const REDIRECT_OPTIONS_TEMPLATE = REDIRECT_KEYS.reduce((options, key) => {
-  options[key] = false;
+const REDIRECT_KEYS = VALID_SETTINGS.filter(id => id.includes('redirect'));
+const REDIRECT_OPTIONS_TEMPLATE = REDIRECT_KEYS.reduce((options, id) => {
+  options[id] = false;
   return options;
 }, {});
 
 
-const FIELDSETS = [
-  {
-    name: "Basic",
-    options: [
-      {
-        name: "Hide homepage suggestions",
-        id: "remove_homepage",
-        defaultValue: true 
-      },
-      {
-        name: "Hide sidebar suggestions",
-        id: "remove_sidebar",
-        defaultValue: true 
-      },
-      {
-        name: "Hide end-of-video grid of suggestions",
-        id: "remove_end_of_video",
-        defaultValue: true 
-      },
-    ]
-  },
-  {
-    name: "Homepage",
-    options: [
-      {
-        name: "Hide all but the first row of suggestions",
-        id: "remove_all_but_one",
-        defaultValue: false,
-        effects: {
-          true: {
-            remove_homepage: false,
-            remove_extra_rows: true,
-            remove_infinite_scroll: true,
-          }
-        }
-      },
-      {
-        name: "Hide extra rows (Shorts, Trending, etc.)",
-        id: "remove_extra_rows",
-        defaultValue: false
-      },
-      {
-        name: "Disable infinite scrolling",
-        id: "remove_infinite_scroll",
-        defaultValue: false
-      },
-    ]
-  },
-  {
-    name: "Left Navigation Bar",
-    options: [
-      {
-        name: "Disable the link to home in the YouTube logo",
-        id: "remove_logo_link",
-        defaultValue: false
-      },
-      {
-        name: "Hide home button",
-        id: "remove_home_link",
-        defaultValue: false
-      },
-      {
-        name: "Hide explore button",
-        id: "remove_explore_link",
-        defaultValue: false
-      },
-      {
-        name: "Hide shorts button",
-        id: "remove_shorts_link",
-        defaultValue: false
-      },
-    ]
-  },
-  {
-    name: "Video Player (dynamic)",
-    options: [
-      {
-        name: "Skip and close ads",
-        id: "auto_skip_ads",
-        defaultValue: false
-      },
-      {
-        name: "Redirect shorts to the default viewer",
-        id: "normalize_shorts",
-        defaultValue: false
-      },
-      {
-        name: "Center contents (will remove the entire sidebar)",
-        id: "remove_entire_sidebar",
-        defaultValue: false
-      },
-      {
-        name: "Disable autoplay",
-        id: "disable_autoplay",
-        defaultValue: false
-      },
-    ]
-  },
-  {
-    name: "Video Player (static)",
-    options: [
-      {
-        name: "Hide info cards",
-        id: "remove_info_cards",
-        defaultValue: false
-      },
-      {
-        name: "Hide overlay text",
-        id: "remove_overlay_suggestions",
-        defaultValue: false
-      },
-      {
-        name: "Hide the play next button",
-        id: "remove_play_next_button",
-        defaultValue: false
-      },
-      {
-        name: "Hide the menu buttons (Like, Share, etc.)",
-        id: "remove_menu_buttons",
-        defaultValue: false
-      },
-      {
-        name: "Hide comments",
-        id: "remove_comments",
-        defaultValue: false
-      },
-      {
-        name: "Hide chat (live-streaming)",
-        id: "remove_chat",
-        defaultValue: false
-      },
-      {
-        name: "Hide the \"More Videos\" panel in embedded videos",
-        id: "remove_embedded_more_videos",
-        defaultValue: true
-      },
-    ]
-  },
-  {
-    name: "Search Results",
-    options: [
-      {
-        name: "Hide search bar suggestions",
-        id: "remove_search_suggestions",
-        defaultValue: false
-      },
-      {
-        name: "Hide extra results (For You, Trending, etc.)",
-        id: "remove_extra_results",
-        defaultValue: false
-      },
-      {
-        name: "Hide shorts from search results",
-        id: "remove_shorts_results",
-        defaultValue: false
-      },
-      {
-        name: "Disable the thumbnail slideshow (on hover)",
-        id: "remove_thumbnail_mouseover_effect",
-        defaultValue: false
-      },
-    ]
-  },
-  {
-    name: "Redirect the Homepage",
-    options: [
-      {
-        name: "Redirect home to Subscriptions",
-        id: "redirect_off",
-        defaultValue: false 
-      },
-      {
-        name: "Redirect home to Watch Later",
-        id: "redirect_to_subs",
-        defaultValue: false
-      },
-      {
-        name: "Do not redirect home",
-        id: "redirect_to_wl",
-        defaultValue: true
-      },
-    ]
-  }
-];
 const OPTIONS_LIST = document.getElementById('primary_options');
 const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_OPTION = document.getElementById('template_option');
 
 
+function updateSetting(id, value) {
+
+  console.log('Updating setting', id, value);
+
+  // Update local storage.
+  browser.storage.local.set({ [id]: value });
+
+  const settings = [{ id, value }];
+
+  try {
+    // Update running tabs.
+    browser.tabs.query({}, tabs => {
+      tabs.forEach(tab => {
+        browser.tabs.sendMessage(tab.id, { settings });
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function init() {
+  browser.runtime.sendMessage({ getFieldsets: true });
+}
+
 // Load the options menu with our settings.
-document.addEventListener("DOMContentLoaded", () => {
-
-  // Populate options.
-  FIELDSETS.forEach(({ name, options }) => {
-    const fieldset = TEMPLATE_FIELDSET.cloneNode(true);
-    fieldset.classList.remove('removed');
-    const legend = fieldset.querySelector('legend');
-    legend.innerText = name;
-
-    options.forEach(({ id, name, defaultValue }) => {
-      const optionNode = TEMPLATE_OPTION.cloneNode(true);
-      optionNode.classList.remove('removed');
-      optionNode.id = id;
-      const optionLabel = optionNode.querySelector('a');
-      optionLabel.innerText = name;
-      fieldset.append(optionNode);
-    });
-
-    OPTIONS_LIST.append(fieldset);
-    // OPTIONS_LIST.append(optionNode);
-  });
-
-  // Defaults.
-  Object.entries(SETTINGS_LIST).forEach(([key, { defaultValue: value }]) => {
-    const settingButton = document.getElementById(key);
-    if (settingButton) settingButton.checked = value;
-    HTML.setAttribute(key, value);
-    const button = document.getElementById(key);
-    if (button && 'checked' in button) button.checked = value;
-
-    const settingSvg = document.querySelector(`div#${key} svg`);
-    settingSvg?.toggleAttribute('active', value);
-  });
-
-  // Sync with local settings.
-  browser && browser.storage.local.get(localSettings => {
-    Object.entries(localSettings).forEach(([key, value]) => {
-      if (!VALID_SETTINGS.includes(key)) return;
-      HTML.setAttribute(key, value);
-      const button = document.getElementById(key);
-      if (button && 'checked' in button) button.checked = value;
-
-
-      const settingSvg = document.querySelector(`div#${key} svg`);
-      settingSvg?.toggleAttribute('active', value);
-    });
-  });
-});
+document.addEventListener("DOMContentLoaded", init);
 
 
 // Change settings with the options menu.
-Object.entries(SETTINGS_LIST).forEach(([key, value]) => {
-  const settingElements = Array.from(document.getElementsByClassName(key));
+Object.entries(SETTINGS_LIST).forEach(([id, value]) => {
+  const settingElements = Array.from(document.getElementsByClassName(id));
   settingElements.forEach(button => button.addEventListener('click', async e => {
 
     // Toggle on click: new value is opposite of old value.
-    const value = !(String(HTML.getAttribute(key)).toLowerCase() === "true");
+    const value = !(String(HTML.getAttribute(id)).toLowerCase() === "true");
 
     // Communicate changes (to local settings, content-script.js, etc.)
     let saveObj;
 
     // Handle standard (non-redirect) settings.
-    if (!key.includes('redirect')) {
-      saveObj = { [key]: value };
+    if (!id.includes('redirect')) {
+      saveObj = { [id]: value };
 
       // Update background script with globalEnable.
-      if (key === 'global_enable') {
+      if (id === 'global_enable') {
         browser && browser.runtime.sendMessage({ globalEnable: value });
       }
 
     // Handle redirect settings
     } else {
-      const redirect_url = REDIRECT_URLS[key];
+      const redirect_url = REDIRECT_URLS[id];
       saveObj = {
         ...REDIRECT_OPTIONS_TEMPLATE,
-        [key]: true,
+        [id]: true,
         redirect_url
       };
 
@@ -332,26 +126,88 @@ Object.entries(SETTINGS_LIST).forEach(([key, value]) => {
     }
 
     // Update options page.
-    Object.entries(saveObj).forEach(([key, value]) => HTML.setAttribute(key, value));
+    Object.entries(saveObj).forEach(([id, value]) => HTML.setAttribute(id, value));
     if ('checked' in button) button.checked = value;
 
-    if (browser) {
 
-      // Update local storage.
-      browser.storage.local.set(saveObj);
-      const messageObj = Object.entries(saveObj).map(([key, value]) => {
-        return { key, value };
+    // Update local storage.
+    browser.storage.local.set(saveObj);
+
+    const settings = Object.entries(saveObj).map(([id, value]) => {
+      return { id, value };
+    });
+
+    // Update running tabs.
+    if (settings) {
+      browser.tabs.query({}, tabs => {
+        tabs.forEach(tab => {
+          browser.tabs.sendMessage(tab.id, { settings });
+        });
+      });
+    }
+  }));
+});
+
+
+// Receive messages
+browser.runtime.onMessage.addListener((data, sender) => {
+  try {
+    const { FIELDSETS, settings={} } = data;
+    console.log('Yo');
+
+    console.log('FIELDSETS', FIELDSETS);
+    console.log('settings', settings);
+
+    if (FIELDSETS) {
+
+      // Clear the options list
+      OPTIONS_LIST.innerHTML = '';
+
+      // Add option nodes to the HTML.
+      FIELDSETS.forEach(({ name, options }) => {
+        const fieldset = TEMPLATE_FIELDSET.cloneNode(true);
+        fieldset.classList.remove('removed');
+        const legend = fieldset.querySelector('legend');
+        legend.innerText = name;
+
+        options.forEach(({ id, name, defaultValue }) => {
+          const optionNode = TEMPLATE_OPTION.cloneNode(true);
+          optionNode.classList.remove('removed');
+          optionNode.id = id;
+          optionNode.classList.add(id);
+          const optionLabel = optionNode.querySelector('a');
+          optionLabel.innerText = name;
+
+          const svg = optionNode.querySelector('svg');
+          svg.toggleAttribute('active', defaultValue);
+
+          optionNode.addEventListener('click', e => {
+            const value = svg.toggleAttribute('active');
+            HTML.setAttribute(id, value);
+            updateSetting(id, value);
+          });
+
+          fieldset.append(optionNode);
+        });
+
+        OPTIONS_LIST.append(fieldset);
+        // OPTIONS_LIST.append(optionNode);
       });
 
-      // Update running tabs.
-      if (messageObj) {
-        browser.tabs.query({}, tabs => {
-          tabs.forEach(tab => {
-            browser.tabs.sendMessage(tab.id, { settingChanges: messageObj });
-          });
-        });
-      }
+      // Show page
+      HTML.setAttribute('loaded', true);
     }
 
-  }));
+    if (settings) {
+      settings.forEach(({ id, value }) => {
+        HTML.setAttribute(id, value);
+        const svg = document.querySelector(`div#${id} svg`);
+        svg?.toggleAttribute('active', value);
+      });
+    }
+    return true;
+
+  } catch (error) {
+    console.log(error);
+  }
 });

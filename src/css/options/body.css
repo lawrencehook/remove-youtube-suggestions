@@ -1,6 +1,7 @@
 
 :root {
   --body-height: 400px;
+  /*--body-height: auto;*/
 }
 
 #disabled {
@@ -77,12 +78,12 @@ label {
 }
 
 /* Redirect options */
-.redirect_link {
+/*.redirect_link {
   text-decoration: none;
 }
 .redirect_off, .redirect_to_subs, .redirect_to_wl {
   display: inline-block;
-}
+}*/
 
 /* Manage history */
 #manage_history_container {

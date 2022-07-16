@@ -13,7 +13,7 @@
   },
 
   "background": {
-    "scripts": ["js/events.js"],
+    "scripts": ["js/events.js", "js/background.js"],
     "persistent": true
   },
 

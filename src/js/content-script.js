@@ -55,31 +55,30 @@ const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
 const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com/$',         'i');
 const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
 
-
-// Initialize HTML attributes with local settings, or default.
 const cache = {};
-try {
-  browser.storage.local.get(localSettings => {
-    Object.entries(SETTINGS_LIST).forEach(([key, { defaultValue }]) => {
-      HTML.setAttribute(key, localSettings[key] ?? defaultValue);
-      cache[key] = localSettings[key] ?? defaultValue;
-    });
-  });
-} catch (e) {
-  console.log(e);
-}
+
+// Send a "get settings" message to the background script.
+browser.runtime.sendMessage({ getSettings: true });
+
+// try {
+//   browser.storage.local.get(localSettings => {
+//     Object.entries(SETTINGS_LIST).forEach(([id, { defaultValue }]) => {
+//       HTML.setAttribute(id, localSettings[id] ?? defaultValue);
+//       cache[id] = localSettings[id] ?? defaultValue;
+//     });
+//   });
+// } catch (e) {
+//   console.log(e);
+// }
 
 // Update HTML attributes in real time.
 //   receive messages from options.js
 browser.runtime.onMessage.addListener((data, sender) => {
-  const { settingChanges, urlChange } = data;
-  if (settingChanges) {
-    settingChanges.forEach(({ key, value }) => {
-      // console.log(`Updating ${key} to ${value}`);
-      HTML.setAttribute(key, value);
-      cache[key] = value;
-    });
-  }
+  const { settings } = data;
+  settings?.forEach(({ id, value }) => {
+    HTML.setAttribute(id, value);
+    cache[id] = value;
+  });
 
   return true;
 });

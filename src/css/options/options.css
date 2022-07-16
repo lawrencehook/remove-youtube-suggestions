@@ -2,8 +2,12 @@
 	display: none;
 }
 
+div.option {
+	cursor: default;
+}
+
 /* Visual cues when the extension is enabled vs. disabled */
-.option_toggle {
+.option_toggle circle {
   -webkit-transition: cx 0.1s;
   -moz-transition: cx 0.1s;
   -o-transition: cx 0.1s;
@@ -20,6 +24,16 @@
 	position: relative;
 	top: -5px;
 	margin-left: 5px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 
 /*

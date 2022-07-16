@@ -1,3 +1,11 @@
+html:not([loaded]), html:not([loaded]) body {
+  height: 0 !important;
+  overflow: hidden;
+}
+
+body {
+  margin: auto;
+}
 
 html[dark_mode='true'] {
   --body-color: #B9B9B9;
@@ -32,13 +40,13 @@ a {
 }
 
 body {
-  min-width: 449px;
-  max-width: 450px;
+  width: 450px;
   height: fit-content;
-  max-height: 700px;
+  /*min-width: 450px;*/
+  /*max-width: 450px;*/
+  /*max-height: 700px;*/
 
   padding: 2px 2px 2px 2px;
-  margin: 2px 2px 2px 2px;
 }
 
 body, body * {
