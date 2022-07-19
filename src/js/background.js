@@ -85,11 +85,6 @@ const FIELDSETS = [
         defaultValue: false
       },
       {
-        name: "Center contents (removes the sidebar)",
-        id: "remove_entire_sidebar",
-        defaultValue: false
-      },
-      {
         name: "Disable autoplay",
         id: "disable_autoplay",
         defaultValue: false
@@ -99,6 +94,11 @@ const FIELDSETS = [
   {
     name: "Video Player (static)",
     options: [
+      {
+        name: "Center contents (removes the sidebar)",
+        id: "remove_entire_sidebar",
+        defaultValue: false
+      },
       {
         name: "Hide info cards",
         id: "remove_info_cards",
@@ -166,22 +166,30 @@ const FIELDSETS = [
     options: [
       {
         name: "Redirect home to Subscriptions",
-        id: "redirect_off",
+        id: "redirect_to_subs",
         defaultValue: false 
       },
       {
         name: "Redirect home to Watch Later",
-        id: "redirect_to_subs",
+        id: "redirect_to_wl",
         defaultValue: false
       },
       {
         name: "Do not redirect home",
-        id: "redirect_to_wl",
+        id: "redirect_off",
         defaultValue: true
       },
     ]
   }
 ];
+
+const DEFAULT_SETTINGS = FIELDSETS.reduce((acc, fieldset) => {
+  fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
+  return acc;
+}, {
+  global_enable: true,
+  dark_mode: false
+});
 
 // Respond to requests
 browser.runtime.onMessage.addListener((data, sender) => {
@@ -194,9 +202,10 @@ browser.runtime.onMessage.addListener((data, sender) => {
     if (getSettings) {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
-        const settings = Object.entries(localSettings).map(([id, value]) => {
-          return { id, value };
-        });
+        // const settings = Object.entries(localSettings).map(([id, value]) => {
+          // return { id, value };
+        // });
+        const settings = { ...DEFAULT_SETTINGS, ...localSettings };
         browser.tabs.sendMessage(tab.id, { settings }, { frameId });
       });
     }
@@ -204,10 +213,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
     if (getFieldsets) {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
-        const settings = Object.entries(localSettings).map(([id, value]) => {
-          return { id, value };
-        });
-
+        const settings = { ...DEFAULT_SETTINGS, ...localSettings };
         if (tab)  browser.tabs.sendMessage(tab.id, { FIELDSETS, settings }, { frameId });
         if (!tab) browser.runtime.sendMessage({ FIELDSETS, settings });
       });

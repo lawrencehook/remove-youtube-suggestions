@@ -75,7 +75,9 @@ browser.runtime.sendMessage({ getSettings: true });
 //   receive messages from options.js
 browser.runtime.onMessage.addListener((data, sender) => {
   const { settings } = data;
-  settings?.forEach(({ id, value }) => {
+
+  if (!settings) return;
+  Object.entries(settings).forEach(([ id, value ]) => {
     HTML.setAttribute(id, value);
     cache[id] = value;
   });

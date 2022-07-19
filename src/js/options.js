@@ -65,13 +65,10 @@ const TEMPLATE_OPTION = document.getElementById('template_option');
 
 function updateSetting(id, value) {
 
-  console.log('Updating setting', id, value);
-
   // Update local storage.
   browser.storage.local.set({ [id]: value });
 
-  const settings = [{ id, value }];
-
+  const settings = { [id]: value };
   try {
     // Update running tabs.
     browser.tabs.query({}, tabs => {
@@ -133,9 +130,7 @@ Object.entries(SETTINGS_LIST).forEach(([id, value]) => {
     // Update local storage.
     browser.storage.local.set(saveObj);
 
-    const settings = Object.entries(saveObj).map(([id, value]) => {
-      return { id, value };
-    });
+    const settings = saveObj;
 
     // Update running tabs.
     if (settings) {
@@ -153,10 +148,6 @@ Object.entries(SETTINGS_LIST).forEach(([id, value]) => {
 browser.runtime.onMessage.addListener((data, sender) => {
   try {
     const { FIELDSETS, settings={} } = data;
-    console.log('Yo');
-
-    console.log('FIELDSETS', FIELDSETS);
-    console.log('settings', settings);
 
     if (FIELDSETS) {
 
@@ -175,7 +166,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
           optionNode.classList.remove('removed');
           optionNode.id = id;
           optionNode.classList.add(id);
-          const optionLabel = optionNode.querySelector('a');
+          const optionLabel = optionNode.querySelector('.option_label');
           optionLabel.innerText = name;
 
           const svg = optionNode.querySelector('svg');
@@ -199,7 +190,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
     }
 
     if (settings) {
-      settings.forEach(({ id, value }) => {
+      Object.entries(settings).forEach(([ id, value ]) => {
         HTML.setAttribute(id, value);
         const svg = document.querySelector(`div#${id} svg`);
         svg?.toggleAttribute('active', value);

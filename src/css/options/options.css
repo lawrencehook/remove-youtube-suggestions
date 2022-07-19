@@ -4,6 +4,8 @@
 
 div.option {
 	cursor: default;
+  display: flex;
+  align-items: flex-start;
 }
 
 /* Visual cues when the extension is enabled vs. disabled */
@@ -14,16 +16,18 @@ div.option {
   transition: cx 0.1s;
 }
 .option_toggle[active] .option-toggle-circle { cx: 11px }
-.option_toggle[active] .option-toggle-outer-path { fill: #094DD6 }
+/*.option_toggle[active] .option-toggle-outer-path { fill: #094DD6 }*/
+.option_toggle[active] .option-toggle-outer-path { fill: #0006FB }
 
 .option_toggle {
-	width:  20px;
+	width: 25px;
 }
 
 .option_label {
 	position: relative;
-	top: -5px;
-	margin-left: 5px;
+	top: 5px;
+	margin-left: 8px;
+  font-size: 18px;
 }
 
 .noselect {

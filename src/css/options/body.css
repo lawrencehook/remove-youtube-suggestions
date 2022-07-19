@@ -26,14 +26,15 @@
   -o-transition: box-shadow 0.1s;
   transition: box-shadow 0.1s;
   padding: 1px;
+  padding-top: 6px;
 }
 
-#primary_options div {
-  height: 15px;
+#primary_options div.option {
+  /*height: 15px;*/
 }
 
-#primary_options div:not(:last-child) {
-  margin-bottom: 4px;
+#primary_options div.option:not(:last-child) {
+  margin-bottom: 3px;
 }
 
 #primary_options fieldset {
@@ -50,8 +51,12 @@ fieldset {
 }
 
 fieldset legend, fieldset legend * {
-  font-weight: bold;
-  color: var(--hover-fieldset-legend-color);
+  font-size: 18px;
+  color: var(--label-color);
+}
+
+fieldset:hover legend {
+  font-weight: 500;
 }
 
 label {

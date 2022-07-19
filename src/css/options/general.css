@@ -10,17 +10,14 @@ body {
 html[dark_mode='true'] {
   --body-color: #B9B9B9;
   --body-background-color: #393939;
-  --hover-fieldset-legend-color: #F9F9F9;
+  --label-color: #E9E9E9;
 }
 
 html[dark_mode='false'], html:not[dark_mode] {
   --body-color: #000000;
   --body-background-color: #ffffff;
-
-  --hover-fieldset-legend-color: #000000;
+  --label-color: #000000;
 }
-
-/*html, body { height: 100% }*/
 
 html[global_enable="true"] #disabled { display: none; }
 html[global_enable="false"] #primary_options {
@@ -42,14 +39,11 @@ a {
 body {
   width: 450px;
   height: fit-content;
-  /*min-width: 450px;*/
-  /*max-width: 450px;*/
-  /*max-height: 700px;*/
 
-  padding: 2px 2px 2px 2px;
+  /* top, right, bottom, left */
+  padding: 2px 4px 3px 4px;
 }
 
 body, body * {
-  font-size: 15px;
   font-family: Helvetica;
 }
