@@ -30,6 +30,7 @@ html[global_enable="true"][remove_comments="true"] ytd-engagement-panel-section-
 html[global_enable="true"][remove_chat="true"] #chat,
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
+html[global_enable="true"][remove_menu_buttons="true"] #actions,
 html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-overlay,
 html[global_enable="true"][remove_overlay_suggestions="true"] .ytp-cards-teaser,
 html[global_enable="true"][remove_overlay_suggestions="true"] button.ytp-button.ytp-cards-button,
