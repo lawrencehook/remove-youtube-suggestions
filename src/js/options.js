@@ -63,6 +63,33 @@ const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_OPTION = document.getElementById('template_option');
 
 
+function init() {
+  browser.runtime.sendMessage({ getFieldsets: true });
+}
+
+// Load the options menu with our settings.
+document.addEventListener("DOMContentLoaded", init);
+
+
+// Receive messages
+browser.runtime.onMessage.addListener((data, sender) => {
+  try {
+    const { FIELDSETS, settings={} } = data;
+
+    // Initial page load.
+    if (FIELDSETS) {
+      populateOptions(FIELDSETS, settings);
+      HTML.setAttribute('loaded', true);
+    }
+
+    return true;
+
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
 function updateSetting(id, value) {
 
   // Update local storage.
@@ -80,13 +107,6 @@ function updateSetting(id, value) {
     console.log(error);
   }
 }
-
-function init() {
-  browser.runtime.sendMessage({ getFieldsets: true });
-}
-
-// Load the options menu with our settings.
-document.addEventListener("DOMContentLoaded", init);
 
 
 // Change settings with the options menu.
@@ -144,61 +164,109 @@ Object.entries(SETTINGS_LIST).forEach(([id, value]) => {
 });
 
 
-// Receive messages
-browser.runtime.onMessage.addListener((data, sender) => {
-  try {
-    const { FIELDSETS, settings={} } = data;
+function populateOptions(sections, settings={}) {
 
-    if (FIELDSETS) {
+  // Clear the options list
+  OPTIONS_LIST.innerHTML = '';
 
-      // Clear the options list
-      OPTIONS_LIST.innerHTML = '';
+  // Add option nodes to the HTML.
+  sections.forEach(section => {
+    const { name, options } = section;
+    const fieldset = TEMPLATE_FIELDSET.cloneNode(true);
+    fieldset.id = name;
+    fieldset.classList.remove('removed');
+    const legend = fieldset.querySelector('legend');
+    legend.innerText = name;
 
-      // Add option nodes to the HTML.
-      FIELDSETS.forEach(({ name, options }) => {
-        const fieldset = TEMPLATE_FIELDSET.cloneNode(true);
-        fieldset.classList.remove('removed');
-        const legend = fieldset.querySelector('legend');
-        legend.innerText = name;
+    options.forEach(option => {
+      const { id, name, defaultValue, effects, display } = option;
+      if (display === false) return;
 
-        options.forEach(({ id, name, defaultValue }) => {
-          const optionNode = TEMPLATE_OPTION.cloneNode(true);
-          optionNode.classList.remove('removed');
-          optionNode.id = id;
-          optionNode.classList.add(id);
-          const optionLabel = optionNode.querySelector('.option_label');
-          optionLabel.innerText = name;
+      const optionNode = TEMPLATE_OPTION.cloneNode(true);
+      optionNode.classList.remove('removed');
+      optionNode.id = id;
+      optionNode.setAttribute('name', name);
+      optionNode.classList.add(id);
+      const optionLabel = optionNode.querySelector('.option_label');
+      optionLabel.innerText = name;
 
-          const svg = optionNode.querySelector('svg');
-          svg.toggleAttribute('active', defaultValue);
+      const svg = optionNode.querySelector('svg');
+      const value = id in settings ? settings[id] : defaultValue;
+      svg.toggleAttribute('active', value);
 
-          optionNode.addEventListener('click', e => {
-            const value = svg.toggleAttribute('active');
+      optionNode.addEventListener('click', e => {
+        const value = svg.toggleAttribute('active');
+        HTML.setAttribute(id, value);
+        updateSetting(id, value);
+
+        if (effects && value in effects) {
+          Object.entries(effects[value]).forEach(([id, value]) => {
+            const svg = document.querySelector(`div#${id} svg`);
+            svg?.toggleAttribute('active', value);
             HTML.setAttribute(id, value);
             updateSetting(id, value);
           });
-
-          fieldset.append(optionNode);
-        });
-
-        OPTIONS_LIST.append(fieldset);
-        // OPTIONS_LIST.append(optionNode);
+        }
       });
 
-      // Show page
-      HTML.setAttribute('loaded', true);
-    }
+      fieldset.append(optionNode);
+    });
 
-    if (settings) {
-      Object.entries(settings).forEach(([ id, value ]) => {
-        HTML.setAttribute(id, value);
-        const svg = document.querySelector(`div#${id} svg`);
-        svg?.toggleAttribute('active', value);
-      });
-    }
-    return true;
+    OPTIONS_LIST.append(fieldset);
+  });
 
-  } catch (error) {
-    console.log(error);
+  if (settings) {
+    Object.entries(settings).forEach(([ id, value ]) => {
+      HTML.setAttribute(id, value);
+      const svg = document.querySelector(`div#${id} svg`);
+      svg?.toggleAttribute('active', value);
+    });
   }
-});
+
+  const searchBar = document.getElementById('search-bar');
+  searchBar.addEventListener('input', onSearchInput);
+}
+
+
+function onSearchInput(e) {
+  const { target } = e;
+  const { value } = target;
+  const fieldsets = Array.from(document.querySelectorAll('fieldset:not(#template_fieldset)'));
+
+  // Reset
+  fieldsets.forEach(fieldset => {
+    fieldset.classList.remove('removed');
+    const options = Array.from(fieldset.querySelectorAll('div.option'));
+    options.forEach(option => option.classList.remove('removed'));
+  });
+
+  if (value === '') return;
+
+  const searchTerms = value.toLowerCase().split(' ');
+
+  fieldsets.forEach(fieldset => {
+    const fieldsetMatch = searchTerms.find(term => {
+      return fieldset.id.toLowerCase().includes(term);
+    });
+    if (fieldsetMatch) return;
+
+    const options = Array.from(fieldset.querySelectorAll('div.option'));
+    let optionFound = false;
+    options.forEach(option => {
+      const optionMatch = searchTerms.find(term => {
+        return option.id.toLowerCase().includes(term) ||
+               option.getAttribute('name').toLowerCase().includes(term);
+      });
+      if (optionMatch) {
+        optionFound = true;
+        return;
+      }
+      option.classList.add('removed');
+    });
+
+    if (!optionFound) {
+      fieldset.classList.add('removed');
+    }
+  });
+}
+

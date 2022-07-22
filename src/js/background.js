@@ -5,7 +5,7 @@ const FIELDSETS = [
       {
         name: "Hide homepage suggestions",
         id: "remove_homepage",
-        defaultValue: true 
+        defaultValue: false
       },
       {
         name: "Hide sidebar suggestions",
@@ -25,7 +25,7 @@ const FIELDSETS = [
       {
         name: "Hide all but the first row of suggestions",
         id: "remove_all_but_one",
-        defaultValue: false,
+        defaultValue: true,
         effects: {
           true: {
             remove_homepage: false,
@@ -37,12 +37,12 @@ const FIELDSETS = [
       {
         name: "Hide extra rows (Shorts, Trending, etc.)",
         id: "remove_extra_rows",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Disable infinite scrolling",
         id: "remove_infinite_scroll",
-        defaultValue: false
+        defaultValue: true
       },
     ]
   },
@@ -62,12 +62,12 @@ const FIELDSETS = [
       {
         name: "Hide explore button",
         id: "remove_explore_link",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Hide shorts button",
         id: "remove_shorts_link",
-        defaultValue: false
+        defaultValue: true
       },
     ]
   },
@@ -77,17 +77,17 @@ const FIELDSETS = [
       {
         name: "Skip and close ads",
         id: "auto_skip_ads",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Redirect shorts to the default viewer",
         id: "normalize_shorts",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Disable autoplay",
         id: "disable_autoplay",
-        defaultValue: false
+        defaultValue: true
       },
     ]
   },
@@ -147,12 +147,12 @@ const FIELDSETS = [
       {
         name: "Hide extra results (For You, Trending, etc.)",
         id: "remove_extra_results",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Hide shorts from search results",
         id: "remove_shorts_results",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Disable the thumbnail slideshow (on hover)",
@@ -167,17 +167,36 @@ const FIELDSETS = [
       {
         name: "Redirect home to Subscriptions",
         id: "redirect_to_subs",
-        defaultValue: false 
+        defaultValue: false,
+        effects: {
+          true: {
+            redirect_to_wl: false,
+            redirect_off: false
+          },
+          false: {
+            redirect_off: true
+          }
+        }
       },
       {
         name: "Redirect home to Watch Later",
         id: "redirect_to_wl",
-        defaultValue: false
+        defaultValue: false,
+        effects: {
+          true: {
+            redirect_to_subs: false,
+            redirect_off: false
+          },
+          false: {
+            redirect_off: true
+          }
+        }
       },
       {
         name: "Do not redirect home",
         id: "redirect_off",
-        defaultValue: true
+        defaultValue: true,
+        display: false
       },
     ]
   }

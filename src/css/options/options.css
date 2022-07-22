@@ -1,5 +1,5 @@
 .removed {
-	display: none;
+	display: none !important;
 }
 
 div.option {
