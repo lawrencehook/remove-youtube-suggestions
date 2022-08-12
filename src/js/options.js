@@ -65,10 +65,20 @@ const TEMPLATE_OPTION = document.getElementById('template_option');
 
 function init() {
   browser.runtime.sendMessage({ getFieldsets: true });
+  document.addEventListener("keydown", handleEnter, false);
 }
 
 // Load the options menu with our settings.
 document.addEventListener("DOMContentLoaded", init);
+
+
+function handleEnter(e) {
+  const keycode = e.keyCode || e.which;
+  console.log(keycode);
+  console.log(typeof keycode);
+  console.log(document.activeElement)
+  keycode === 13 && document.activeElement.click();
+}
 
 
 // Receive messages
