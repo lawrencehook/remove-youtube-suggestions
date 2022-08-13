@@ -89,6 +89,11 @@ const FIELDSETS = [
         id: "disable_autoplay",
         defaultValue: true
       },
+      // {
+      //   name: "Enable theater mode",
+      //   id: "enable_theater",
+      //   defaultValue: true
+      // },
     ]
   },
   {

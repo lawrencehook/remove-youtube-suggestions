@@ -5,44 +5,6 @@ if (typeof browser === 'undefined') {
 
 // Some global constants.
 const HTML = document.documentElement;
-const SETTINGS_LIST = {
-  "dark_mode":                         { defaultValue: false, eventType: 'click'  },
-  "global_enable":                     { defaultValue: true,  eventType: 'click'  },
-
-  "remove_homepage":                   { defaultValue: true,  eventType: 'change' },
-  "remove_sidebar":                    { defaultValue: true,  eventType: 'change' },
-  "remove_end_of_video":               { defaultValue: true,  eventType: 'change' },
-
-  "remove_all_but_one":                { defaultValue: false, eventType: 'change' },
-  "remove_infinite_scroll":            { defaultValue: false, eventType: 'change' },
-  "remove_extra_rows":                 { defaultValue: false, eventType: 'change' },
-
-  "remove_logo_link":                  { defaultValue: false, eventType: 'change' },
-  "remove_home_link":                  { defaultValue: false, eventType: 'change' },
-  "remove_explore_link":               { defaultValue: false, eventType: 'change' },
-  "remove_shorts_link":                { defaultValue: false, eventType: 'change' },
-
-  "normalize_shorts":                  { defaultValue: false, eventType: 'change' },
-  "auto_skip_ads":                     { defaultValue: false, eventType: 'change' },
-  "remove_entire_sidebar":             { defaultValue: false, eventType: 'change' },
-  "disable_autoplay":                  { defaultValue: false, eventType: 'change' },
-  "remove_info_cards":                 { defaultValue: false, eventType: 'change' },
-  "remove_overlay_suggestions":        { defaultValue: false, eventType: 'change' },
-  "remove_play_next_button":           { defaultValue: false, eventType: 'change' },
-  "remove_menu_buttons":               { defaultValue: false, eventType: 'change' },
-  "remove_comments":                   { defaultValue: false, eventType: 'change' },
-  "remove_chat":                       { defaultValue: false, eventType: 'change' },
-  "remove_embedded_more_videos":       { defaultValue: false, eventType: 'change' },
-
-  "remove_search_suggestions":         { defaultValue: false, eventType: 'change' },
-  "remove_extra_results":              { defaultValue: false, eventType: 'change' },
-  "remove_shorts_results":             { defaultValue: false, eventType: 'change' },
-  "remove_thumbnail_mouseover_effect": { defaultValue: false, eventType: 'change' },
-
-  "redirect_off":                      { defaultValue: true,  eventType: 'change' },
-  "redirect_to_subs":                  { defaultValue: false, eventType: 'change' },
-  "redirect_to_wl":                    { defaultValue: false, eventType: 'change' },
-};
 
 // Redirect setting constants.
 const REDIRECT_URLS = {
@@ -60,16 +22,6 @@ const cache = {};
 // Send a "get settings" message to the background script.
 browser.runtime.sendMessage({ getSettings: true });
 
-// try {
-//   browser.storage.local.get(localSettings => {
-//     Object.entries(SETTINGS_LIST).forEach(([id, { defaultValue }]) => {
-//       HTML.setAttribute(id, localSettings[id] ?? defaultValue);
-//       cache[id] = localSettings[id] ?? defaultValue;
-//     });
-//   });
-// } catch (e) {
-//   console.log(e);
-// }
 
 // Update HTML attributes in real time.
 //   receive messages from options.js
@@ -82,8 +34,11 @@ browser.runtime.onMessage.addListener((data, sender) => {
     cache[id] = value;
   });
 
+  window.requestAnimationFrame(runDynamicSettings);
+
   return true;
 });
+
 
 function handleRedirects() {
   if (cache['global_enable'] !== true) return;
@@ -111,54 +66,84 @@ function handleRedirects() {
 
 
 // Dynamic settings (i.e. js instead of css)
-let counter = 0, hyper = false, originalPlayback;
-let onResultsPage = resultsPageRegex.test(location.href);
 document.addEventListener("DOMContentLoaded", event => {
-  handleRedirects();
+  url = undefined;
+  counter = 0;
+  theaterClicked = false;
+  hyper = false;
+  originalPlayback = undefined;
+  originalMuted = undefined;
+  onResultsPage = resultsPageRegex.test(location.href);
 
-  let url = location.href;
-  const observer = new MutationObserver(mutations => {
-    if (cache['global_enable'] !== true) return;
+  // handleRedirects();
+  // const observer = new MutationObserver(mutations => runDynamicSettings());
+  // observer.observe(document.body, { subtree: true, childList: true });
+});
 
-    // Give the browser time to breathe
-    if (counter++ % 2 === 0) return;
 
-    if (url !== location.href) {
-      url = location.href;
-      onResultsPage = resultsPageRegex.test(location.href);
-      handleRedirects();
-    }
+let url;
+let counter = 0, theaterClicked = false, hyper = false;
+let originalPlayback, originalMuted;
+let onResultsPage = resultsPageRegex.test(location.href);
 
-    // Hide shorts on the results page
-    if (onResultsPage) {
-      const shortResults = Array.from(document.querySelectorAll('a[href^="/shorts/"]:not([marked_as_short])'));
-      shortResults.forEach(sr => {
-        sr.setAttribute('marked_as_short', true);
-        const result = sr.closest('ytd-video-renderer');
-        result.setAttribute('is_short', true);
-      })
-    }
+function runDynamicSettings() {
+  if ('global_enable' in cache && cache['global_enable'] !== true) {
+    setTimeout(() => window.requestAnimationFrame(runDynamicSettings), 50);
+    return;
+  }
 
-    // Disable autoplay
-    if (cache['disable_autoplay'] === true) {
-      document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]')?.[0]?.click();
+  // Give the browser time to breathe
+  // if (counter++ % 2 === 0) return;
 
-      // mobile
-      document.querySelectorAll('.ytm-autonav-toggle-button-container[aria-pressed=true]')?.[0]?.click();
-    }
+  if (url !== location.href) {
+    url = location.href;
+    theaterClicked = false;
+    hyper = false;
+    originalPlayback = undefined;
+    originalMuted = undefined;
+    onResultsPage = resultsPageRegex.test(location.href);
+    handleRedirects();
+  }
 
-    // Skip through ads
-    if (cache['auto_skip_ads'] === true) {
+  // Hide shorts on the results page
+  if (onResultsPage) {
+    const shortResults = Array.from(document.querySelectorAll('a[href^="/shorts/"]:not([marked_as_short])'));
+    shortResults.forEach(sr => {
+      sr.setAttribute('marked_as_short', true);
+      const result = sr.closest('ytd-video-renderer');
+      result.setAttribute('is_short', true);
+    })
+  }
 
-      // Close overlay ads.
-      Array.from(document.querySelectorAll('.ytp-ad-overlay-close-button'))?.forEach(e => e?.click());
+  // Disable autoplay
+  if (cache['disable_autoplay'] === true) {
+    document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]')?.[0]?.click();
 
-      // Click on "Skip ad" button
-      const skippableAd = document.querySelectorAll('.ytp-ad-skip-button').length;
-      if (skippableAd) {
-        document.querySelectorAll('.ytp-ad-skip-button')?.[0]?.click();
-        return;
-      }
+    // mobile
+    document.querySelectorAll('.ytm-autonav-toggle-button-container[aria-pressed=true]')?.[0]?.click();
+  }
+
+  // // Enable theater mode
+  // if (cache['enable_theater'] === true && !theaterClicked) {
+  //   const theaterButton = document.querySelectorAll('button[title="Theater mode (t)"]')?.[0];
+  //   if (theaterButton && theaterButton.display !== 'none') {
+  //     console.log('theaterButton.click();')
+  //     theaterButton.click();
+  //     theaterClicked = true;
+  //   }
+  // }
+
+  // Skip through ads
+  if (cache['auto_skip_ads'] === true) {
+
+    // Close overlay ads.
+    Array.from(document.querySelectorAll('.ytp-ad-overlay-close-button'))?.forEach(e => e?.click());
+
+    // Click on "Skip ad" button
+    const skippableAd = document.querySelectorAll('.ytp-ad-skip-button').length;
+    if (skippableAd) {
+      document.querySelectorAll('.ytp-ad-skip-button')?.[0]?.click();
+    } else {
 
       // Speed through ads that can't be skipped (yet).
       const adSelector = '.ytp-ad-player-overlay-instream-info';
@@ -167,20 +152,26 @@ document.addEventListener("DOMContentLoaded", event => {
       if (adActive) {
         if (!hyper) {
           originalPlayback = document.getElementsByTagName("video")[0].playbackRate;
+          originalMuted = document.getElementsByTagName("video")[0].muted;
           hyper = true;
         }
-        document.getElementsByTagName("video")[0].playbackRate = 5;
+        document.getElementsByTagName("video")[0].playbackRate = 10;
+        document.getElementsByTagName("video")[0].muted = true;
       } else {
         if (hyper) {
           document.getElementsByTagName("video")[0].playbackRate = originalPlayback;
+          document.getElementsByTagName("video")[0].muted = originalMuted;
           hyper = false;
         }
       }
-    }
 
-    // if (cache['change_playback_speed']) {
-    //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
-    // }
-  });
-  observer.observe(document.body, { subtree: true, childList: true });
-});
+    }
+  }
+
+  // if (cache['change_playback_speed']) {
+  //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
+  // }
+
+
+  setTimeout(() => window.requestAnimationFrame(runDynamicSettings), 50);
+}
