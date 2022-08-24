@@ -226,9 +226,6 @@ browser.runtime.onMessage.addListener((data, sender) => {
     if (getSettings) {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
-        // const settings = Object.entries(localSettings).map(([id, value]) => {
-          // return { id, value };
-        // });
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
         browser.tabs.sendMessage(tab.id, { settings }, { frameId });
       });
@@ -242,6 +239,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
         if (!tab) browser.runtime.sendMessage({ FIELDSETS, settings });
       });
     }
+
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

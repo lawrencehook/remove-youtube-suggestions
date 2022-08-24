@@ -14,10 +14,16 @@ const REDIRECT_URLS = {
 };
 
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
-const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com/$',         'i');
+const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com/$',  'i');
 const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
 
+// Dynamic settings variables
 const cache = {};
+let url;
+let counter = 0, theaterClicked = false, hyper = false;
+let originalPlayback, originalMuted;
+let onResultsPage = resultsPageRegex.test(location.href);
+
 
 // Send a "get settings" message to the background script.
 browser.runtime.sendMessage({ getSettings: true });
@@ -34,35 +40,10 @@ browser.runtime.onMessage.addListener((data, sender) => {
     cache[id] = value;
   });
 
-  window.requestAnimationFrame(runDynamicSettings);
+  runDynamicSettings();
 
   return true;
 });
-
-
-function handleRedirects() {
-  if (cache['global_enable'] !== true) return;
-
-  const currentUrl = location.href;
-
-  // Mark whether or not we're on the "results" page
-  const onResultsPage = resultsPageRegex.test(currentUrl);
-  HTML.setAttribute('on_results_page', onResultsPage);
-
-  // Redirect homepage
-  const onHomepage = homepageRegex.test(currentUrl);
-  if (onHomepage && !cache['redirect_off']) {
-    if (cache['redirect_to_subs']) location.replace(REDIRECT_URLS['redirect_to_subs']);
-    if (cache['redirect_to_wl'])   location.replace(REDIRECT_URLS['redirect_to_wl']);
-  }
-
-  // Redirect shorts
-  const onShorts = shortsRegex.test(currentUrl);
-  if (onShorts && cache['normalize_shorts']) {
-    const newUrl = currentUrl.replace('shorts', 'watch');
-    location.replace(newUrl);
-  }
-}
 
 
 // Dynamic settings (i.e. js instead of css)
@@ -74,27 +55,17 @@ document.addEventListener("DOMContentLoaded", event => {
   originalPlayback = undefined;
   originalMuted = undefined;
   onResultsPage = resultsPageRegex.test(location.href);
-
-  // handleRedirects();
-  // const observer = new MutationObserver(mutations => runDynamicSettings());
-  // observer.observe(document.body, { subtree: true, childList: true });
 });
 
 
-let url;
-let counter = 0, theaterClicked = false, hyper = false;
-let originalPlayback, originalMuted;
-let onResultsPage = resultsPageRegex.test(location.href);
-
 function runDynamicSettings() {
+
   if ('global_enable' in cache && cache['global_enable'] !== true) {
-    setTimeout(() => window.requestAnimationFrame(runDynamicSettings), 50);
+    setTimeout(() => runDynamicSettings(), 50);
     return;
   }
 
-  // Give the browser time to breathe
-  // if (counter++ % 2 === 0) return;
-
+  // Check if the URL has changed (YouTube is a Single-Page Application)
   if (url !== location.href) {
     url = location.href;
     theaterClicked = false;
@@ -102,7 +73,7 @@ function runDynamicSettings() {
     originalPlayback = undefined;
     originalMuted = undefined;
     onResultsPage = resultsPageRegex.test(location.href);
-    handleRedirects();
+    handleUrlChange();
   }
 
   // Hide shorts on the results page
@@ -172,6 +143,30 @@ function runDynamicSettings() {
   //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
   // }
 
+  setTimeout(() => runDynamicSettings(), 50);
+}
 
-  setTimeout(() => window.requestAnimationFrame(runDynamicSettings), 50);
+
+function handleUrlChange() {
+  if (cache['global_enable'] !== true) return;
+
+  const currentUrl = location.href;
+
+  // Mark whether or not we're on the "results" page
+  const onResultsPage = resultsPageRegex.test(currentUrl);
+  HTML.setAttribute('on_results_page', onResultsPage);
+
+  // Redirect the homepage
+  const onHomepage = homepageRegex.test(currentUrl);
+  if (onHomepage && !cache['redirect_off']) {
+    if (cache['redirect_to_subs']) location.replace(REDIRECT_URLS['redirect_to_subs']);
+    if (cache['redirect_to_wl'])   location.replace(REDIRECT_URLS['redirect_to_wl']);
+  }
+
+  // Redirect the shorts player
+  const onShorts = shortsRegex.test(currentUrl);
+  if (onShorts && cache['normalize_shorts']) {
+    const newUrl = currentUrl.replace('shorts', 'watch');
+    location.replace(newUrl);
+  }
 }

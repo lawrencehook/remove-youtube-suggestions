@@ -5,71 +5,17 @@ if (typeof browser === 'undefined') {
 
 // Some global constants.
 const HTML = document.documentElement;
-const SETTINGS_LIST = {
-  "dark_mode":                         { defaultValue: false },
-  "global_enable":                     { defaultValue: true  },
-
-  "remove_homepage":                   { defaultValue: true  },
-  "remove_sidebar":                    { defaultValue: true  },
-  "remove_end_of_video":               { defaultValue: true  },
-
-  "remove_all_but_one":                { defaultValue: false },
-  "remove_infinite_scroll":            { defaultValue: false },
-  "remove_extra_rows":                 { defaultValue: false },
-
-  "remove_logo_link":                  { defaultValue: false },
-  "remove_home_link":                  { defaultValue: false },
-  "remove_explore_link":               { defaultValue: false },
-  "remove_shorts_link":                { defaultValue: false },
-
-  "normalize_shorts":                  { defaultValue: false },
-  "auto_skip_ads":                     { defaultValue: false },
-  "remove_entire_sidebar":             { defaultValue: false },
-  "disable_autoplay":                  { defaultValue: false },
-  "remove_info_cards":                 { defaultValue: false },
-  "remove_overlay_suggestions":        { defaultValue: false },
-  "remove_play_next_button":           { defaultValue: false },
-  "remove_menu_buttons":               { defaultValue: false },
-  "remove_comments":                   { defaultValue: false },
-  "remove_chat":                       { defaultValue: false },
-  "remove_embedded_more_videos":       { defaultValue: false },
-
-  "remove_search_suggestions":         { defaultValue: false },
-  "remove_extra_results":              { defaultValue: false },
-  "remove_shorts_results":             { defaultValue: false },
-  "remove_thumbnail_mouseover_effect": { defaultValue: false },
-
-  "redirect_off":                      { defaultValue: true  },
-  "redirect_to_subs":                  { defaultValue: false },
-  "redirect_to_wl":                    { defaultValue: false },
-};
-const VALID_SETTINGS = Object.keys(SETTINGS_LIST);
-
-// Redirect setting constants.
-const REDIRECT_URLS = {
-  "redirect_off":     false,
-  "redirect_to_subs": 'https://www.youtube.com/feed/subscriptions',
-  "redirect_to_wl":   'https://www.youtube.com/playlist/?list=WL',
-};
-const REDIRECT_KEYS = VALID_SETTINGS.filter(id => id.includes('redirect'));
-const REDIRECT_OPTIONS_TEMPLATE = REDIRECT_KEYS.reduce((options, id) => {
-  options[id] = false;
-  return options;
-}, {});
-
-
 const OPTIONS_LIST = document.getElementById('primary_options');
 const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_OPTION = document.getElementById('template_option');
+
+document.addEventListener("DOMContentLoaded", init);
 
 
 function init() {
   browser.runtime.sendMessage({ getFieldsets: true });
   document.addEventListener("keydown", handleEnter, false);
 }
-
-// Load the options menu with our settings.
-document.addEventListener("DOMContentLoaded", init);
 
 
 function handleEnter(e) {
@@ -117,61 +63,6 @@ function updateSetting(id, value) {
     console.log(error);
   }
 }
-
-
-// Change settings with the options menu.
-Object.entries(SETTINGS_LIST).forEach(([id, value]) => {
-  const settingElements = Array.from(document.getElementsByClassName(id));
-  settingElements.forEach(button => button.addEventListener('click', async e => {
-
-    // Toggle on click: new value is opposite of old value.
-    const value = !(String(HTML.getAttribute(id)).toLowerCase() === "true");
-
-    // Communicate changes (to local settings, content-script.js, etc.)
-    let saveObj;
-
-    // Handle standard (non-redirect) settings.
-    if (!id.includes('redirect')) {
-      saveObj = { [id]: value };
-
-      // Update background script with globalEnable.
-      if (id === 'global_enable') {
-        browser && browser.runtime.sendMessage({ globalEnable: value });
-      }
-
-    // Handle redirect settings
-    } else {
-      const redirect_url = REDIRECT_URLS[id];
-      saveObj = {
-        ...REDIRECT_OPTIONS_TEMPLATE,
-        [id]: true,
-        redirect_url
-      };
-
-      // Update background script with changed redirect_url.
-      browser && browser.runtime.sendMessage({ redirect_url });
-    }
-
-    // Update options page.
-    Object.entries(saveObj).forEach(([id, value]) => HTML.setAttribute(id, value));
-    if ('checked' in button) button.checked = value;
-
-
-    // Update local storage.
-    browser.storage.local.set(saveObj);
-
-    const settings = saveObj;
-
-    // Update running tabs.
-    if (settings) {
-      browser.tabs.query({}, tabs => {
-        tabs.forEach(tab => {
-          browser.tabs.sendMessage(tab.id, { settings });
-        });
-      });
-    }
-  }));
-});
 
 
 function populateOptions(sections, settings={}) {
