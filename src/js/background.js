@@ -207,7 +207,7 @@ const FIELDSETS = [
   }
 ];
 
-const HEADER_SETTINGS = {
+const DEFAULT_HEADER_SETTINGS = {
   global_enable: true,
   dark_mode: false
 };
@@ -215,7 +215,7 @@ const HEADER_SETTINGS = {
 const DEFAULT_SETTINGS = FIELDSETS.reduce((acc, fieldset) => {
   fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
   return acc;
-}, { ...HEADER_SETTINGS });
+}, { ...DEFAULT_HEADER_SETTINGS });
 
 // Respond to requests
 browser.runtime.onMessage.addListener((data, sender) => {
@@ -237,8 +237,12 @@ browser.runtime.onMessage.addListener((data, sender) => {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
+        const headerSettings = Object.entries(DEFAULT_HEADER_SETTINGS).reduce((acc, [id, value]) => {
+          acc[id] = id in localSettings ? localSettings[id] : value;
+          return acc;
+        }, {});
         if (tab)  browser.tabs.sendMessage(tab.id, { FIELDSETS, settings }, { frameId });
-        if (!tab) browser.runtime.sendMessage({ FIELDSETS, HEADER_SETTINGS, settings });
+        if (!tab) browser.runtime.sendMessage({ FIELDSETS, headerSettings, settings });
       });
     }
 

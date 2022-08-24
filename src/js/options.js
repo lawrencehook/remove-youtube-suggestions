@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // Receive messages
 browser.runtime.onMessage.addListener((data, sender) => {
   try {
-    const { FIELDSETS, HEADER_SETTINGS, settings } = data;
+    const { FIELDSETS, headerSettings, settings } = data;
 
     // Initial page load.
     if (FIELDSETS) {
-      populateOptions(FIELDSETS, HEADER_SETTINGS, settings);
+      populateOptions(FIELDSETS, headerSettings, settings);
       HTML.setAttribute('loaded', true);
     }
 
@@ -34,7 +34,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
 });
 
 
-function populateOptions(FIELDSETS, HEADER_SETTINGS, SETTING_VALUES) {
+function populateOptions(FIELDSETS, headerSettings, SETTING_VALUES) {
 
   // Clear the options list
   OPTIONS_LIST.innerHTML = '';
@@ -83,8 +83,8 @@ function populateOptions(FIELDSETS, HEADER_SETTINGS, SETTING_VALUES) {
     OPTIONS_LIST.append(fieldset);
   });
 
-  if (HEADER_SETTINGS) {
-    Object.entries(HEADER_SETTINGS).forEach(([ id, value ]) => {
+  if (headerSettings) {
+    Object.entries(headerSettings).forEach(([ id, value ]) => {
       updateSetting(id, value);
 
       const svg = document.querySelector(`div#${id} svg`);
