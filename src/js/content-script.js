@@ -23,6 +23,7 @@ let url;
 let counter = 0, theaterClicked = false, hyper = false;
 let originalPlayback, originalMuted;
 let onResultsPage = resultsPageRegex.test(location.href);
+let frameRequested = false;
 
 
 // Send a "get settings" message to the background script.
@@ -55,13 +56,16 @@ document.addEventListener("DOMContentLoaded", event => {
   originalPlayback = undefined;
   originalMuted = undefined;
   onResultsPage = resultsPageRegex.test(location.href);
+
+  requestRunDynamicSettings()
 });
 
 
 function runDynamicSettings() {
+  frameRequested = false;
 
   if ('global_enable' in cache && cache['global_enable'] !== true) {
-    setTimeout(() => runDynamicSettings(), 50);
+    requestRunDynamicSettings()
     return;
   }
 
@@ -143,7 +147,7 @@ function runDynamicSettings() {
   //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
   // }
 
-  setTimeout(() => runDynamicSettings(), 50);
+  requestRunDynamicSettings()
 }
 
 
@@ -169,4 +173,11 @@ function handleUrlChange() {
     const newUrl = currentUrl.replace('shorts', 'watch');
     location.replace(newUrl);
   }
+}
+
+
+function requestRunDynamicSettings() {
+  if (frameRequested) return;
+  frameRequested = true;
+  setTimeout(() => runDynamicSettings(), 50);
 }

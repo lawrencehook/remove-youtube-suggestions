@@ -112,7 +112,7 @@ const FIELDSETS = [
       {
         name: "Hide overlay text",
         id: "remove_overlay_suggestions",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Hide the play next button",
@@ -207,13 +207,15 @@ const FIELDSETS = [
   }
 ];
 
+const HEADER_SETTINGS = {
+  global_enable: true,
+  dark_mode: false
+};
+
 const DEFAULT_SETTINGS = FIELDSETS.reduce((acc, fieldset) => {
   fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
   return acc;
-}, {
-  global_enable: true,
-  dark_mode: false
-});
+}, { ...HEADER_SETTINGS });
 
 // Respond to requests
 browser.runtime.onMessage.addListener((data, sender) => {
@@ -236,7 +238,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
       browser.storage.local.get(localSettings => {
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
         if (tab)  browser.tabs.sendMessage(tab.id, { FIELDSETS, settings }, { frameId });
-        if (!tab) browser.runtime.sendMessage({ FIELDSETS, settings });
+        if (!tab) browser.runtime.sendMessage({ FIELDSETS, HEADER_SETTINGS, settings });
       });
     }
 
