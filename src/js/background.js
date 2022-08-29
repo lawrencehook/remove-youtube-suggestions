@@ -241,7 +241,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
           acc[id] = id in localSettings ? localSettings[id] : value;
           return acc;
         }, {});
-        if (tab)  browser.tabs.sendMessage(tab.id, { FIELDSETS, settings }, { frameId });
+        if (tab)  browser.tabs.sendMessage(tab.id, { FIELDSETS, headerSettings, settings }, { frameId });
         if (!tab) browser.runtime.sendMessage({ FIELDSETS, headerSettings, settings });
       });
     }
