@@ -15,11 +15,9 @@ html[dark_mode='true'] #donate_button .footer-path  {
   padding-top: 5px;
   margin-top: 4px;
   margin-bottom: 4px;
-
-  /*border: 1px groove gray;*/
 }
 #manage_history {
-  /*text-align: right;*/
+  font-size: 18px;
   text-decoration: none;
 }
 
