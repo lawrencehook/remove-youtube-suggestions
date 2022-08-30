@@ -8,12 +8,39 @@ html[dark_mode='true'] #donate_button .footer-path  {
   fill: var(--body-background-color);
 }
 
+/* Manage history */
+#manage_history_container {
+  text-align: center;
+  height: 20px;
+  padding-top: 5px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+
+  /*border: 1px groove gray;*/
+}
+#manage_history {
+  /*text-align: right;*/
+  text-decoration: none;
+}
+
+#footer_hr {
+  text-align: center;
+
+  height: 1px;
+  width: 90%;
+  margin: auto;
+  border-width: 0;
+
+  background-color: gray;
+}
+
 #footer {
   position: relative;
   text-align: center;
   height: 25px;
   margin-top: 4px;
-  border: 1px groove gray;
+
+  /*border: 1px groove gray;*/
 
   display: flex;
   align-items: center;

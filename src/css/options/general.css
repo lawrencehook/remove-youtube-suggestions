@@ -11,16 +11,19 @@ html[dark_mode='true'] {
   --body-color: #B9B9B9;
   --body-background-color: #393939;
   --label-color: #E9E9E9;
+  --box-shadow-color: rgba(127, 127, 127, 0.90);
 }
 
-html[dark_mode='false'], html:not[dark_mode] {
-  --body-color: #000000;
-  --body-background-color: #ffffff;
-  --label-color: #000000;
+html[dark_mode='false'], html:not([dark_mode]) {
+  --body-color: #303030;
+  --body-background-color: #FFFFFF;
+  --label-color: #101010;
+  --box-shadow-color: rgba(0, 0, 0, 0.30);
 }
 
-html[global_enable="true"] #disabled { display: none; }
-html[global_enable="false"] #primary_options {
+html[global_enable="true"] #disabled_message { display: none; }
+html[global_enable="false"] #primary_options,
+html[global_enable="false"] #search_bar {
   display: none;
 }
 

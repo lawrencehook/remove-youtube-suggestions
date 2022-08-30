@@ -10,8 +10,8 @@ html[global_enable="true"] #header-toggle-circle { cx: 11px }
 html[global_enable="true"] #header-toggle-outer-path { fill: green }
 
 /* Dark mode styling */
-html[dark_mode='true']  #header-light { display: none }
-html[dark_mode='false'] #header-dark  { display: none }
+html[dark_mode='true']  #header-dark  { display: none }
+html[dark_mode='false'] #header-light { display: none }
 
 #header-contents {
   position: relative;
@@ -36,7 +36,6 @@ html[dark_mode='false'] #header-dark  { display: none }
   position: relative;
   margin-left: 35px;
 
-  /*font-weight: bold;*/
   font-size: 20px;
   color: var(--label-color);
 }
@@ -73,18 +72,25 @@ html[dark_mode='true'] #header-toggle path {
   fill: var(--label-color);
 }
 
-#search-bar {
+#search_bar {
   display: flex;
   justify-content: center;
   margin-top: 5px;
   margin-bottom: 5px;
 }
-#search-bar input {
-  width: 100%;
-  padding: 5px;
+#search_bar input {
+  width: 50%;
+  margin-top: 5px;
+  padding: 3px 6px 3px 6px;
+
   background-color: var(--body-background-color);
-  border: 1px groove gray
+
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
+
+  font-size: 18px;
 }
-#search-bar input:focus{
+#search_bar input:focus{
     outline: none;
 }

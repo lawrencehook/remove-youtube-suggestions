@@ -7,6 +7,7 @@ if (typeof browser === 'undefined') {
 const HTML = document.documentElement;
 const OPTIONS_LIST = document.getElementById('primary_options');
 const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
+const TEMPLATE_SECTION = document.getElementById('template_section');
 const TEMPLATE_OPTION = document.getElementById('template_option');
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,11 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // Receive messages
 browser.runtime.onMessage.addListener((data, sender) => {
   try {
-    const { FIELDSETS, headerSettings, settings } = data;
+    const { SECTIONS, headerSettings, settings } = data;
 
     // Initial page load.
-    if (FIELDSETS) {
-      populateOptions(FIELDSETS, headerSettings, settings);
+    if (SECTIONS) {
+      populateOptions(SECTIONS, headerSettings, settings);
       HTML.setAttribute('loaded', true);
     }
 
@@ -34,19 +35,21 @@ browser.runtime.onMessage.addListener((data, sender) => {
 });
 
 
-function populateOptions(FIELDSETS, headerSettings, SETTING_VALUES) {
+function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Clear the options list
   OPTIONS_LIST.innerHTML = '';
 
   // Add option nodes to the HTML.
-  FIELDSETS.forEach(section => {
+  SECTIONS.forEach(section => {
     const { name, options } = section;
-    const fieldset = TEMPLATE_FIELDSET.cloneNode(true);
-    fieldset.id = name;
-    fieldset.classList.remove('removed');
-    const legend = fieldset.querySelector('legend');
-    legend.innerText = name;
+
+    // Create a new section
+    const sectionNode = TEMPLATE_SECTION.cloneNode(true);
+    sectionNode.id = name;
+    sectionNode.classList.remove('removed');
+    const label = sectionNode.querySelector('.section_label');
+    label.innerText = name;
 
     options.forEach(option => {
       const { id, name, defaultValue, effects, display } = option;
@@ -77,10 +80,10 @@ function populateOptions(FIELDSETS, headerSettings, SETTING_VALUES) {
         }
       });
 
-      fieldset.append(optionNode);
+      sectionNode.append(optionNode);
     });
 
-    OPTIONS_LIST.append(fieldset);
+    OPTIONS_LIST.append(sectionNode);
   });
 
   if (headerSettings) {
@@ -93,15 +96,12 @@ function populateOptions(FIELDSETS, headerSettings, SETTING_VALUES) {
       const elt = document.querySelector(`#${id}`);
       elt?.addEventListener('click', e => {
         const value = !(HTML.getAttribute(id) === 'true');
-
-        console.log(id, value, HTML.getAttribute(id));
-
         updateSetting(id, value);
       });
     });
   }
 
-  const searchBar = document.getElementById('search-bar');
+  const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
 }
 
@@ -130,12 +130,12 @@ function updateSetting(id, value) {
 function onSearchInput(e) {
   const { target } = e;
   const { value } = target;
-  const fieldsets = Array.from(document.querySelectorAll('fieldset:not(#template_fieldset)'));
+  const sections = Array.from(document.querySelectorAll('.section_container:not(#template_section)'));
 
   // Reset
-  fieldsets.forEach(fieldset => {
-    fieldset.classList.remove('removed');
-    const options = Array.from(fieldset.querySelectorAll('div.option'));
+  sections.forEach(section => {
+    section.classList.remove('removed');
+    const options = Array.from(section.querySelectorAll('div.option'));
     options.forEach(option => option.classList.remove('removed'));
   });
 
@@ -143,13 +143,13 @@ function onSearchInput(e) {
 
   const searchTerms = value.toLowerCase().split(' ');
 
-  fieldsets.forEach(fieldset => {
-    const fieldsetMatch = searchTerms.find(term => {
-      return fieldset.id.toLowerCase().includes(term);
+  sections.forEach(section => {
+    const sectionMatch = searchTerms.find(term => {
+      return section.id.toLowerCase().includes(term);
     });
-    if (fieldsetMatch) return;
+    if (sectionMatch) return;
 
-    const options = Array.from(fieldset.querySelectorAll('div.option'));
+    const options = Array.from(section.querySelectorAll('div.option'));
     let optionFound = false;
     options.forEach(option => {
       const optionMatch = searchTerms.find(term => {
@@ -164,7 +164,7 @@ function onSearchInput(e) {
     });
 
     if (!optionFound) {
-      fieldset.classList.add('removed');
+      section.classList.add('removed');
     }
   });
 }

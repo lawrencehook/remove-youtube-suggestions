@@ -1,4 +1,4 @@
-const FIELDSETS = [
+const SECTIONS = [
   {
     name: "Basic",
     options: [
@@ -212,7 +212,7 @@ const DEFAULT_HEADER_SETTINGS = {
   dark_mode: false
 };
 
-const DEFAULT_SETTINGS = FIELDSETS.reduce((acc, fieldset) => {
+const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
   fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
   return acc;
 }, { ...DEFAULT_HEADER_SETTINGS });
@@ -241,8 +241,8 @@ browser.runtime.onMessage.addListener((data, sender) => {
           acc[id] = id in localSettings ? localSettings[id] : value;
           return acc;
         }, {});
-        if (tab)  browser.tabs.sendMessage(tab.id, { FIELDSETS, headerSettings, settings }, { frameId });
-        if (!tab) browser.runtime.sendMessage({ FIELDSETS, headerSettings, settings });
+        if (tab)  browser.tabs.sendMessage(tab.id, { SECTIONS, headerSettings, settings }, { frameId });
+        if (!tab) browser.runtime.sendMessage({ SECTIONS, headerSettings, settings });
       });
     }
 
