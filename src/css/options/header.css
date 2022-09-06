@@ -9,67 +9,81 @@
 html[global_enable="true"] #header-toggle-circle { cx: 11px }
 html[global_enable="true"] #header-toggle-outer-path { fill: green }
 
-/* Dark mode styling */
-html[dark_mode='true']  #header-dark  { display: none }
-html[dark_mode='false'] #header-light { display: none }
-
-#header-contents {
-  position: relative;
-  height: 100%;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-#header-logo {
-  position: absolute;
-  height: 95%;
-
-  /* center vertically */
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-#header-logo:hover {
-  height: 98%;
-}
-#header-text {
-  top: 3px;
-  position: relative;
-  margin-left: 35px;
-
-  font-size: 20px;
-  color: var(--label-color);
-}
-
-#header-light, #header-dark {
-  cursor: pointer;
-  left: calc(100% - 57px);
-  height: 92%;
-
-  /* center vertically */
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
-#header-toggle {
-  cursor: pointer;
-
-  position: absolute;
-  left: calc(100% - 25px);
-  height: 75%;
-
-  /* center vertically */
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
+/* Visual cues for dark mode */
 html[dark_mode='false'] #header-toggle path {
   fill: #464646;
 }
 html[dark_mode='true'] #header-toggle path {
   fill: var(--label-color);
+}
+
+/* Dark mode styling */
+html[dark_mode='true']  #header-dark  { display: none }
+html[dark_mode='false'] #header-light { display: none }
+
+#header {
+  height: 30px;
+  padding: 5px;
+
+  display: flex;
+  justify-content: space-between;
+
+  --icon-dim: 30px;
+}
+
+#header-left {
+  width: 80%;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+#header-left a {
+  display: flex;
+  align-items: center;
+}
+#header-logo {
+  height: var(--icon-dim);
+  max-height: var(--icon-dim);
+  max-width: var(--icon-dim);
+}
+#header-text {
+  font-size: 20px;
+  color: var(--label-color);
+}
+
+#header-right {
+  width: 20%;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+#dark_mode {
+  display: flex;
+  align-items: center;
+}
+#dark_mode a {
+  display: flex;
+  align-items: center;
+}
+#header-light, #header-dark {
+  cursor: pointer;
+  height: var(--icon-dim);
+  max-height: var(--icon-dim);
+  max-width: var(--icon-dim);
+}
+#global_enable {
+  display: flex;
+  align-items: center;
+}
+#header-toggle {
+  cursor: pointer;
+  height: calc(var(--icon-dim) - 3px);
+  max-height: var(--icon-dim);
+  max-width: var(--icon-dim);
 }
 
 #search_bar {
