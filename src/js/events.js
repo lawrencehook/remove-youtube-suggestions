@@ -11,3 +11,38 @@ browser.runtime.onInstalled.addListener(object => {
     browser.tabs.create({ url }, tab => {});
   }
 });
+
+// Change the browserAction icon if the extension is disabled
+browser.storage.onChanged.addListener((changes, area) => {
+  console.log(`Change in storage area: ${area}`);
+
+  const changedItems = Object.keys(changes);
+
+  for (const item of changedItems) {
+    console.log(`${item} has changed:`);
+    console.log("Old value: ", changes[item].oldValue);
+    console.log("New value: ", changes[item].newValue);
+    if (item === 'global_enable') {
+      if (changes[item].newValue === false) {
+        browser.browserAction.setIcon({
+          path: {
+            16: "images/16_dark.png",
+            32: "images/32_dark.png",
+            64: "images/64_dark.png",
+            128: "images/128_dark.png",
+          }
+        });
+      }
+      if (changes[item].newValue === true) {
+        browser.browserAction.setIcon({
+          path: {
+            16: "images/16.png",
+            32: "images/32.png",
+            64: "images/64.png",
+            128: "images/128.png",
+          }
+        });
+      }
+    }
+  }
+});
