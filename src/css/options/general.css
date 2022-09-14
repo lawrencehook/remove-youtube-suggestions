@@ -50,3 +50,7 @@ body {
 body, body * {
   font-family: Helvetica;
 }
+
+.hidden {
+  visibility: hidden;
+}
