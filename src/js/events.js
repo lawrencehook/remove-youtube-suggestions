@@ -14,6 +14,7 @@ browser.runtime.onInstalled.addListener(object => {
 
 // Change the browserAction icon if the extension is disabled
 browser.storage.onChanged.addListener((changes, area) => {
+  const changedItems = Object.keys(changes);
   for (const item of changedItems) {
     if (item === 'global_enable') {
       if (changes[item].newValue === false) {
