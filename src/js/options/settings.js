@@ -1,6 +1,5 @@
 const SETTINGS_MENU = document.getElementById('settings-menu');
 const SETTINGS_BUTTON = document.getElementById('header-settings');
-
 const settingsListener = e => {
   SETTINGS_MENU.classList.remove('hidden');
   SETTINGS_BUTTON.removeEventListener('click', settingsListener);
@@ -20,5 +19,10 @@ const settingsListener = e => {
   };
   document.addEventListener('mousedown', hideSettingsMenu1);
 }
-
 SETTINGS_BUTTON.addEventListener('click', settingsListener);
+
+
+const SETTINGS_ENABLE = document.getElementById('settings-enable');
+SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
+const SETTINGS_DISABLE = document.getElementById('settings-disable');
+SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', false));
