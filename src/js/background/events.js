@@ -28,6 +28,7 @@ const activeIcons = { path: {
 browser.storage.onChanged.addListener((changes, area) => {
   const changedItems = Object.keys(changes);
   for (const item of changedItems) {
+
     if (item === 'global_enable') {
       let icons;
       if (changes[item].newValue === false) icons = inactiveIcons;
@@ -39,13 +40,5 @@ browser.storage.onChanged.addListener((changes, area) => {
       });
     }
 
-    if (item === 'page_action') {
-      browser.tabs.query({ url: '*://*.youtube.com/*' }, tabs => {
-        tabs.forEach(tab => {
-          if (changes[item].newValue === false) browser.pageAction.hide(tab.id);
-          if (changes[item].newValue === true) browser.pageAction.show(tab.id);
-        });
-      });
-    }
   }
 });

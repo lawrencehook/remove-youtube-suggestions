@@ -26,8 +26,3 @@ const SETTINGS_ENABLE = document.getElementById('settings-enable');
 SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
 const SETTINGS_DISABLE = document.getElementById('settings-disable');
 SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', false));
-
-const SETTINGS_PA_ENABLE = document.getElementById('settings-page-action-enable');
-SETTINGS_PA_ENABLE.addEventListener('click', e => updateSetting('page_action', true));
-const SETTINGS_PA_DISABLE = document.getElementById('settings-page-action-disable');
-SETTINGS_PA_DISABLE.addEventListener('click', e => updateSetting('page_action', false));

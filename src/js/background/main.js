@@ -209,8 +209,7 @@ const SECTIONS = [
 
 const OTHER_SETTINGS = {
   global_enable: true,
-  dark_mode: false,
-  page_action: true
+  dark_mode: false
 };
 
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
@@ -237,13 +236,6 @@ browser.runtime.onMessage.addListener((data, sender) => {
           browser.browserAction.setIcon(inactiveIcons);
         }
 
-        // Activate the page action
-        if (settings['page_action'] === true) {
-          browser.pageAction.show(tab.id);
-          if (settings['global_enable'] === false) {
-            browser.pageAction.setIcon({ tabId: tab.id, ...inactiveIcons });
-          }
-        }
       });
     }
 

@@ -41,18 +41,6 @@
     }
   },
 
-  "page_action": {
-    "browser_style": true,
-    "default_popup": "options.html",
-    "default_title": "Remove Youtube Suggestions",
-    "default_icon": {
-      "16": "images/16.png",
-      "32": "images/32.png",
-      "64": "images/64.png",
-      "128": "images/128.png"
-    }
-  },
-
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
