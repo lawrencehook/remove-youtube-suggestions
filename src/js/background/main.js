@@ -207,15 +207,16 @@ const SECTIONS = [
   }
 ];
 
-const DEFAULT_HEADER_SETTINGS = {
+const OTHER_SETTINGS = {
   global_enable: true,
-  dark_mode: false
+  dark_mode: false,
+  page_action: true
 };
 
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
   fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
   return acc;
-}, { ...DEFAULT_HEADER_SETTINGS });
+}, { ...OTHER_SETTINGS });
 
 // Respond to requests
 browser.runtime.onMessage.addListener((data, sender) => {
@@ -230,6 +231,19 @@ browser.runtime.onMessage.addListener((data, sender) => {
       browser.storage.local.get(localSettings => {
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
         browser.tabs.sendMessage(tab.id, { settings }, { frameId });
+
+        // Gray out browserAction
+        if (settings['global_enable'] === false) {
+          browser.browserAction.setIcon(inactiveIcons);
+        }
+
+        // Activate the page action
+        if (settings['page_action'] === true) {
+          browser.pageAction.show(tab.id);
+          if (settings['global_enable'] === false) {
+            browser.pageAction.setIcon({ tabId: tab.id, ...inactiveIcons });
+          }
+        }
       });
     }
 
@@ -237,7 +251,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
-        const headerSettings = Object.entries(DEFAULT_HEADER_SETTINGS).reduce((acc, [id, value]) => {
+        const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
           acc[id] = id in localSettings ? localSettings[id] : value;
           return acc;
         }, {});

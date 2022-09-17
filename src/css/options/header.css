@@ -103,6 +103,8 @@ html[dark_mode='false'] #header-light { display: none }
   max-width: var(--icon-dim);
 }
 #settings-menu {
+  font-size: 16px;
+
   position: fixed;
   z-index: 10;
 
@@ -136,7 +138,10 @@ html[dark_mode='false'] #header-light { display: none }
   text-decoration: none;
 }
 html[global_enable="true"] #settings-enable,
-html[global_enable="false"] #settings-disable
+html[global_enable="false"] #settings-disable,
+html[page_action="true"] #settings-page-action-enable,
+html[page_action="false"] #settings-page-action-disable,
+html[foo=bar]
 {
   display: none
 }

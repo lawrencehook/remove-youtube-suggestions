@@ -3,7 +3,7 @@
   "description": "Spend less time on YouTube. Customize YouTube's user interface to be less engaging.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "4.3.4",
+  "version": "4.3.5",
 
   "icons": {
     "16": "images/16.png",
@@ -13,7 +13,10 @@
   },
 
   "background": {
-    "scripts": ["js/events.js", "js/background.js"],
+    "scripts": [
+      "js/background/events.js",
+      "js/background/main.js"
+    ],
     "persistent": true
   },
 
@@ -37,6 +40,19 @@
       "128": "images/128.png"
     }
   },
+
+  "page_action": {
+    "browser_style": true,
+    "default_popup": "options.html",
+    "default_title": "Remove Youtube Suggestions",
+    "default_icon": {
+      "16": "images/16.png",
+      "32": "images/32.png",
+      "64": "images/64.png",
+      "128": "images/128.png"
+    }
+  },
+
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
