@@ -50,24 +50,54 @@ const SECTIONS = [
     name: "Left Navigation Bar",
     options: [
       {
-        name: "Hide home button",
-        id: "remove_home_link",
+        name: "Hide the entire left nav bar",
+        id: "remove_left_nav_bar",
         defaultValue: false
-      },
-      {
-        name: "Hide explore button",
-        id: "remove_explore_link",
-        defaultValue: true
-      },
-      {
-        name: "Hide shorts button",
-        id: "remove_shorts_link",
-        defaultValue: true
       },
       {
         name: "Disable the YouTube logo link",
         id: "remove_logo_link",
         defaultValue: false
+      },
+      {
+        name: "Hide the home button",
+        id: "remove_home_link",
+        defaultValue: false
+      },
+      {
+        name: "Hide the explore button",
+        id: "remove_explore_link",
+        defaultValue: true
+      },
+      {
+        name: "Hide the shorts button",
+        id: "remove_shorts_link",
+        defaultValue: true
+      },
+    ]
+  },
+  {
+    name: "Left Navigation Bar Sections",
+    options: [
+      {
+        name: "Hide the quick links section",
+        id: "remove_quick_links_section",
+        defaultValue: false
+      },
+      {
+        name: "Hide the \"Subscriptions\" section",
+        id: "remove_sub_section",
+        defaultValue: false
+      },
+      {
+        name: "Hide the \"Explore\" section",
+        id: "remove_explore_section",
+        defaultValue: true
+      },
+      {
+        name: "Hide the \"More from YouTube\" section",
+        id: "remove_more_section",
+        defaultValue: true
       },
     ]
   },
