@@ -81,6 +81,13 @@ function runDynamicSettings() {
     handleUrlChange();
   }
 
+  // Mark the left nav bar sections
+  // const leftSections = document.querySelectorAll('ytd-guide-section-renderer');
+  // leftSections.forEach(section => {
+  //   const title = section.querySelector('#guide-section-title');
+  //   console.log('title', title.innerText);
+  // });
+
   // Hide shorts on the results page
   if (onResultsPage) {
     const shortResults = Array.from(document.querySelectorAll('a[href^="/shorts/"]:not([marked_as_short])'));
@@ -93,10 +100,20 @@ function runDynamicSettings() {
 
   // Disable autoplay
   if (cache['disable_autoplay'] === true) {
-    document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]')?.[0]?.click();
+    const autoplayButton = document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]');
+    autoplayButton?.forEach(e => {
+      if (e && e.offsetParent) {
+        e.click();
+      }
+    });
 
     // mobile
-    document.querySelectorAll('.ytm-autonav-toggle-button-container[aria-pressed=true]')?.[0]?.click();
+    const mAutoplayButton = document.querySelectorAll('.ytm-autonav-toggle-button-container[aria-pressed=true]');
+    mAutoplayButton?.forEach(e => {
+      if (e && e.offsetParent) {
+        e.click();
+      }
+    });
   }
 
   // // Enable theater mode
@@ -113,12 +130,20 @@ function runDynamicSettings() {
   if (cache['auto_skip_ads'] === true) {
 
     // Close overlay ads.
-    Array.from(document.querySelectorAll('.ytp-ad-overlay-close-button'))?.forEach(e => e?.click());
+    Array.from(document.querySelectorAll('.ytp-ad-overlay-close-button'))?.forEach(e => {
+      if (e && e.offsetParent) {
+        e.click();
+      }
+    });
 
     // Click on "Skip ad" button
     const skippableAd = document.querySelectorAll('.ytp-ad-skip-button').length;
     if (skippableAd) {
-      document.querySelectorAll('.ytp-ad-skip-button')?.[0]?.click();
+      document.querySelectorAll('.ytp-ad-skip-button')?.forEach(e => {
+        if (e && e.offsetParent) {
+          e.click();
+        }
+      });
     } else {
 
       // Speed through ads that can't be skipped (yet).

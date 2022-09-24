@@ -50,11 +50,6 @@ const SECTIONS = [
     name: "Left Navigation Bar",
     options: [
       {
-        name: "Disable the YouTube logo link",
-        id: "remove_logo_link",
-        defaultValue: false
-      },
-      {
         name: "Hide home button",
         id: "remove_home_link",
         defaultValue: false
@@ -68,6 +63,11 @@ const SECTIONS = [
         name: "Hide shorts button",
         id: "remove_shorts_link",
         defaultValue: true
+      },
+      {
+        name: "Disable the YouTube logo link",
+        id: "remove_logo_link",
+        defaultValue: false
       },
     ]
   },
