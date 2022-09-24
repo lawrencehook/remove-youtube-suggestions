@@ -23,6 +23,11 @@ const SECTIONS = [
     name: "Homepage",
     options: [
       {
+        name: "Hide the header",
+        id: "remove_header",
+        defaultValue: true
+      },
+      {
         name: "Hide all but the first row of suggestions",
         id: "remove_all_but_one",
         defaultValue: true,
@@ -73,6 +78,11 @@ const SECTIONS = [
         name: "Hide the shorts button",
         id: "remove_shorts_link",
         defaultValue: true
+      },
+      {
+        name: "Hide the subscriptions button",
+        id: "remove_subscriptions_link",
+        defaultValue: false
       },
     ]
   },

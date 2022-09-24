@@ -11,10 +11,11 @@ html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
 
 /* Left Bar Navigation */
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
-html[global_enable="true"][remove_shorts_link="true"] a[title="Shorts"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
-html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
+html[global_enable="true"][remove_shorts_link="true"] a[title="Shorts"],
+html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+html[global_enable="true"][remove_subscriptions_link="true"] a[href="/feed/subscriptions"],
 
 /* Left Bar Navigation Sections */
 html[global_enable="true"][remove_left_nav_bar="true"] tp-yt-app-drawer#guide,
@@ -26,10 +27,11 @@ html[global_enable="true"][remove_explore_section="true"] ytd-guide-section-rend
 html[global_enable="true"][remove_more_section="true"]    ytd-guide-section-renderer[rys_more_section],
 
 /* Homepage */
-html[global_enable="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
+html[global_enable="true"][remove_header="true"] ytd-rich-grid-renderer > div#header,
 html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row:nth-child(n+2),
 html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 html[global_enable="true"][remove_extra_rows="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
+html[global_enable="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 
 /* Video Player */
 html[global_enable="true"][remove_entire_sidebar="true"] #secondary,
