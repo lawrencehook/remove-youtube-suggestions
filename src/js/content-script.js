@@ -8,9 +8,10 @@ const HTML = document.documentElement;
 
 // Redirect setting constants.
 const REDIRECT_URLS = {
-  "redirect_off":     false,
-  "redirect_to_subs": 'https://www.youtube.com/feed/subscriptions',
-  "redirect_to_wl":   'https://www.youtube.com/playlist/?list=WL',
+  "redirect_off":        false,
+  "redirect_to_subs":    'https://www.youtube.com/feed/subscriptions',
+  "redirect_to_wl":      'https://www.youtube.com/playlist/?list=WL',
+  "redirect_to_library": 'https://www.youtube.com/feed/library',
 };
 
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
@@ -163,8 +164,9 @@ function handleUrlChange() {
   // Redirect the homepage
   const onHomepage = homepageRegex.test(currentUrl);
   if (onHomepage && !cache['redirect_off']) {
-    if (cache['redirect_to_subs']) location.replace(REDIRECT_URLS['redirect_to_subs']);
-    if (cache['redirect_to_wl'])   location.replace(REDIRECT_URLS['redirect_to_wl']);
+    if (cache['redirect_to_subs'])    location.replace(REDIRECT_URLS['redirect_to_subs']);
+    if (cache['redirect_to_wl'])      location.replace(REDIRECT_URLS['redirect_to_wl']);
+    if (cache['redirect_to_library']) location.replace(REDIRECT_URLS['redirect_to_library']);
   }
 
   // Redirect the shorts player

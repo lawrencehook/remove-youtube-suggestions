@@ -176,6 +176,7 @@ const SECTIONS = [
         effects: {
           true: {
             redirect_to_wl: false,
+            redirect_to_library: false,
             redirect_off: false
           },
           false: {
@@ -190,6 +191,22 @@ const SECTIONS = [
         effects: {
           true: {
             redirect_to_subs: false,
+            redirect_to_library: false,
+            redirect_off: false
+          },
+          false: {
+            redirect_off: true
+          }
+        }
+      },
+      {
+        name: "Redirect home to Library",
+        id: "redirect_to_library",
+        defaultValue: false,
+        effects: {
+          true: {
+            redirect_to_subs: false,
+            redirect_to_wl: false,
             redirect_off: false
           },
           false: {
