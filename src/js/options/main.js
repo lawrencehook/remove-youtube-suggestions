@@ -3,12 +3,15 @@ if (typeof browser === 'undefined') {
   browser = typeof chrome !== 'undefined' ? chrome : null;
 }
 
-// Some global constants.
+// Globals
 const HTML = document.documentElement;
 const OPTIONS_LIST = document.getElementById('primary_options');
 const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_SECTION = document.getElementById('template_section');
 const TEMPLATE_OPTION = document.getElementById('template_option');
+
+const TIMER_CONTAINER = document.getElementById('timer_container');
+let openedTime = Date.now()
 
 document.addEventListener("DOMContentLoaded", () => {
   browser.runtime.sendMessage({ getFieldsets: true });
@@ -65,6 +68,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
       const svg = optionNode.querySelector('svg');
       const value = id in SETTING_VALUES ? SETTING_VALUES[id] : defaultValue;
+      HTML.setAttribute(id, value);
       svg.toggleAttribute('active', value);
 
       optionNode.addEventListener('click', e => {
@@ -103,6 +107,11 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
+
+  if (SETTING_VALUES['menu_timer']) {
+    HTML.setAttribute('menu_timer_counting_down', '')
+    timerLoop();
+  }
 }
 
 
@@ -173,4 +182,17 @@ function onSearchInput(e) {
 function handleEnter(e) {
   const keycode = e.keyCode || e.which;
   keycode === 13 && document.activeElement.click();
+}
+
+
+function timerLoop() {
+  const timeLeft = 9 - Math.floor((Date.now() - openedTime) / 1000);
+  const timeLeftElt = TIMER_CONTAINER.querySelector('div:nth-child(2)');
+  timeLeftElt.innerText = `${timeLeft} second${timeLeft === 1 ? '' : 's'} remaining.`;
+
+  if (timeLeft < 0) {
+    HTML.removeAttribute('menu_timer_counting_down');
+  } else {
+    setTimeout(timerLoop, 50);
+  }
 }

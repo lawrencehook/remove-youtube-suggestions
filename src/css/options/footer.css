@@ -8,19 +8,6 @@ html[dark_mode='true'] #donate_button .footer-path  {
   fill: var(--body-background-color);
 }
 
-/* Manage history */
-#manage_history_container {
-  text-align: center;
-  height: 20px;
-  padding-top: 5px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-#manage_history {
-  font-size: 18px;
-  text-decoration: none;
-}
-
 #footer_hr {
   text-align: center;
 
@@ -35,7 +22,7 @@ html[dark_mode='true'] #donate_button .footer-path  {
 #footer {
   position: relative;
   text-align: center;
-  height: 25px;
+  height: var(--footer-height);
   margin-top: 4px;
 
   /*border: 1px groove gray;*/

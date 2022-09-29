@@ -1,3 +1,12 @@
+:root {
+  --header-height: 30px;
+  --header-padding: 5px;
+  --body-height: 400px;
+  --footer-height: 25px;
+
+  --border-radius: 3px;
+}
+
 html:not([loaded]), html:not([loaded]) body {
   height: 0 !important;
   overflow: hidden;
@@ -21,7 +30,10 @@ html[dark_mode='false'], html:not([dark_mode]) {
   --box-shadow-color: rgba(0, 0, 0, 0.30);
 }
 
-html[global_enable="true"] #disabled_message { display: none; }
+html[global_enable="false"] #timer_container,
+html[global_enable="true"][menu_timer="false"] #timer_container,
+html[global_enable="true"][menu_timer="true"]:not([menu_timer_counting_down]) #timer_container,
+html[global_enable="true"] #disabled_message,
 html[global_enable="false"] #primary_options,
 html[global_enable="false"] #search_bar {
   display: none;

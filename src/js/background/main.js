@@ -261,7 +261,17 @@ const SECTIONS = [
         display: false
       },
     ]
-  }
+  },
+  {
+    name: "Extension Settings",
+    options: [
+      {
+        name: "Enable menu timer - 10 seconds",
+        id: "menu_timer",
+        defaultValue: false
+      },
+    ]
+  },
 ];
 
 const OTHER_SETTINGS = {
