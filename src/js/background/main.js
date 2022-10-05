@@ -5,7 +5,7 @@ const SECTIONS = [
       {
         name: "Hide homepage suggestions",
         id: "remove_homepage",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Hide sidebar suggestions",
@@ -25,12 +25,12 @@ const SECTIONS = [
       {
         name: "Hide the header",
         id: "remove_header",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide all but the first row of suggestions",
         id: "remove_all_but_one",
-        defaultValue: true,
+        defaultValue: false,
         effects: {
           true: {
             remove_homepage: false,
