@@ -17,6 +17,7 @@ const REDIRECT_URLS = {
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
 const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com/$',  'i');
 const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
+const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
@@ -91,6 +92,25 @@ function runDynamicSettings() {
     if (titleText.includes('explore'))       section.setAttribute('rys_explore_section', '');
     if (titleText.includes('more from'))     section.setAttribute('rys_more_section', '');
   });
+
+  // Subscriptions page options
+  if (subsRegex.test(url)) {
+    const badges = document.querySelectorAll('ytd-badge-supported-renderer');
+    badges.forEach(badge => {
+      const badgeText = badge.innerText.trim();
+      if (badgeText) {
+        const video = badge.closest('ytd-grid-video-renderer');
+        video.setAttribute('badge-text', badgeText);
+      }
+    });
+
+    // Shorts
+    const shortBadges = document.querySelectorAll('ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]');
+    shortBadges.forEach(badge => {
+      const video = badge.closest('ytd-grid-video-renderer');
+      video.setAttribute('is_sub_short', '');
+    });
+  }
 
   // Hide shorts on the results page
   if (onResultsPage) {

@@ -206,6 +206,21 @@ const SECTIONS = [
       },
     ]
   },
+{
+    name: "Subscriptions Page",
+    options: [
+      {
+        name: "Hide shorts in subscriptions",
+        id: "remove_sub_shorts",
+        defaultValue: false
+      },
+      {
+        name: "Hide live videos in subscriptions",
+        id: "remove_sub_live",
+        defaultValue: false
+      },
+    ]
+  },
   {
     name: "Redirect the Homepage",
     options: [
