@@ -102,6 +102,12 @@ function runDynamicSettings() {
     })
   }
 
+  // Click on the "dismiss" button
+  const dismissButton = document.getElementById('dismiss-button');
+  if (dismissButton && dismissButton.offsetParent) {
+    dismissButton.click();
+  }
+
   // Disable autoplay
   if (cache['disable_autoplay'] === true) {
     const autoplayButton = document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]');
