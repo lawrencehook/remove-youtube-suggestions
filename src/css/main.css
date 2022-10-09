@@ -68,8 +68,13 @@ html[global_enable="true"][remove_logo_link="true"] #logo[href="/"] {
 
 /* Center contents when the left nav bar is entirely hidden */
 html[global_enable="true"][remove_left_nav_bar="true"] ytd-app[guide-persistent-and-visible] ytd-page-manager.ytd-app,
-html[global_enable="true"][remove_left_nav_bar="true"] ytd-app[mini-guide-visible] ytd-page-manager.ytd-app {
+html[global_enable="true"][remove_left_nav_bar="true"] ytd-app[mini-guide-visible] ytd-page-manager.ytd-app,
+html[global_enable="true"][remove_left_nav_bar="true"] ytd-playlist-sidebar-renderer,
+
+html[global_enable="true"][foo=bar]
+{
 	margin-left: 0px;
+	left: 0;
 }
 
 /* Center contents when the sidebar is entirely hidden */
