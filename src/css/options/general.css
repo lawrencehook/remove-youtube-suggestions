@@ -33,7 +33,7 @@ html[dark_mode='false'], html:not([dark_mode]) {
 html[global_enable="false"] #timer_container,
 html[global_enable="true"][menu_timer="false"] #timer_container,
 html[global_enable="true"][menu_timer="true"]:not([menu_timer_counting_down]) #timer_container,
-html[global_enable="true"] #disabled_message,
+html[global_enable="true"] #disabled_message_container,
 html[global_enable="false"] #primary_options,
 html[global_enable="false"] #search_bar {
   display: none;

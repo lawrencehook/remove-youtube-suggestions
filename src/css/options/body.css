@@ -1,12 +1,31 @@
-#disabled_message {
+#disabled_message_container {
   text-align: center;
   height: var(--body-height);
   padding: 1px;
+
+  font-size: 18px;
+
   display: flex;
   justify-content: center;
   align-content: center;
   flex-direction: column;
-  font-size: 18px;
+  gap: 5vh;
+}
+
+#turn_back_on {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 2vh 3vw;
+  user-select: none;
+
+  border: 2px solid var(--label-color);
+
+  border-radius: 999px;
+}
+
+#turn_back_on:hover {
+  background-color: var(--label-color);
+  color: var(--body-background-color);
 }
 
 #timer_container {

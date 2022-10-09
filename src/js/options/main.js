@@ -108,6 +108,9 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
 
+  const turnBackOn = document.getElementById('turn_back_on');
+  turnBackOn.addEventListener('click', e => updateSetting('global_enable', true));
+
   if (SETTING_VALUES['menu_timer']) {
     HTML.setAttribute('menu_timer_counting_down', '')
     timerLoop();
