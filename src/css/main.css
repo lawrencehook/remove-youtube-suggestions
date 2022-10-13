@@ -55,7 +55,8 @@ html[global_enable="true"][remove_search_suggestions="true"] div.sbdd_a,
 
 /* Subscriptions Page */
 html[global_enable="true"][remove_sub_shorts="true"] ytd-grid-video-renderer[is_sub_short],
-html[global_enable="true"][remove_sub_live="true"] ytd-grid-video-renderer[badge-text="LIVE"],
+html[global_enable="true"][remove_sub_live="true"] ytd-grid-video-renderer[badge-text="live"],
+html[global_enable="true"][remove_sub_upcoming="true"] ytd-grid-video-renderer[badge-text="upcoming"],
 
 html[global_enable="true"][foo=bar]
 

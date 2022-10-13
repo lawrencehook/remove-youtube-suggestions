@@ -219,6 +219,11 @@ const SECTIONS = [
         id: "remove_sub_live",
         defaultValue: false
       },
+      {
+        name: "Hide upcoming videos in subscriptions",
+        id: "remove_sub_upcoming",
+        defaultValue: false
+      }
     ]
   },
   {

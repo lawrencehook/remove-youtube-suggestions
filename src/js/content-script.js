@@ -26,6 +26,7 @@ let counter = 0, theaterClicked = false, hyper = false;
 let originalPlayback, originalMuted;
 let onResultsPage = resultsPageRegex.test(location.href);
 let frameRequested = false;
+let dynamicIters = 0;
 
 
 // Send a "get settings" message to the background script.
@@ -62,9 +63,15 @@ document.addEventListener("DOMContentLoaded", event => {
   requestRunDynamicSettings()
 });
 
-
+// let lastRun = Date.now();
+let isRunning = false;
 function runDynamicSettings() {
-  frameRequested = false;
+  if (isRunning) return;
+  isRunning = true;
+  dynamicIters += 1;
+
+  // console.log('runDynamicSettings', Date.now() - lastRun);
+  // lastRun = Date.now();
 
   if ('global_enable' in cache && cache['global_enable'] !== true) {
     requestRunDynamicSettings()
@@ -95,17 +102,23 @@ function runDynamicSettings() {
 
   // Subscriptions page options
   if (subsRegex.test(url)) {
-    const badges = document.querySelectorAll('ytd-badge-supported-renderer');
-    badges.forEach(badge => {
-      const badgeText = badge.innerText.trim();
+    const liveBadgeSelector = 'ytd-badge-supported-renderer'
+    const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]'
+    const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]'
+    const addBadgeTextToVideo = badge => {
+      const badgeText = badge.innerText.trim().toLowerCase();
       if (badgeText) {
         const video = badge.closest('ytd-grid-video-renderer');
         video.setAttribute('badge-text', badgeText);
       }
-    });
+    };
+    const liveBadges = document.querySelectorAll(liveBadgeSelector);
+    liveBadges.forEach(addBadgeTextToVideo);
+    const upcomingBadges = document.querySelectorAll(upcomingBadgeSelector);
+    upcomingBadges.forEach(addBadgeTextToVideo);
 
     // Shorts
-    const shortBadges = document.querySelectorAll('ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]');
+    const shortBadges = document.querySelectorAll(shortsBadgeSelector);
     shortBadges.forEach(badge => {
       const video = badge.closest('ytd-grid-video-renderer');
       video.setAttribute('is_sub_short', '');
@@ -203,13 +216,16 @@ function runDynamicSettings() {
   //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
   // }
 
-  requestRunDynamicSettings()
+  frameRequested = false;
+  isRunning = false;
+  requestRunDynamicSettings();
 }
 
 
 function handleUrlChange() {
   if (cache['global_enable'] !== true) return;
 
+  dynamicIters = 0;
   const currentUrl = location.href;
 
   // Mark whether or not we're on the "results" page
@@ -230,11 +246,14 @@ function handleUrlChange() {
     const newUrl = currentUrl.replace('shorts', 'watch');
     location.replace(newUrl);
   }
+
+  requestRunDynamicSettings();
 }
 
 
 function requestRunDynamicSettings() {
-  if (frameRequested) return;
+  if (frameRequested || isRunning) return;
   frameRequested = true;
-  setTimeout(() => runDynamicSettings(), 50);
+  // setTimeout(() => runDynamicSettings(), 50);
+  setTimeout(() => runDynamicSettings(), Math.min(500, 50 + 10 * dynamicIters));
 }
