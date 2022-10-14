@@ -5,13 +5,21 @@ if (typeof browser === 'undefined') {
 
 // Globals
 const HTML = document.documentElement;
+const SIDEBAR = document.getElementById('sidebar');
+const TEMPLATE_SIDEBAR_SECTION = document.getElementById('template_sidebar_section');
 const OPTIONS_LIST = document.getElementById('primary_options');
 const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_SECTION = document.getElementById('template_section');
 const TEMPLATE_OPTION = document.getElementById('template_option');
-
 const TIMER_CONTAINER = document.getElementById('timer_container');
-let openedTime = Date.now()
+let openedTime = Date.now();
+let currentUrl;
+
+const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
+const videoPageRegex =   new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
+const homepageRegex =    new RegExp('.*://(www|m)\\.youtube\\.com/$',  'i');
+const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
+const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
 
 document.addEventListener("DOMContentLoaded", () => {
   browser.runtime.sendMessage({ getFieldsets: true });
@@ -26,8 +34,11 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
     // Initial page load.
     if (SECTIONS) {
-      populateOptions(SECTIONS, headerSettings, settings);
-      HTML.setAttribute('loaded', true);
+      browser.tabs.query({ currentWindow: true, active:true }, ([{ url }]) => {
+        currentUrl = url;
+        populateOptions(SECTIONS, headerSettings, settings);
+        HTML.setAttribute('loaded', true);
+      })
     }
 
     return true;
@@ -40,17 +51,22 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
 function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
-  // Clear the options list
+  // Clear the options list, and the sidebar
   OPTIONS_LIST.innerHTML = '';
+  SIDEBAR.innerHTML = '';
+  sidebarNames = [];
 
   // Add option nodes to the HTML.
   SECTIONS.forEach(section => {
-    const { name, options } = section;
+    const { name, sidebarName, options } = section;
+
+    sidebarNames.push(sidebarName);
 
     // Create a new section
     const sectionNode = TEMPLATE_SECTION.cloneNode(true);
     sectionNode.id = name;
     sectionNode.classList.remove('removed');
+    sectionNode.setAttribute('sidebarName', sidebarName);
     const label = sectionNode.querySelector('.section_label');
     label.innerText = name;
 
@@ -90,9 +106,35 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     OPTIONS_LIST.append(sectionNode);
   });
 
+  // Add sections to the sidebar
+  const uniqueSidebarNames = Array.from(new Set(sidebarNames));
+  uniqueSidebarNames.forEach(sidebarName => {
+    const sidebarSection = TEMPLATE_SIDEBAR_SECTION.cloneNode(true);
+    sidebarSection.removeAttribute('hidden');
+    sidebarSection.removeAttribute('id');
+    sidebarSection.setAttribute('sidebarName', sidebarName);
+    sidebarSection.innerText = sidebarName;
+    sidebarSection.addEventListener('click', sidebarSectionListener);
+    SIDEBAR.append(sidebarSection);
+  });
+
+  // Pre-select sidebar option based on current window.
+  if (resultsPageRegex.test(currentUrl)) {
+    console.log('matched resultsPageRegex');
+    document.querySelector('.sidebar_section[sidebarname="Search"]').click();
+  }
+  if (videoPageRegex.test(currentUrl)) {
+    console.log('matched videoPageRegex');
+    document.querySelector('.sidebar_section[sidebarname="Video Player"]').click();
+  }
+  if (subsRegex.test(currentUrl)) {
+    console.log('matched subsRegex');
+    document.querySelector('.sidebar_section[sidebarname="Subscriptions"]').click();
+  }
+
   if (headerSettings) {
     Object.entries(headerSettings).forEach(([ id, value ]) => {
-      updateSetting(id, value);
+      HTML.setAttribute(id, value);
 
       const svg = document.querySelector(`div#${id} svg`);
       svg?.toggleAttribute('active', value);
@@ -176,6 +218,35 @@ function onSearchInput(e) {
     });
 
     if (!optionFound) {
+      section.classList.add('removed');
+    }
+  });
+}
+
+
+function sidebarSectionListener(e) {
+  const sidebarSection = e.target;
+  const sidebarSections = Array.from(document.querySelectorAll('.sidebar_section'));
+  const selected = sidebarSection.toggleAttribute('selected');
+  const sidebarName = sidebarSection.getAttribute('sidebarName');
+  const sections = Array.from(document.querySelectorAll('.section_container:not(#template_section)'));
+
+  // Reset
+  sections.forEach(section => {
+    section.classList.remove('removed');
+    const options = Array.from(section.querySelectorAll('div.option'));
+    options.forEach(option => option.classList.remove('removed'));
+  });
+  sidebarSections.forEach(sidebarSection => {
+    sidebarSection.removeAttribute('selected');
+  })
+
+  sidebarSection.toggleAttribute('selected', selected);
+  if (!selected) return;
+
+  sections.forEach(section => {
+    const sectionSidebarName = section.getAttribute('sidebarName');
+    if (sidebarName !== sectionSidebarName) {
       section.classList.add('removed');
     }
   });

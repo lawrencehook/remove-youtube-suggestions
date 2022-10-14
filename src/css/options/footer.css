@@ -12,11 +12,11 @@ html[dark_mode='true'] #donate_button .footer-path  {
   text-align: center;
 
   height: 1px;
-  width: 90%;
+  width: 99%;
   margin: auto;
   border-width: 0;
 
-  background-color: gray;
+  background-color: var(--box-shadow-color);
 }
 
 #footer {

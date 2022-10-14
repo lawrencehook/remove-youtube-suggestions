@@ -5,6 +5,8 @@
   --footer-height: 25px;
 
   --border-radius: 3px;
+
+  --blue-color: #0006FB;
 }
 
 html:not([loaded]), html:not([loaded]) body {
@@ -34,7 +36,7 @@ html[global_enable="false"] #timer_container,
 html[global_enable="true"][menu_timer="false"] #timer_container,
 html[global_enable="true"][menu_timer="true"]:not([menu_timer_counting_down]) #timer_container,
 html[global_enable="true"] #disabled_message_container,
-html[global_enable="false"] #primary_options,
+html[global_enable="false"] #main_container,
 html[global_enable="false"] #search_bar {
   display: none;
 }
@@ -52,7 +54,7 @@ a {
 }
 
 body {
-  width: 450px;
+  width: 600px;
   height: fit-content;
 
   /* top, right, bottom, left */

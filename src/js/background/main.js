@@ -1,6 +1,7 @@
 const SECTIONS = [
   {
     name: "Basic",
+    sidebarName: "Basic",
     options: [
       {
         name: "Hide homepage suggestions",
@@ -21,6 +22,7 @@ const SECTIONS = [
   },
   {
     name: "Homepage",
+    sidebarName: "Homepage",
     options: [
       {
         name: "Hide the header",
@@ -53,6 +55,7 @@ const SECTIONS = [
   },
   {
     name: "Left Navigation Bar",
+    sidebarName: "Left Navbar",
     options: [
       {
         name: "Hide the entire left nav bar",
@@ -88,6 +91,7 @@ const SECTIONS = [
   },
   {
     name: "Left Navigation Bar Sections",
+    sidebarName: "Left Navbar",
     options: [
       {
         name: "Hide the quick links section",
@@ -113,6 +117,7 @@ const SECTIONS = [
   },
   {
     name: "Video Player (dynamic)",
+    sidebarName: "Video Player",
     options: [
       {
         name: "Skip and close ads",
@@ -138,6 +143,7 @@ const SECTIONS = [
   },
   {
     name: "Video Player (static)",
+    sidebarName: "Video Player",
     options: [
       {
         name: "Center contents (removes the sidebar)",
@@ -183,6 +189,7 @@ const SECTIONS = [
   },
   {
     name: "Search Results",
+    sidebarName: "Search",
     options: [
       {
         name: "Hide search bar suggestions",
@@ -208,6 +215,7 @@ const SECTIONS = [
   },
 {
     name: "Subscriptions Page",
+    sidebarName: "Subscriptions",
     options: [
       {
         name: "Hide shorts in subscriptions",
@@ -228,6 +236,7 @@ const SECTIONS = [
   },
   {
     name: "Redirect the Homepage",
+    sidebarName: "Redirects",
     options: [
       {
         name: "Redirect home to Subscriptions",
@@ -284,6 +293,7 @@ const SECTIONS = [
   },
   {
     name: "Extension Settings",
+    sidebarName: "Settings",
     options: [
       {
         name: "Enable menu timer - 10 seconds",

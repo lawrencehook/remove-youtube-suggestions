@@ -35,9 +35,6 @@ browser.storage.onChanged.addListener((changes, area) => {
       if (changes[item].newValue === true)  icons = activeIcons;
 
       browser.browserAction.setIcon(icons);
-      browser.tabs.query({ url: '*://*.youtube.com/*' }, tabs => {
-        tabs.forEach(tab => browser.pageAction.setIcon({ tabId: tab.id, ...icons }));
-      });
     }
 
   }
