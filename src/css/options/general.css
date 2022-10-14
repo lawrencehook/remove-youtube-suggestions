@@ -68,3 +68,11 @@ body, body * {
 .hidden {
   visibility: hidden;
 }
+
+/* Chrome on Windows scrollbar styling */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--body-color);
+}
