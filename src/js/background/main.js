@@ -198,7 +198,12 @@ const SECTIONS = [
       {
         name: "Hide all but the timestamped comments",
         id: "remove_non_timestamp_comments",
-        defaultValue: false
+        defaultValue: false,
+        effects: {
+          true: {
+            remove_comments: false
+          }
+        }
       },
       {
         name: "Hide comment usernames",
