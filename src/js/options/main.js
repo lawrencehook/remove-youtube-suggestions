@@ -34,7 +34,9 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
     // Initial page load.
     if (SECTIONS) {
-      browser.tabs.query({ currentWindow: true, active:true }, ([{ url }]) => {
+      browser.tabs.query({ currentWindow: true, active:true }, tabs => {
+        if (!tabs || tabs.length === 0) return;
+        const [{ url }] = tabs;
         currentUrl = url;
         populateOptions(SECTIONS, headerSettings, settings);
         HTML.setAttribute('loaded', true);
@@ -71,13 +73,14 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     label.innerText = name;
 
     options.forEach(option => {
-      const { id, name, defaultValue, effects, display } = option;
+      const { id, name, sidebarName, defaultValue, effects, display } = option;
       if (display === false) return;
 
       const optionNode = TEMPLATE_OPTION.cloneNode(true);
       optionNode.classList.remove('removed');
       optionNode.id = id;
       optionNode.setAttribute('name', name);
+      optionNode.setAttribute('sidebarName', sidebarName);
       optionNode.classList.add(id);
       const optionLabel = optionNode.querySelector('.option_label');
       optionLabel.innerText = name;
@@ -246,7 +249,22 @@ function sidebarSectionListener(e) {
 
   sections.forEach(section => {
     const sectionSidebarName = section.getAttribute('sidebarName');
-    if (sidebarName !== sectionSidebarName) {
+    const sectionMatch = sidebarName === sectionSidebarName;
+    if (sectionMatch) return;
+
+    const options = Array.from(section.querySelectorAll('div.option'));
+    let optionFound = false;
+    options.forEach(option => {
+      const optionSidebarName = option.getAttribute('sidebarName');
+      const optionMatch = sidebarName === optionSidebarName;
+      if (optionMatch) {
+        optionFound = true;
+      } else {
+        option.classList.add('removed');
+      }
+    });
+
+    if (!optionFound) {
       section.classList.add('removed');
     }
   });

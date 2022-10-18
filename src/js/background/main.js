@@ -4,17 +4,20 @@ const SECTIONS = [
     sidebarName: "Basic",
     options: [
       {
-        name: "Hide homepage suggestions",
+        name: "Hide all homepage suggestions",
+        sidebarName: "Homepage",
         id: "remove_homepage",
         defaultValue: true
       },
       {
         name: "Hide sidebar suggestions",
+        sidebarName: "Video Player",
         id: "remove_sidebar",
         defaultValue: true 
       },
       {
         name: "Hide end-of-video suggestions",
+        sidebarName: "Video Player",
         id: "remove_end_of_video",
         defaultValue: true 
       },
@@ -58,7 +61,7 @@ const SECTIONS = [
     sidebarName: "Left Navbar",
     options: [
       {
-        name: "Hide the entire left nav bar",
+        name: "Hide the entire sidebar",
         id: "remove_left_nav_bar",
         defaultValue: false
       },
@@ -68,22 +71,22 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Hide the home button",
+        name: "Hide button - Home",
         id: "remove_home_link",
         defaultValue: false
       },
       {
-        name: "Hide the explore button",
+        name: "Hide button - Explore/Trending",
         id: "remove_explore_link",
         defaultValue: true
       },
       {
-        name: "Hide the shorts button",
+        name: "Hide button - Shorts",
         id: "remove_shorts_link",
         defaultValue: true
       },
       {
-        name: "Hide the subscriptions button",
+        name: "Hide button - Subscriptions",
         id: "remove_subscriptions_link",
         defaultValue: false
       },
@@ -94,29 +97,29 @@ const SECTIONS = [
     sidebarName: "Left Navbar",
     options: [
       {
-        name: "Hide the quick links section",
+        name: "Hide section - Library, etc.",
         id: "remove_quick_links_section",
         defaultValue: false
       },
       {
-        name: "Hide the \"Subscriptions\" section",
+        name: "Hide section - Subscriptions",
         id: "remove_sub_section",
         defaultValue: false
       },
       {
-        name: "Hide the \"Explore\" section",
+        name: "Hide section - Explore",
         id: "remove_explore_section",
         defaultValue: true
       },
       {
-        name: "Hide the \"More from YouTube\" section",
+        name: "Hide section - More from YouTube",
         id: "remove_more_section",
         defaultValue: true
       },
     ]
   },
   {
-    name: "Video Player (dynamic)",
+    name: "Video Player - UX",
     sidebarName: "Video Player",
     options: [
       {
@@ -125,13 +128,14 @@ const SECTIONS = [
         defaultValue: true
       },
       {
-        name: "Redirect shorts to the default viewer",
-        id: "normalize_shorts",
+        name: "Disable autoplay",
+        id: "disable_autoplay",
         defaultValue: true
       },
       {
-        name: "Disable autoplay",
-        id: "disable_autoplay",
+        name: "Redirect shorts to the default viewer",
+        sidebarName: "Redirects",
+        id: "normalize_shorts",
         defaultValue: true
       },
       // {
@@ -142,11 +146,11 @@ const SECTIONS = [
     ]
   },
   {
-    name: "Video Player (static)",
+    name: "Video Player - UI",
     sidebarName: "Video Player",
     options: [
       {
-        name: "Center contents (removes the sidebar)",
+        name: "Center contents - removes the sidebar",
         id: "remove_entire_sidebar",
         defaultValue: false
       },
@@ -156,7 +160,7 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Hide overlay text",
+        name: "Hide overlay suggestions",
         id: "remove_overlay_suggestions",
         defaultValue: true
       },
@@ -166,13 +170,8 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Hide the menu buttons (Like, Share, etc.)",
+        name: "Hide the menu buttons - Like, Share, etc.",
         id: "remove_menu_buttons",
-        defaultValue: false
-      },
-      {
-        name: "Hide comments",
-        id: "remove_comments",
         defaultValue: false
       },
       {
@@ -181,9 +180,45 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Hide the \"More Videos\" panel in embedded videos",
+        name: "Hide panel - \"More Videos\" in embedded player",
         id: "remove_embedded_more_videos",
         defaultValue: true
+      },
+    ]
+  },
+  {
+    name: "Video Player - Comments",
+    sidebarName: "Video Player",
+    options: [
+      {
+        name: "Hide all comments",
+        id: "remove_comments",
+        defaultValue: false
+      },
+      {
+        name: "Hide all but the timestamped comments",
+        id: "remove_non_timestamp_comments",
+        defaultValue: false
+      },
+      {
+        name: "Hide comment usernames",
+        id: "remove_comment_usernames",
+        defaultValue: false
+      },
+      {
+        name: "Hide comment profile pictures",
+        id: "remove_comment_profiles",
+        defaultValue: false
+      },
+      {
+        name: "Hide comment replies",
+        id: "remove_comment_replies",
+        defaultValue: false
+      },
+      {
+        name: "Hide comment upvotes",
+        id: "remove_comment_upvotes",
+        defaultValue: false
       },
     ]
   },
@@ -197,17 +232,17 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Hide extra results (For You, Trending, etc.)",
-        id: "remove_extra_results",
-        defaultValue: true
-      },
-      {
-        name: "Hide shorts from search results",
+        name: "Hide shorts",
         id: "remove_shorts_results",
         defaultValue: true
       },
       {
-        name: "Disable the thumbnail slideshow (on hover)",
+        name: "Hide extra results - For You, Trending, etc.",
+        id: "remove_extra_results",
+        defaultValue: true
+      },
+      {
+        name: "Disable the thumbnail slideshow - on hover effect",
         id: "remove_thumbnail_mouseover_effect",
         defaultValue: false
       },
@@ -218,18 +253,23 @@ const SECTIONS = [
     sidebarName: "Subscriptions",
     options: [
       {
-        name: "Hide shorts in subscriptions",
+        name: "Hide shorts",
         id: "remove_sub_shorts",
         defaultValue: false
       },
       {
-        name: "Hide live videos in subscriptions",
+        name: "Hide live videos",
         id: "remove_sub_live",
         defaultValue: false
       },
       {
-        name: "Hide upcoming videos in subscriptions",
+        name: "Hide upcoming videos",
         id: "remove_sub_upcoming",
+        defaultValue: false
+      },
+      {
+        name: "Hide premiere videos",
+        id: "remove_sub_premiere",
         defaultValue: false
       }
     ]
@@ -326,7 +366,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
-        browser.tabs.sendMessage(tab.id, { settings }, { frameId });
+        browser.tabs.sendMessage(tab.id, { settings }, {});
 
         // Gray out browserAction
         if (settings['global_enable'] === false) {

@@ -33,12 +33,9 @@ html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #
 html[global_enable="true"][remove_extra_rows="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 
-/* Video Player */
+/* Video Player - UI*/
 html[global_enable="true"][remove_entire_sidebar="true"] #secondary,
 html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
-html[global_enable="true"][remove_comments="true"] #comments,
-html[global_enable="true"][remove_comments="true"] #comment-teaser,
-html[global_enable="true"][remove_comments="true"] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"],
 html[global_enable="true"][remove_chat="true"] #chat,
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
@@ -47,6 +44,16 @@ html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-ove
 html[global_enable="true"][remove_overlay_suggestions="true"] .ytp-cards-teaser,
 html[global_enable="true"][remove_overlay_suggestions="true"] button.ytp-button.ytp-cards-button,
 
+/* Video Player - Comments */
+html[global_enable="true"][remove_comments="true"] #comments,
+html[global_enable="true"][remove_comments="true"] #comment-teaser,
+html[global_enable="true"][remove_comments="true"] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"],
+html[global_enable="true"][remove_non_timestamp_comments="true"] ytd-comment-thread-renderer:not([timestamp_comment]),
+html[global_enable="true"][remove_comment_usernames="true"] #author-text,
+html[global_enable="true"][remove_comment_profiles="true"] #author-thumbnail,
+html[global_enable="true"][remove_comment_replies="true"] #replies.ytd-comment-thread-renderer,
+html[global_enable="true"][remove_comment_upvotes="true"] #vote-count-middle.ytd-comment-action-buttons-renderer,
+
 /* Search Results Page */
 html[global_enable="true"][on_results_page="true"][remove_extra_results="true"] ytd-shelf-renderer,
 html[global_enable="true"][on_results_page="true"][remove_shorts_results="true"] ytd-video-renderer[is_short="true"],
@@ -54,9 +61,10 @@ html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-
 html[global_enable="true"][remove_search_suggestions="true"] div.sbdd_a,
 
 /* Subscriptions Page */
-html[global_enable="true"][remove_sub_shorts="true"] ytd-grid-video-renderer[is_sub_short],
-html[global_enable="true"][remove_sub_live="true"] ytd-grid-video-renderer[badge-text="live"],
+html[global_enable="true"][remove_sub_shorts="true"]   ytd-grid-video-renderer[is_sub_short],
+html[global_enable="true"][remove_sub_live="true"]     ytd-grid-video-renderer[badge-text="live"],
 html[global_enable="true"][remove_sub_upcoming="true"] ytd-grid-video-renderer[badge-text="upcoming"],
+html[global_enable="true"][remove_sub_premiere="true"] ytd-grid-video-renderer[badge-text="premiere"],
 
 html[global_enable="true"][foo=bar]
 

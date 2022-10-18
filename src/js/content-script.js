@@ -17,13 +17,13 @@ const REDIRECT_URLS = {
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
 const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com/$',  'i');
 const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
+const videoRegex =       new RegExp('.*://.*youtube\.com/watch\\?v=.*',  'i');
 const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
 let url;
 let counter = 0, theaterClicked = false, hyper = false;
-let originalPlayback, originalMuted;
 let onResultsPage = resultsPageRegex.test(location.href);
 let frameRequested = false;
 let dynamicIters = 0;
@@ -102,18 +102,22 @@ function runDynamicSettings() {
 
   // Subscriptions page options
   if (subsRegex.test(url)) {
-    const liveBadgeSelector = 'ytd-badge-supported-renderer'
-    const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]'
-    const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]'
+    const badgeSelector = 'ytd-badge-supported-renderer';
+    const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]';
+    const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
     const addBadgeTextToVideo = badge => {
       const badgeText = badge.innerText.trim().toLowerCase();
       if (badgeText) {
         const video = badge.closest('ytd-grid-video-renderer');
-        video.setAttribute('badge-text', badgeText);
+        video?.setAttribute('badge-text', badgeText);
       }
     };
-    const liveBadges = document.querySelectorAll(liveBadgeSelector);
-    liveBadges.forEach(addBadgeTextToVideo);
+
+    // Live / Premiere
+    const badges = document.querySelectorAll(badgeSelector);
+    badges.forEach(addBadgeTextToVideo);
+
+    // Upcoming
     const upcomingBadges = document.querySelectorAll(upcomingBadgeSelector);
     upcomingBadges.forEach(addBadgeTextToVideo);
 
@@ -180,7 +184,8 @@ function runDynamicSettings() {
     });
 
     // Click on "Skip ad" button
-    const skippableAd = document.querySelectorAll('.ytp-ad-skip-button').length;
+    const skipButtons = Array.from(document.querySelectorAll('.ytp-ad-skip-button'));
+    const skippableAd = skipButtons.some(button => button.offsetParent);
     if (skippableAd) {
       document.querySelectorAll('.ytp-ad-skip-button')?.forEach(e => {
         if (e && e.offsetParent) {
@@ -190,31 +195,48 @@ function runDynamicSettings() {
     } else {
 
       // Speed through ads that can't be skipped (yet).
-      const adSelector = '.ytp-ad-player-overlay-instream-info';
-      const adElement = document.querySelectorAll(adSelector)[0];
+      let adSelector = '.ytp-ad-player-overlay-instream-info';
+      let adElement = document.querySelectorAll(adSelector)[0];
       const adActive = adElement && window.getComputedStyle(adElement).display !== 'none';
+      const video = document.getElementsByTagName("video")[0];
       if (adActive) {
         if (!hyper) {
-          originalPlayback = document.getElementsByTagName("video")[0].playbackRate;
-          originalMuted = document.getElementsByTagName("video")[0].muted;
           hyper = true;
         }
-        document.getElementsByTagName("video")[0].playbackRate = 10;
-        document.getElementsByTagName("video")[0].muted = true;
+        video.playbackRate = 10;
+        video.muted = true;
       } else {
         if (hyper) {
-          document.getElementsByTagName("video")[0].playbackRate = originalPlayback;
-          document.getElementsByTagName("video")[0].muted = originalMuted;
+          let playbackRate = 1;
+          let muted = false;
+          try {
+            const playbackRateObject = window.sessionStorage['yt-player-playback-rate'];
+            const volumeObject = window.sessionStorage['yt-player-volume'];
+            playbackRate = Number(JSON.parse(playbackRateObject).data);
+            muted = JSON.parse(JSON.parse(volumeObject).data).muted;
+          } catch (error) {
+            console.log(error);
+          }
+          video.playbackRate = playbackRate !== undefined ? playbackRate : 1;
+          video.muted = muted !== undefined ? muted : false;
           hyper = false;
         }
       }
-
     }
   }
 
   // if (cache['change_playback_speed']) {
   //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
   // }
+
+  // Hide all but the timestamped comments
+  if (cache['remove_non_timestamp_comments']) {
+    const timestamps = document.querySelectorAll('yt-formatted-string:not(.published-time-text).ytd-comment-renderer > a.yt-simple-endpoint[href^="/watch"]');
+    timestamps.forEach(timestamp => {
+      const comment = timestamp.closest('ytd-comment-thread-renderer');
+      comment.setAttribute('timestamp_comment', '');
+    });
+  }
 
   frameRequested = false;
   isRunning = false;
@@ -255,5 +277,5 @@ function requestRunDynamicSettings() {
   if (frameRequested || isRunning) return;
   frameRequested = true;
   // setTimeout(() => runDynamicSettings(), 50);
-  setTimeout(() => runDynamicSettings(), Math.min(500, 50 + 10 * dynamicIters));
+  setTimeout(() => runDynamicSettings(), Math.min(100, 50 + 10 * dynamicIters));
 }
