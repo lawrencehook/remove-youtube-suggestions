@@ -234,7 +234,7 @@ const SECTIONS = [
       {
         name: "Hide search bar suggestions",
         id: "remove_search_suggestions",
-        defaultValue: false
+        defaultValue: true
       },
       {
         name: "Hide shorts",
