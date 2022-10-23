@@ -1,23 +1,23 @@
 const SECTIONS = [
   {
     name: "Basic",
-    sidebarName: "Basic",
+    tags: "Basic",
     options: [
       {
         name: "Hide all homepage suggestions",
-        sidebarName: "Homepage",
+        tags: "Homepage",
         id: "remove_homepage",
         defaultValue: true
       },
       {
         name: "Hide sidebar suggestions",
-        sidebarName: "Video Player",
+        tags: "Video Player",
         id: "remove_sidebar",
         defaultValue: true 
       },
       {
         name: "Hide end-of-video suggestions",
-        sidebarName: "Video Player",
+        tags: "Video Player",
         id: "remove_end_of_video",
         defaultValue: true 
       },
@@ -25,7 +25,7 @@ const SECTIONS = [
   },
   {
     name: "Homepage",
-    sidebarName: "Homepage",
+    tags: "Homepage",
     options: [
       {
         name: "Hide the header",
@@ -58,10 +58,11 @@ const SECTIONS = [
   },
   {
     name: "Left Navigation Bar",
-    sidebarName: "Left Navbar",
+    tags: "Left Navbar",
     options: [
       {
         name: "Hide the entire sidebar",
+        tags: "Basic",
         id: "remove_left_nav_bar",
         defaultValue: false
       },
@@ -94,7 +95,7 @@ const SECTIONS = [
   },
   {
     name: "Left Navigation Bar Sections",
-    sidebarName: "Left Navbar",
+    tags: "Left Navbar",
     options: [
       {
         name: "Hide section - Library, etc.",
@@ -120,10 +121,11 @@ const SECTIONS = [
   },
   {
     name: "Video Player - UX",
-    sidebarName: "Video Player",
+    tags: "Video Player",
     options: [
       {
         name: "Skip and close ads",
+        tags: "Basic",
         id: "auto_skip_ads",
         defaultValue: true
       },
@@ -134,7 +136,7 @@ const SECTIONS = [
       },
       {
         name: "Redirect shorts to the default viewer",
-        sidebarName: "Redirects",
+        tags: "Redirects, Basic",
         id: "normalize_shorts",
         defaultValue: true
       },
@@ -147,7 +149,7 @@ const SECTIONS = [
   },
   {
     name: "Video Player - UI",
-    sidebarName: "Video Player",
+    tags: "Video Player",
     options: [
       {
         name: "Center contents - removes the sidebar",
@@ -188,10 +190,11 @@ const SECTIONS = [
   },
   {
     name: "Video Player - Comments",
-    sidebarName: "Video Player",
+    tags: "Video Player",
     options: [
       {
         name: "Hide all comments",
+        tags: "Basic",
         id: "remove_comments",
         defaultValue: false
       },
@@ -229,25 +232,26 @@ const SECTIONS = [
   },
   {
     name: "Search Results",
-    sidebarName: "Search",
+    tags: "Search",
     options: [
       {
         name: "Hide search bar suggestions",
+        tags: "Basic",
         id: "remove_search_suggestions",
         defaultValue: true
       },
       {
-        name: "Hide shorts",
+        name: "Hide results - shorts",
         id: "remove_shorts_results",
         defaultValue: true
       },
       {
-        name: "Hide extra results - For You, Trending, etc.",
+        name: "Hide results - For You, Trending, etc.",
         id: "remove_extra_results",
         defaultValue: true
       },
       {
-        name: "Disable the thumbnail slideshow - on hover effect",
+        name: "Disable the thumbnail slideshow - on hover",
         id: "remove_thumbnail_mouseover_effect",
         defaultValue: false
       },
@@ -255,7 +259,7 @@ const SECTIONS = [
   },
 {
     name: "Subscriptions Page",
-    sidebarName: "Subscriptions",
+    tags: "Subscriptions",
     options: [
       {
         name: "Hide shorts",
@@ -281,7 +285,7 @@ const SECTIONS = [
   },
   {
     name: "Redirect the Homepage",
-    sidebarName: "Redirects",
+    tags: "Redirects",
     options: [
       {
         name: "Redirect home to Subscriptions",
@@ -338,7 +342,7 @@ const SECTIONS = [
   },
   {
     name: "Extension Settings",
-    sidebarName: "Settings",
+    tags: "Settings",
     options: [
       {
         name: "Enable menu timer - 10 seconds",

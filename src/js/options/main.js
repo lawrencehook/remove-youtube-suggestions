@@ -56,31 +56,31 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   // Clear the options list, and the sidebar
   OPTIONS_LIST.innerHTML = '';
   SIDEBAR.innerHTML = '';
-  sidebarNames = [];
+  let allTags = [];
 
   // Add option nodes to the HTML.
   SECTIONS.forEach(section => {
-    const { name, sidebarName, options } = section;
+    const { name, tags, options } = section;
 
-    sidebarNames.push(sidebarName);
+    tags.split(',').forEach(tag => allTags.push(tag.trim()));
 
     // Create a new section
     const sectionNode = TEMPLATE_SECTION.cloneNode(true);
     sectionNode.id = name;
     sectionNode.classList.remove('removed');
-    sectionNode.setAttribute('sidebarName', sidebarName);
+    sectionNode.setAttribute('tags', tags);
     const label = sectionNode.querySelector('.section_label');
     label.innerText = name;
 
     options.forEach(option => {
-      const { id, name, sidebarName, defaultValue, effects, display } = option;
+      const { id, name, tags, defaultValue, effects, display } = option;
       if (display === false) return;
 
       const optionNode = TEMPLATE_OPTION.cloneNode(true);
       optionNode.classList.remove('removed');
       optionNode.id = id;
       optionNode.setAttribute('name', name);
-      optionNode.setAttribute('sidebarName', sidebarName);
+      optionNode.setAttribute('tags', tags);
       optionNode.classList.add(id);
       const optionLabel = optionNode.querySelector('.option_label');
       optionLabel.innerText = name;
@@ -110,29 +110,26 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   });
 
   // Add sections to the sidebar
-  const uniqueSidebarNames = Array.from(new Set(sidebarNames));
-  uniqueSidebarNames.forEach(sidebarName => {
+  const uniqueTags = Array.from(new Set(allTags));
+  uniqueTags.forEach(tag => {
     const sidebarSection = TEMPLATE_SIDEBAR_SECTION.cloneNode(true);
     sidebarSection.removeAttribute('hidden');
     sidebarSection.removeAttribute('id');
-    sidebarSection.setAttribute('sidebarName', sidebarName);
-    sidebarSection.innerText = sidebarName;
+    sidebarSection.setAttribute('tag', tag);
+    sidebarSection.innerText = tag;
     sidebarSection.addEventListener('click', sidebarSectionListener);
     SIDEBAR.append(sidebarSection);
   });
 
-  // Pre-select sidebar option based on current window.
+  // Pre-select sidebar option based on current window. Default to 'Basic'
   if (resultsPageRegex.test(currentUrl)) {
-    console.log('matched resultsPageRegex');
-    document.querySelector('.sidebar_section[sidebarname="Search"]').click();
-  }
-  if (videoPageRegex.test(currentUrl)) {
-    console.log('matched videoPageRegex');
-    document.querySelector('.sidebar_section[sidebarname="Video Player"]').click();
-  }
-  if (subsRegex.test(currentUrl)) {
-    console.log('matched subsRegex');
-    document.querySelector('.sidebar_section[sidebarname="Subscriptions"]').click();
+    document.querySelector('.sidebar_section[tag="Search"]').click();
+  } else if (videoPageRegex.test(currentUrl)) {
+    document.querySelector('.sidebar_section[tag="Video Player"]').click();
+  } else if (subsRegex.test(currentUrl)) {
+    document.querySelector('.sidebar_section[tag="Subscriptions"]').click();
+  } else {
+    document.querySelector('.sidebar_section[tag="Basic"]').click();
   }
 
   if (headerSettings) {
@@ -231,7 +228,7 @@ function sidebarSectionListener(e) {
   const sidebarSection = e.target;
   const sidebarSections = Array.from(document.querySelectorAll('.sidebar_section'));
   const selected = sidebarSection.toggleAttribute('selected');
-  const sidebarName = sidebarSection.getAttribute('sidebarName');
+  const tag = sidebarSection.getAttribute('tag');
   const sections = Array.from(document.querySelectorAll('.section_container:not(#template_section)'));
 
   // Reset
@@ -248,15 +245,15 @@ function sidebarSectionListener(e) {
   if (!selected) return;
 
   sections.forEach(section => {
-    const sectionSidebarName = section.getAttribute('sidebarName');
-    const sectionMatch = sidebarName === sectionSidebarName;
+    const sectionTags = section.getAttribute('tags').split(',').map(t => t.trim());
+    const sectionMatch = sectionTags.some(t => t === tag);
     if (sectionMatch) return;
 
     const options = Array.from(section.querySelectorAll('div.option'));
     let optionFound = false;
     options.forEach(option => {
-      const optionSidebarName = option.getAttribute('sidebarName');
-      const optionMatch = sidebarName === optionSidebarName;
+      const optionTags = option.getAttribute('tags').split(',').map(t => t.trim());
+      const optionMatch = optionTags.some(t => t === tag);
       if (optionMatch) {
         optionFound = true;
       } else {
