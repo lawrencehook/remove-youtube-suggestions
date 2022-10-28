@@ -162,6 +162,8 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
 function updateSetting(id, value) {
 
+  recordEvent('Setting changed', { id, value });
+
   HTML.setAttribute(id, value);
 
   // Update local storage.
@@ -230,6 +232,8 @@ function sidebarSectionListener(e) {
   const selected = sidebarSection.toggleAttribute('selected');
   const tag = sidebarSection.getAttribute('tag');
   const sections = Array.from(document.querySelectorAll('.section_container:not(#template_section)'));
+
+  recordEvent('Section selected', { tag, selected });
 
   // Reset
   sections.forEach(section => {
