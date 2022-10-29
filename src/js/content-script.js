@@ -248,14 +248,19 @@ function handleUrlChange() {
   if (cache['global_enable'] !== true) return;
 
   dynamicIters = 0;
-  const currentUrl = location.href;
 
-  // Mark whether or not we're on the "results" page
+  const currentUrl = location.href;
+  const onHomepage = homepageRegex.test(currentUrl);
   const onResultsPage = resultsPageRegex.test(currentUrl);
+  const onShorts = shortsRegex.test(currentUrl);
+
+  // Mark whether or not we're on the search results page
   HTML.setAttribute('on_results_page', onResultsPage);
 
-  // Redirect the homepage
-  const onHomepage = homepageRegex.test(currentUrl);
+  // Mark whether or not we're on the homepage
+  HTML.setAttribute('on_homepage', onHomepage);
+
+  // Homepage redirects
   if (onHomepage && !cache['redirect_off']) {
     if (cache['redirect_to_subs'])    location.replace(REDIRECT_URLS['redirect_to_subs']);
     if (cache['redirect_to_wl'])      location.replace(REDIRECT_URLS['redirect_to_wl']);
@@ -263,7 +268,6 @@ function handleUrlChange() {
   }
 
   // Redirect the shorts player
-  const onShorts = shortsRegex.test(currentUrl);
   if (onShorts && cache['normalize_shorts']) {
     const newUrl = currentUrl.replace('shorts', 'watch');
     location.replace(newUrl);

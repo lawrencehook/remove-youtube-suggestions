@@ -355,7 +355,8 @@ const SECTIONS = [
 
 const OTHER_SETTINGS = {
   global_enable: true,
-  dark_mode: false
+  dark_mode: false,
+  log_enabled: true,
 };
 
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {

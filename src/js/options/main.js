@@ -34,13 +34,13 @@ browser.runtime.onMessage.addListener((data, sender) => {
 
     // Initial page load.
     if (SECTIONS) {
-      browser.tabs.query({ currentWindow: true, active:true }, tabs => {
+      browser.tabs.query({ currentWindow: true, active: true }, tabs => {
         if (!tabs || tabs.length === 0) return;
         const [{ url }] = tabs;
         currentUrl = url;
         populateOptions(SECTIONS, headerSettings, settings);
         HTML.setAttribute('loaded', true);
-      })
+      });
     }
 
     return true;
@@ -121,17 +121,6 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     SIDEBAR.append(sidebarSection);
   });
 
-  // Pre-select sidebar option based on current window. Default to 'Basic'
-  if (resultsPageRegex.test(currentUrl)) {
-    document.querySelector('.sidebar_section[tag="Search"]').click();
-  } else if (videoPageRegex.test(currentUrl)) {
-    document.querySelector('.sidebar_section[tag="Video Player"]').click();
-  } else if (subsRegex.test(currentUrl)) {
-    document.querySelector('.sidebar_section[tag="Subscriptions"]').click();
-  } else {
-    document.querySelector('.sidebar_section[tag="Basic"]').click();
-  }
-
   if (headerSettings) {
     Object.entries(headerSettings).forEach(([ id, value ]) => {
       HTML.setAttribute(id, value);
@@ -145,6 +134,17 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
         updateSetting(id, value);
       });
     });
+  }
+
+  // Pre-select sidebar option based on current window. Default to 'Basic'
+  if (resultsPageRegex.test(currentUrl)) {
+    document.querySelector('.sidebar_section[tag="Search"]').click();
+  } else if (videoPageRegex.test(currentUrl)) {
+    document.querySelector('.sidebar_section[tag="Video Player"]').click();
+  } else if (subsRegex.test(currentUrl)) {
+    document.querySelector('.sidebar_section[tag="Subscriptions"]').click();
+  } else {
+    document.querySelector('.sidebar_section[tag="Basic"]').click();
   }
 
   const searchBar = document.getElementById('search_bar');

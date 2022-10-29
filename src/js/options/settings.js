@@ -21,8 +21,14 @@ const settingsListener = e => {
 }
 SETTINGS_BUTTON.addEventListener('click', settingsListener);
 
-
+// Global toggle
 const SETTINGS_ENABLE = document.getElementById('settings-enable');
 SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
 const SETTINGS_DISABLE = document.getElementById('settings-disable');
 SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', false));
+
+// Logging toggle
+const LOG_ENABLE = document.getElementById('log-enable');
+LOG_ENABLE.addEventListener('click', e => updateSetting('log_enabled', true));
+const LOG_DISABLE = document.getElementById('log-disable');
+LOG_DISABLE.addEventListener('click', e => updateSetting('log_enabled', false));

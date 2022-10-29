@@ -4,7 +4,7 @@ html[global_enable="true"] ytd-mealbar-promo-renderer,
 html[global_enable="true"] .ytd-display-ad-renderer,
 
 /* Main */
-html[global_enable="true"][remove_homepage="true"] ytd-browse[page-subtype="home"],
+html[global_enable="true"][on_homepage="true"][remove_homepage="true"] ytd-browse[page-subtype="home"],
 html[global_enable="true"][remove_sidebar="true"] #secondary > div.circle,
 html[global_enable="true"][remove_sidebar="true"] #related,
 html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
@@ -27,11 +27,11 @@ html[global_enable="true"][remove_explore_section="true"] ytd-guide-section-rend
 html[global_enable="true"][remove_more_section="true"]    ytd-guide-section-renderer[rys_more_section],
 
 /* Homepage */
-html[global_enable="true"][remove_header="true"] ytd-rich-grid-renderer > div#header,
-html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row:nth-child(n+2),
-html[global_enable="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
-html[global_enable="true"][remove_extra_rows="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
-html[global_enable="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
+html[global_enable="true"][on_homepage="true"][remove_header="true"] ytd-rich-grid-renderer > div#header,
+html[global_enable="true"][on_homepage="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row:nth-child(n+2),
+html[global_enable="true"][on_homepage="true"][remove_all_but_one="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
+html[global_enable="true"][on_homepage="true"][remove_extra_rows="true"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
+html[global_enable="true"][on_homepage="true"][remove_infinite_scroll="true"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 
 /* Video Player - UI*/
 html[global_enable="true"][remove_entire_sidebar="true"] #secondary,

@@ -132,6 +132,8 @@ html[dark_mode='false'] #header-light { display: none }
 }
 html[global_enable="true"] #settings-enable,
 html[global_enable="false"] #settings-disable,
+html[log_enabled="true"] #log-enable,
+html[log_enabled="false"] #log-disable,
 html[foo=bar]
 {
   display: none
