@@ -125,7 +125,7 @@ function runDynamicSettings() {
     const shortBadges = document.querySelectorAll(shortsBadgeSelector);
     shortBadges.forEach(badge => {
       const video = badge.closest('ytd-grid-video-renderer');
-      video.setAttribute('is_sub_short', '');
+      video?.setAttribute('is_sub_short', '');
     });
   }
 
@@ -135,15 +135,17 @@ function runDynamicSettings() {
     shortResults.forEach(sr => {
       sr.setAttribute('marked_as_short', true);
       const result = sr.closest('ytd-video-renderer');
-      result.setAttribute('is_short', true);
+      result?.setAttribute('is_short', true);
     })
   }
 
-  // Click on the "dismiss" button
-  const dismissButton = document.getElementById('dismiss-button');
-  if (dismissButton && dismissButton.offsetParent) {
-    dismissButton.click();
-  }
+  // Click on "dismiss" buttons
+  const dismissButtons = document.querySelectorAll('#dismiss-button');
+  dismissButtons.forEach(dismissButton => {
+    if (dismissButton && dismissButton.offsetParent) {
+      dismissButton.click();
+    }
+  })
 
   // Disable autoplay
   if (cache['disable_autoplay'] === true) {
@@ -234,7 +236,7 @@ function runDynamicSettings() {
     const timestamps = document.querySelectorAll('yt-formatted-string:not(.published-time-text).ytd-comment-renderer > a.yt-simple-endpoint[href^="/watch"]');
     timestamps.forEach(timestamp => {
       const comment = timestamp.closest('ytd-comment-thread-renderer');
-      comment.setAttribute('timestamp_comment', '');
+      comment?.setAttribute('timestamp_comment', '');
     });
   }
 

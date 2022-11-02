@@ -3,7 +3,7 @@
   "description": "Spend less time on YouTube. Customize YouTube's user interface to be less engaging.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 2,
-  "version": "4.3.13",
+  "version": "4.3.14",
 
   "icons": {
     "16": "images/16.png",
