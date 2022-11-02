@@ -1,4 +1,4 @@
-# Remove Youtube Suggestions
+# RYS — Remove YouTube Suggestions
 #### A Browser Extension
 
 ### Feedback and Support
