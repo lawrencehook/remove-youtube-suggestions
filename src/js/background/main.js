@@ -241,6 +241,11 @@ const SECTIONS = [
         defaultValue: true
       },
       {
+        name: "Hide promoted videos",
+        id: "remove_search_promoted",
+        defaultValue: true
+      },
+      {
         name: "Hide results - shorts",
         id: "remove_shorts_results",
         defaultValue: true
