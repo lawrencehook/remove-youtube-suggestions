@@ -56,11 +56,9 @@ document.addEventListener("DOMContentLoaded", event => {
   counter = 0;
   theaterClicked = false;
   hyper = false;
-  originalPlayback = undefined;
-  originalMuted = undefined;
   onResultsPage = resultsPageRegex.test(location.href);
 
-  requestRunDynamicSettings()
+  handleNewPage();
 });
 
 // let lastRun = Date.now();
@@ -83,10 +81,8 @@ function runDynamicSettings() {
     url = location.href;
     theaterClicked = false;
     hyper = false;
-    originalPlayback = undefined;
-    originalMuted = undefined;
     onResultsPage = resultsPageRegex.test(location.href);
-    handleUrlChange();
+    handleNewPage();
   }
 
   // Mark the left nav bar sections
@@ -246,7 +242,34 @@ function runDynamicSettings() {
 }
 
 
-function handleUrlChange() {
+function injectScripts() {
+
+  // Disable playlist autoplay
+  if (cache['disable_playlist_autoplay']) {
+    const existingScript = document.querySelector('script[id="disable_playlist_autoplay"]')
+    if (existingScript) return;
+
+    const script = document.createElement("script");
+    script.id = 'disable_playlist_autoplay';
+    script.type = "text/javascript";
+    script.innerText = `
+(function() {
+let pm;
+function f() {
+  if (!pm) pm = document.querySelector('yt-playlist-manager');
+  if (pm) pm.canAutoAdvance_ = false;
+}
+f();
+setInterval(f, 100);
+})()
+`;
+    document.body?.appendChild(script);
+  }
+
+}
+
+
+function handleNewPage() {
   if (cache['global_enable'] !== true) return;
 
   dynamicIters = 0;
@@ -275,6 +298,7 @@ function handleUrlChange() {
     location.replace(newUrl);
   }
 
+  injectScripts();
   requestRunDynamicSettings();
 }
 

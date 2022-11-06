@@ -135,6 +135,11 @@ const SECTIONS = [
         defaultValue: true
       },
       {
+        name: "Disable autoplay for playlists",
+        id: "disable_playlist_autoplay",
+        defaultValue: true
+      },
+      {
         name: "Redirect shorts to the default viewer",
         tags: "Redirects, Basic",
         id: "normalize_shorts",
@@ -381,6 +386,7 @@ browser.runtime.onMessage.addListener((data, sender) => {
       const { frameId, tab } = sender;
       browser.storage.local.get(localSettings => {
         const settings = { ...DEFAULT_SETTINGS, ...localSettings };
+
         browser.tabs.sendMessage(tab.id, { settings }, {});
 
         // Gray out browserAction
