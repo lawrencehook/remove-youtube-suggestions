@@ -137,7 +137,7 @@ const SECTIONS = [
       {
         name: "Disable autoplay for playlists",
         id: "disable_playlist_autoplay",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Redirect shorts to the default viewer",
