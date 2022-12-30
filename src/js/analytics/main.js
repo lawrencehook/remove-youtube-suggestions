@@ -9,6 +9,5 @@ function recordEvent(name, props={}) {
 	if (logEnabled !== 'true') return;
 
 	props.extension_version = browser.runtime.getManifest().version;
-	console.log(name, props);
 	mixpanel.track(name, props);
 }
