@@ -55,7 +55,7 @@ const SECTIONS = [
         defaultValue: true
       },
       {
-        name: "Disable play on hover",
+        name: "Disable play on hover (page refresh required)",
         id: "disable_play_on_hover",
         defaultValue: false
       },
