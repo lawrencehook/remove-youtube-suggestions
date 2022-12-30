@@ -135,6 +135,16 @@ const SECTIONS = [
         defaultValue: true
       },
       {
+        name: "Disable ambient mode",
+        id: "disable_ambient_mode",
+        defaultValue: false
+      },
+      {
+        name: "Disable annotations",
+        id: "disable_annotations",
+        defaultValue: false
+      },
+      {
         name: "Disable autoplay for playlists",
         id: "disable_playlist_autoplay",
         defaultValue: false
@@ -143,7 +153,7 @@ const SECTIONS = [
         name: "Redirect shorts to the default viewer",
         tags: "Redirects, Basic",
         id: "normalize_shorts",
-        defaultValue: true
+        defaultValue: false
       },
       // {
       //   name: "Enable theater mode",
@@ -243,7 +253,7 @@ const SECTIONS = [
         name: "Hide search bar suggestions",
         tags: "Basic",
         id: "remove_search_suggestions",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide promoted videos",

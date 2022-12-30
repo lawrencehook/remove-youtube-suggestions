@@ -161,6 +161,26 @@ function runDynamicSettings() {
     });
   }
 
+  // Disable ambient mode
+  if (cache['disable_ambient_mode'] === true) {
+    const ambientToggle = Array.from(document.querySelectorAll('.ytp-menuitem-label')).
+                            filter(label => label.innerText.toLowerCase() === 'ambient mode').
+                            map(n => n.parentNode).
+                            filter(n => n.getAttribute('aria-checked') === 'true').
+                            map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
+                            forEach(n => n.click());
+  }
+
+  // Disable annotations
+  if (cache['disable_annotations'] === true) {
+    const annotationsToggle = Array.from(document.querySelectorAll('.ytp-menuitem-label')).
+                                filter(label => label.innerText.toLowerCase() === 'annotations').
+                                map(n => n.parentNode).
+                                filter(n => n.getAttribute('aria-checked') === 'true').
+                                map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
+                                forEach(n => n.click());
+  }
+
   // // Enable theater mode
   // if (cache['enable_theater'] === true && !theaterClicked) {
   //   const theaterButton = document.querySelectorAll('button[title="Theater mode (t)"]')?.[0];
