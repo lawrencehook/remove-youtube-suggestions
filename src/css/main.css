@@ -58,6 +58,7 @@ html[global_enable="true"][remove_comment_upvotes="true"] #vote-count-middle.ytd
 html[global_enable="true"][remove_search_suggestions="true"] div.sbdd_a,
 html[global_enable="true"][remove_search_promoted="true"] #container.ytd-search ytd-search-pyv-renderer,
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-video-renderer[is_short="true"],
+html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_extra_results="true"] #container.ytd-search ytd-shelf-renderer,
 html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
 
