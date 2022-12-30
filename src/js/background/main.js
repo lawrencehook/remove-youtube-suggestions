@@ -54,6 +54,11 @@ const SECTIONS = [
         id: "remove_infinite_scroll",
         defaultValue: true
       },
+      {
+        name: "Disable play on hover",
+        id: "disable_play_on_hover",
+        defaultValue: false
+      },
     ]
   },
   {
