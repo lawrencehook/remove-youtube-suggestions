@@ -1,8 +1,12 @@
 # RYS — Remove YouTube Suggestions
 #### A Browser Extension
 
+---
+
 ### What it does
 This extension aims to make YouTube less engaging. It provides options to hide recommended videos and to customize the user interface.
+
+---
 
 ### Feedback and Support
 Leave a review!
@@ -12,6 +16,8 @@ Leave a review!
 
 Completely free. Donations welcome — [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url)  
 
+---
+
 ### Why I made it
 Motivated by an attempt to stymie the YouTube rabbit hole.
 
@@ -20,6 +26,8 @@ The YouTube recommendation algorithm optimizes for the most _engaging_ videos, r
 Available for download at the links below:
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
+
+---
 
 ### Development
 This project is 100% open source. Created and maintained by me, [Lawrence Hook](https://lawrencehook.com).  
