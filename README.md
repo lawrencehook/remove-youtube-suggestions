@@ -2,7 +2,7 @@
 #### A Browser Extension
 
 ### What it does
-This extension aims to make YouTube less engaging. Provides options to hide recommended videos and to customize the user interface.
+This extension aims to make YouTube less engaging. It provides options to hide recommended videos and to customize the user interface.
 
 ### Feedback and Support
 Leave a review!
