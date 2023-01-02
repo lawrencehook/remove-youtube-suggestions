@@ -15,7 +15,7 @@ Donations appreciated — [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_do
 ### Why I made it
 Motivated by an attempt to stymie the YouTube rabbit hole.
 
-The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please.
+The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions can result in a waste of your time. Download this add-on and remove unwanted suggestions as you please.
 
 Available for download at the links below:
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
