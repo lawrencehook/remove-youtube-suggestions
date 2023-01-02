@@ -1,8 +1,8 @@
 # RYS — Remove YouTube Suggestions
 #### A Browser Extension
 
-### What
-This extension hides recommended videos on YouTube and allows customization of the user interface to be less engaging.
+### What it does
+This extension aims to make YouTube less engaging. Provides options to hide recommended videos and to customize the user interface.
 
 ### Feedback and Support
 Leave a review!
@@ -12,7 +12,7 @@ Leave a review!
 
 Donations appreciated — [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url)  
 
-### Why
+### Why I made it
 Motivated by an attempt to stymie the YouTube rabbit hole.
 
 The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions results in a waste of your time. So download this add-on and remove unwanted suggestions as you please.
