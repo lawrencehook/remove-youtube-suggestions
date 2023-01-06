@@ -258,7 +258,7 @@ function runDynamicSettings() {
 
   // Disable play on hover
   const prefCookie = getCookie('PREF');
-  const prefObj = prefCookie?.split('&').reduce((acc, x) => {
+  const prefObj = prefCookie?.split('&')?.reduce((acc, x) => {
     const [ key, value ] = x.split('=');
     acc[key] = value;
     return acc;

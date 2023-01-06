@@ -32,3 +32,57 @@ const LOG_ENABLE = document.getElementById('log-enable');
 LOG_ENABLE.addEventListener('click', e => updateSetting('log_enabled', true));
 const LOG_DISABLE = document.getElementById('log-disable');
 LOG_DISABLE.addEventListener('click', e => updateSetting('log_enabled', false));
+
+
+// Import settings
+const IMPORT_SETTINGS = document.getElementById('import-settings');
+IMPORT_SETTINGS.addEventListener('click', e => {
+  openImportModal();
+});
+
+// Export settings
+const EXPORT_SETTINGS = document.getElementById('export-settings');
+EXPORT_SETTINGS.addEventListener('click', e => {
+  browser.storage.local.get(async localSettings => {
+    const settingsObj = { ...DEFAULT_SETTINGS, ...localSettings };
+    const settingsStr = settingsObjToStr(settingsObj);
+    navigator.clipboard.writeText(settingsStr);
+
+    console.log(settingsStr === settingsObjToStr(settingsStrToObj(settingsStr)));
+
+    displayStatus('Settings copied to clipboard');
+  });
+});
+
+
+function openImportModal() {
+
+}
+
+function displayStatus(msg, fadeTime=1000) {
+  // TODO
+}
+
+const prefix = 'rys_settings_';
+const delimiter1 = ':';
+const delimiter2 = ',';
+function settingsObjToStr(settings) {
+  const getId = id => idToShortId[id];
+  const getVal = val => val === true ? 't' : 'f';
+
+  const str = Object.entries(settings).map(([id, val]) => `${getId(id)}${delimiter1}${getVal(val)}`).join(delimiter2);
+  return prefix + str;
+}
+function settingsStrToObj(settingsStr) {
+  const getId = id => shortIdToId[id];
+  const getVal = val => val === 't';
+
+  settingsStr = settingsStr.substring(prefix.length);
+  const obj = settingsStr.split(delimiter2).reduce((acc, curr) => {
+    const [ id, val ] = curr.split(delimiter1);
+    acc[getId(id)] = getVal(val);
+    return acc;
+  }, {});
+
+  return obj;
+}
