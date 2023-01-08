@@ -1,3 +1,7 @@
+const prefix = 'rys_settings_';
+const delimiter1 = ':';
+const delimiter2 = ',';
+
 const SETTINGS_MENU = document.getElementById('settings-menu');
 const SETTINGS_BUTTON = document.getElementById('header-settings');
 const settingsListener = e => {
@@ -48,24 +52,77 @@ EXPORT_SETTINGS.addEventListener('click', e => {
     const settingsStr = settingsObjToStr(settingsObj);
     navigator.clipboard.writeText(settingsStr);
 
-    console.log(settingsStr === settingsObjToStr(settingsStrToObj(settingsStr)));
-
     displayStatus('Settings copied to clipboard');
   });
 });
 
+// Import Modal
+const importModalContainer = document.getElementById('import_container_background');
+const importModal = document.getElementById('import_container');
+const importInput = document.getElementById('import_input');
+const importSubmit = document.getElementById('import_submit');
+
+importModalContainer.addEventListener('click', e => {
+  if (e.target === importModalContainer) importModalContainer.setAttribute('hidden', '');
+});
+
+importSubmit.addEventListener('click', e => {
+  const settingsStr = importInput.value;
+
+  try {
+    const settingsObj = settingsStrToObj(settingsStr);
+    console.log(settingsObj);
+
+    browser.storage.local.set(settingsObj).then(x => {
+      updateSettings(settingsObj);
+      displayStatus('Successfully imported settings');
+      closeImportModal();
+    });
+
+  } catch (error) {
+    displayStatus('Import failed');
+    closeImportModal();
+  }
+
+});
+
+function updateSettings(settings) {
+  Object.entries(settings).forEach(([ id, value ]) => {
+    HTML.setAttribute(id, value);
+
+    const svg = document.querySelector(`div#${id} svg`);
+    svg?.toggleAttribute('active', value);
+  });
+
+  try {
+    // Update running tabs.
+    browser.tabs.query({ url: '*://*.youtube.com/*' }, tabs => {
+      tabs.forEach(tab => {
+        browser.tabs.sendMessage(tab.id, { settings });
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 function openImportModal() {
-
+  importModalContainer.removeAttribute('hidden');
+}
+function closeImportModal() {
+  importModalContainer.setAttribute('hidden', '');
 }
 
-function displayStatus(msg, fadeTime=1000) {
-  // TODO
+// Status overlay 
+const statusOverlayContainer = document.getElementById('status_overlay_container');
+const statusMessage = document.getElementById('status_message');
+function displayStatus(msg, fadeTime=1500) {
+  statusOverlayContainer.removeAttribute('hidden');
+  statusMessage.innerText = msg;
+
+  setTimeout(() => statusOverlayContainer.setAttribute('hidden', ''), fadeTime);
 }
 
-const prefix = 'rys_settings_';
-const delimiter1 = ':';
-const delimiter2 = ',';
 function settingsObjToStr(settings) {
   const getId = id => idToShortId[id];
   const getVal = val => val === true ? 't' : 'f';
@@ -73,9 +130,15 @@ function settingsObjToStr(settings) {
   const str = Object.entries(settings).map(([id, val]) => `${getId(id)}${delimiter1}${getVal(val)}`).join(delimiter2);
   return prefix + str;
 }
+
 function settingsStrToObj(settingsStr) {
-  const getId = id => shortIdToId[id];
+  const getId = id => {
+    if (!(id in shortIdToId)) throw new Error('Invalid ID: ' + id);
+    return shortIdToId[id];
+  }
   const getVal = val => val === 't';
+
+  if (settingsStr.substring(0, prefix.length) !== prefix) throw new Error('Invalid settings string');
 
   settingsStr = settingsStr.substring(prefix.length);
   const obj = settingsStr.split(delimiter2).reduce((acc, curr) => {

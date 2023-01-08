@@ -48,6 +48,9 @@ body * {
   color: var(--body-color);
 }
 
+*[hidden] {
+  display: none !important;
+}
 
 a {
   color: var(--body-color);

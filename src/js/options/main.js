@@ -166,13 +166,16 @@ function updateSetting(id, value) {
 
   HTML.setAttribute(id, value);
 
+  const svg = document.querySelector(`div#${id} svg`);
+  svg?.toggleAttribute('active', value);
+
   // Update local storage.
   browser.storage.local.set({ [id]: value });
 
   const settings = { [id]: value };
   try {
     // Update running tabs.
-    browser.tabs.query({}, tabs => {
+    browser.tabs.query({ url: '*://*.youtube.com/*' }, tabs => {
       tabs.forEach(tab => {
         browser.tabs.sendMessage(tab.id, { settings });
       });

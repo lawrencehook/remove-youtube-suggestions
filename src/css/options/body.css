@@ -28,6 +28,95 @@
   color: var(--body-background-color);
 }
 
+
+/* Status Overlay */
+#status_overlay_container[hidden] {
+  display: none;
+}
+#status_overlay_container {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+
+  width: fit-content;
+  min-height: fit-content;
+
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px 20px;
+
+  z-index: 11;
+
+  color: white;
+  background-color: rgba(50, 50, 50, 0.6);
+  box-shadow: 0px 0px .5px .5px rgba(0, 0, 0, 0.45);
+
+  border: 1px solid rgba(0, 0, 0, 0.45);;
+  border-radius: 99px;
+}
+
+#status_overlay {
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+#status_message {
+  color: white;
+}
+
+/* Import modal */
+#import_container_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 105vw;
+  height: 105vh;
+  z-index: 100;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+}
+
+#import_container {
+  height: fit-content;
+  width: min(50vw, 350px);
+  margin-top: calc(3 * var(--header-height));
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  text-align: center;
+
+  background-color: white;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.5);
+
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 2px;
+
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#import_container input {
+  width: min(75%, 200px);
+  padding: 2px 7px;
+}
+#import_container button {
+  width: fit-content;
+  padding: 2px 7px;
+}
+
+
+/* Menu Timer */
 #timer_container {
   position: fixed;
   top: 0;
@@ -54,8 +143,6 @@
 #sidebar {
   height: var(--body-height);
   width: 150px;
-  /*margin-top: 11px;*/
-  /*margin-bottom: 10px;*/
   padding: 10px 3px;
   overflow: hidden;
 
@@ -75,7 +162,6 @@
   box-sizing: border-box;
 
   font-size: 16px;
-  /*font-weight: bold;*/
 }
 #sidebar .sidebar_section:hover {
 }
@@ -91,19 +177,10 @@
   overflow-x: hidden;
 
   padding: 1px;
-  /*padding-top: 6px;*/
 
   display: flex;
   flex-direction: column;
   gap: 15px;
-}
-
-#primary_options .section_container {
-  /*margin-bottom: 10px;*/
-}
-
-#primary_options .section_container:not(:last-child) {
-  /*margin-bottom: 20px;*/
 }
 
 #primary_options .section_container {

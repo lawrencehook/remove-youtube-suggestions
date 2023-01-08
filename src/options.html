@@ -18,6 +18,21 @@
 
   <body>
 
+    <!-- Sync status overlay -->
+    <div id='status_overlay_container' hidden>
+      <div id='status_overlay'>
+        <div id='status_message'></div>
+      </div>
+    </div>
+
+    <div id="import_container_background" hidden>
+      <div id="import_container">
+        <div>Import Settings</div>
+        <input id="import_input" placeholder='Paste string: rys_settings_...'></input>
+        <button id="import_submit">Submit</button>
+      </div>
+    </div>
+
     <div id="timer_container">
       <div>Menu Timer</div>
       <div></div>
@@ -48,7 +63,7 @@
           <img id='header-logo' src="images/rys.svg">
         </a>
 
-        <div id='header-text'>Remove Youtube Suggestions</div>
+        <div id='header-text'>RYS</div>
       </div>
 
       <div id='header-right'>
