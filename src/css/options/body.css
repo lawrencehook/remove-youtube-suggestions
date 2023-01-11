@@ -48,9 +48,9 @@
 
   z-index: 11;
 
-  color: white;
-  background-color: rgba(50, 50, 50, 0.6);
-  box-shadow: 0px 0px .5px .5px rgba(0, 0, 0, 0.45);
+  color: var(--body-background-color);
+  background-color: var(--body-color);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
 
   border: 1px solid rgba(0, 0, 0, 0.45);;
   border-radius: 99px;
@@ -66,7 +66,7 @@
 }
 
 #status_message {
-  color: white;
+  color: var(--body-background-color);
 }
 
 /* Import modal */
@@ -83,6 +83,10 @@
   display: flex;
 }
 
+#import_container, #import_container * {
+  color: var(--body-color);
+}
+
 #import_container {
   height: fit-content;
   width: min(50vw, 350px);
@@ -94,10 +98,10 @@
 
   text-align: center;
 
-  background-color: white;
-  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.5);
+  background-color: var(--body-background-color);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
 
-  border: 1px solid rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--box-shadow-color);
   border-radius: 2px;
 
   display: flex;
@@ -109,10 +113,12 @@
 #import_container input {
   width: min(75%, 200px);
   padding: 2px 7px;
+  color: black;
 }
 #import_container button {
   width: fit-content;
   padding: 2px 7px;
+  color: black;
 }
 
 

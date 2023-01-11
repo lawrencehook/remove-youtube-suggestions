@@ -127,7 +127,9 @@ function settingsObjToStr(settings) {
   const getId = id => idToShortId[id];
   const getVal = val => val === true ? 't' : 'f';
 
-  const str = Object.entries(settings).map(([id, val]) => `${getId(id)}${delimiter1}${getVal(val)}`).join(delimiter2);
+  const str = Object.entries(settings).
+                filter(([id, val]) => getId(id)).
+                map(([id, val]) => `${getId(id)}${delimiter1}${getVal(val)}`).join(delimiter2);
   return prefix + str;
 }
 

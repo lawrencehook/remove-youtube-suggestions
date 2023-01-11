@@ -19,6 +19,8 @@ browser.runtime.onMessage.addListener((data, sender) => {
           browser.browserAction.setIcon(inactiveIcons);
         }
 
+        // Save settings. (for initial load)
+        browser.storage.local.set(settings);
       });
     }
 
