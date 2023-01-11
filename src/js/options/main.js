@@ -69,8 +69,9 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     sectionNode.id = name;
     sectionNode.classList.remove('removed');
     sectionNode.setAttribute('tags', tags);
-    const label = sectionNode.querySelector('.section_label');
+    const label = sectionNode.querySelector('.section_label > a');
     label.innerText = name;
+    label.setAttribute('href', sectionNameToUrl(name));
 
     options.forEach(option => {
       const { id, name, tags, defaultValue, effects, display } = option;

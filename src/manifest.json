@@ -14,7 +14,7 @@
 
   "background": {
     "scripts": [
-      "js/shared/settings.js",
+      "js/shared/main.js",
       "js/background/events.js",
       "js/background/main.js"
     ],

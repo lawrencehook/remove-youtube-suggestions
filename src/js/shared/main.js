@@ -1,3 +1,5 @@
+const HOST = 'https://lawrencehook.com/rys/';
+
 const SECTIONS = [
   {
     name: "Basic",
@@ -448,7 +450,18 @@ const idToShortId = {
   "menu_timer":                        '53',
 };
 
+
 const shortIdToId = Object.entries(idToShortId).reduce((acc, [id, shortId]) => {
   acc[shortId] = id;
   return acc;
 }, {});
+
+
+function sectionNameToUrl(name) {
+  const sectionPath = name.
+                        toLowerCase().
+                        replaceAll(' - ', '_').
+                        replaceAll(' ', '_');
+
+  return HOST + '/features/' + sectionPath + '/';
+}
