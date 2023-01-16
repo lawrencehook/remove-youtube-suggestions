@@ -2,6 +2,24 @@ const HOST = 'https://lawrencehook.com/rys/';
 
 const SECTIONS = [
   {
+    name: "General",
+    tags: "General",
+    options: [
+      {
+        name: "Hide all Shorts",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "remove_all_shorts",
+        defaultValue: false,
+      },
+      {
+        name: "Hide video thumbnails",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "remove_video_thumbnails",
+        defaultValue: false,
+      },
+    ]
+  },
+  {
     name: "Basic",
     tags: "Basic",
     options: [
@@ -22,12 +40,6 @@ const SECTIONS = [
         tags: "Video Player",
         id: "remove_end_of_video",
         defaultValue: true 
-      },
-      {
-        name: "Hide all Shorts",
-        tags: "Homepage, Subscriptions, Video Player, Search",
-        id: "remove_all_shorts",
-        defaultValue: false,
       },
     ]
   },
