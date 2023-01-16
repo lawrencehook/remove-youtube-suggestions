@@ -85,6 +85,25 @@ function runDynamicSettings() {
     handleNewPage();
   }
 
+  // Hide all shorts
+  if (cache['remove_all_shorts']) {
+    const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
+    const shortBadges = document.querySelectorAll(shortsBadgeSelector);
+    shortBadges?.forEach(badge => {
+      const sidebarVid = badge.closest('ytd-compact-video-renderer');
+      sidebarVid?.setAttribute('is_short', '');
+      const gridVideo = badge.closest('ytd-grid-video-renderer');
+      gridVideo?.setAttribute('is_short', '');
+    });
+
+    const shortsShelfSelector = '*[is-shorts]';
+    const shortsShelves = document.querySelectorAll(shortsShelfSelector);
+    shortsShelves?.forEach(shelf => {
+      const shelfContainer = shelf.closest('ytd-rich-section-renderer');
+      shelfContainer?.setAttribute('is_short', '');
+    });
+  }
+
   // Mark the left nav bar sections
   const leftSections = document.querySelectorAll('ytd-guide-section-renderer');
   leftSections.forEach(section => {
@@ -104,8 +123,8 @@ function runDynamicSettings() {
     const addBadgeTextToVideo = badge => {
       const badgeText = badge.innerText.trim().toLowerCase();
       if (badgeText) {
-        const video = badge.closest('ytd-grid-video-renderer');
-        video?.setAttribute('badge-text', badgeText);
+        const gridVideo = badge.closest('ytd-grid-video-renderer');
+        gridVideo?.setAttribute('badge-text', badgeText);
       }
     };
 

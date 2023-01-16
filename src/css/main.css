@@ -1,6 +1,7 @@
 
 html[global_enable="true"] #masthead-ad,
 html[global_enable="true"] ytd-mealbar-promo-renderer,
+html[global_enable="true"] ytd-carousel-ad-renderer,
 html[global_enable="true"] .ytd-display-ad-renderer,
 
 /* Main */
@@ -8,6 +9,11 @@ html[global_enable="true"][remove_homepage="true"] ytd-browse[page-subtype="home
 html[global_enable="true"][remove_sidebar="true"] #secondary > div.circle,
 html[global_enable="true"][remove_sidebar="true"] #related,
 html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
+
+/* Hide all Shorts */
+html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
+html[global_enable="true"][remove_all_shorts="true"] *[is_short],
+html[global_enable="true"][remove_all_shorts="true"] ytd-reel-shelf-renderer,
 
 /* Left Bar Navigation */
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
@@ -32,15 +38,6 @@ html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="h
 html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 html[global_enable="true"][remove_extra_rows="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
-
-/* Hide Shorts Everywhere */
-
-html[global_enable="true"][remove_all_shorts="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer>#contents>ytd-rich-grid-row+ytd-rich-section-renderer,
-html[global_enable="true"][remove_all_shorts="true"] #container.ytd-search ytd-video-renderer[is_short="true"],
-html[global_enable="true"][remove_all_shorts="true"] #container.ytd-search ytd-reel-shelf-renderer,
-html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
-html[global_enable="true"][remove_all_shorts="true"] ytd-grid-video-renderer[is_sub_short],
-
 
 /* Video Player - UI*/
 html[global_enable="true"][remove_entire_sidebar="true"] #secondary,

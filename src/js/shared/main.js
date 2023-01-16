@@ -18,16 +18,16 @@ const SECTIONS = [
         defaultValue: true 
       },
       {
-        name: "Hide Shorts everywhere",
-        tags: "Homepage",
-        id: "remove_all_shorts",
-        defaultValue: false,
-      },
-      {
         name: "Hide end-of-video suggestions",
         tags: "Video Player",
         id: "remove_end_of_video",
         defaultValue: true 
+      },
+      {
+        name: "Hide all Shorts",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "remove_all_shorts",
+        defaultValue: false,
       },
     ]
   },
@@ -58,7 +58,7 @@ const SECTIONS = [
         defaultValue: true
       },
       {
-        name: "Disable infinite scrolling",
+        name: "Disable infinite scroll",
         id: "remove_infinite_scroll",
         defaultValue: true
       },
