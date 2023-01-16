@@ -466,6 +466,8 @@ const idToShortId = {
   "redirect_to_library":               '51',
   "redirect_off":                      '52',
   "menu_timer":                        '53',
+  "remove_all_shorts":                 '54',
+  "remove_video_thumbnails":           '55',
 };
 
 
