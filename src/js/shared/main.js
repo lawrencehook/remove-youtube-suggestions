@@ -18,6 +18,12 @@ const SECTIONS = [
         defaultValue: true 
       },
       {
+        name: "Hide Shorts everywhere",
+        tags: "Homepage",
+        id: "remove_all_shorts",
+        defaultValue: false,
+      },
+      {
         name: "Hide end-of-video suggestions",
         tags: "Video Player",
         id: "remove_end_of_video",
