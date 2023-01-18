@@ -17,6 +17,11 @@ const SECTIONS = [
         id: "remove_video_thumbnails",
         defaultValue: false,
       },
+      {
+        name: "Enable search engine mode",
+        id: "search_engine_mode",
+        defaultValue: false,
+      },
     ]
   },
   {

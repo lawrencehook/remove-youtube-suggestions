@@ -3,6 +3,7 @@ html[global_enable="true"] #masthead-ad,
 html[global_enable="true"] ytd-mealbar-promo-renderer,
 html[global_enable="true"] ytd-carousel-ad-renderer,
 html[global_enable="true"] .ytd-display-ad-renderer,
+html[global_enable="true"] ytd-ad-slot-renderer,
 
 /* General */
 html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
@@ -104,7 +105,83 @@ html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy][
 	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important
 }
 
+/**********************
+ * Search engine mode *
+ **********************/
 
+html[global_enable="true"][search_engine_mode="true"] *,
+html[foobar] {
+	visibility: hidden;
+}
+
+/* Search header container */
+html[global_enable="true"][search_engine_mode="true"] #container.ytd-masthead,
+/* YouTube logo container */
+html[global_enable="true"][search_engine_mode="true"] ytd-topbar-logo-renderer,
+html[global_enable="true"][search_engine_mode="true"] ytd-topbar-logo-renderer *,
+/* Search bar container */
+html[global_enable="true"][search_engine_mode="true"] #center.ytd-masthead,
+html[global_enable="true"][search_engine_mode="true"] #center.ytd-masthead *,
+/* Settings button */
+html[global_enable="true"][search_engine_mode="true"] ytd-topbar-menu-button-renderer,
+html[global_enable="true"][search_engine_mode="true"] ytd-topbar-menu-button-renderer *,
+/* Settings popup menu */
+html[global_enable="true"][search_engine_mode="true"] ytd-popup-container,
+html[global_enable="true"][search_engine_mode="true"] ytd-popup-container *,
+/* Search results */
+html[global_enable="true"][search_engine_mode="true"] ytd-search,
+html[global_enable="true"][search_engine_mode="true"] ytd-search *,
+/* Video player container*/
+html[global_enable="true"][search_engine_mode="true"] #primary,
+html[global_enable="true"][search_engine_mode="true"] #primary *,
+/* Video player */
+html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy,
+html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy *,
+
+html[foo=bar] {
+	visibility: visible;
+}
+
+/* Channel search results */
+html[global_enable="true"][search_engine_mode="true"] ytd-channel-renderer,
+/* Thumbnails */
+html[global_enable="true"][search_engine_mode="true"] ytd-thumbnail,
+/* Next to video player */
+html[global_enable="true"][search_engine_mode="true"] #secondary,
+/* Below video player */
+html[global_enable="true"][search_engine_mode="true"] #top-row,
+/* Comments */
+html[global_enable="true"][search_engine_mode="true"] #comments,
+html[foobar] {
+	display: none;
+}
+
+/* Search results */
+html[global_enable="true"][search_engine_mode="true"] ytd-search,
+html[foobar] {
+	position: absolute;
+	left: 0;
+	width: 100vw;
+	margin: 0;
+	padding: 0;
+}
+
+html[global_enable="true"][search_engine_mode="true"] ytd-video-renderer,
+html[foobar] {
+	margin-top: 35px;
+}
+
+/* search header */
+html[global_enable="true"][search_engine_mode="true"] #container.ytd-masthead {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	margin: 0;
+	padding: 0;
+
+	background-color: var(--yt-spec-base-background);
+}
 
 
 /**********
