@@ -473,6 +473,7 @@ const idToShortId = {
   "menu_timer":                        '53',
   "remove_all_shorts":                 '54',
   "remove_video_thumbnails":           '55',
+  "search_engine_mode":                '56',
 };
 
 
