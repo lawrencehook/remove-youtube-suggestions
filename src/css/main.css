@@ -99,8 +99,10 @@ html[global_enable="true"][foo=bar] {
 
 
 /* Center contents when the sidebar is entirely hidden */
-html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy][is-two-columns_]:not([fullscreen]):not([theater]) {
-	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important
+html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy][is-two-columns_]:not([fullscreen]):not([theater]),
+html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy[flexy][is-two-columns_]:not([fullscreen]):not([theater]),
+html[foobar] {
+	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important;
 }
 
 
@@ -130,9 +132,6 @@ html[global_enable="true"][search_engine_mode="true"] ytd-popup-container *,
 /* Search results */
 html[global_enable="true"][search_engine_mode="true"] ytd-search,
 html[global_enable="true"][search_engine_mode="true"] ytd-search *,
-/* Video player container*/
-html[global_enable="true"][search_engine_mode="true"] #primary,
-html[global_enable="true"][search_engine_mode="true"] #primary *,
 /* Video player */
 html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy,
 html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy *,
@@ -141,6 +140,8 @@ html[foo=bar] {
 	visibility: visible;
 }
 
+/* Homepage */
+html[global_enable="true"][search_engine_mode="true"] ytd-browse,
 /* Channel search results */
 html[global_enable="true"][search_engine_mode="true"] ytd-channel-renderer,
 /* Thumbnails */
