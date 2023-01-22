@@ -489,5 +489,5 @@ function sectionNameToUrl(name) {
                         replaceAll(' - ', '_').
                         replaceAll(' ', '_');
 
-  return HOST + '/features/' + sectionPath + '/';
+  return HOST + 'features/' + sectionPath + '/';
 }

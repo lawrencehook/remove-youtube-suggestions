@@ -76,34 +76,33 @@ html[global_enable="true"][remove_sub_live="true"]     ytd-grid-video-renderer[b
 html[global_enable="true"][remove_sub_upcoming="true"] ytd-grid-video-renderer[badge-text="upcoming"],
 html[global_enable="true"][remove_sub_premiere="true"] ytd-grid-video-renderer[badge-text="premiere"],
 
-html[global_enable="true"][foo=bar]
-
-{
-
+html[global_enable="true"][foo=bar] {
 	display: none !important;
-
 }
+
 
 /* Disable Youtube logo's link to the homepage */
 html[global_enable="true"][remove_logo_link="true"] #logo[href="/"] {
   pointer-events: none;
 }
 
+
 /* Center contents when the left nav bar is entirely hidden */
 html[global_enable="true"][remove_left_nav_bar="true"] ytd-app[guide-persistent-and-visible] ytd-page-manager.ytd-app,
 html[global_enable="true"][remove_left_nav_bar="true"] ytd-app[mini-guide-visible] ytd-page-manager.ytd-app,
 html[global_enable="true"][remove_left_nav_bar="true"] ytd-playlist-sidebar-renderer,
 
-html[global_enable="true"][foo=bar]
-{
+html[global_enable="true"][foo=bar] {
 	margin-left: 0px;
 	left: 0;
 }
+
 
 /* Center contents when the sidebar is entirely hidden */
 html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy[flexy][is-two-columns_]:not([fullscreen]):not([theater]) {
 	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important
 }
+
 
 /**********************
  * Search engine mode *
