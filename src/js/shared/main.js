@@ -75,7 +75,7 @@ const SECTIONS = [
         defaultValue: true
       },
       {
-        name: "Disable infinite scroll",
+        name: "Disable infinite scroll - homepage",
         id: "remove_infinite_scroll",
         defaultValue: true
       },
@@ -303,6 +303,11 @@ const SECTIONS = [
       {
         name: "Disable the thumbnail slideshow - on hover",
         id: "remove_thumbnail_mouseover_effect",
+        defaultValue: false
+      },
+      {
+        name: "Disable infinite scroll - search results",
+        id: "remove_infinite_scroll_search",
         defaultValue: false
       },
     ]

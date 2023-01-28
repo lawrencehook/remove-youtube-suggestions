@@ -69,6 +69,7 @@ html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search y
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_extra_results="true"] #container.ytd-search ytd-shelf-renderer,
 html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
+html[global_enable="true"][remove_infinite_scroll_search="true"] .ytd-search #contents > ytd-continuation-item-renderer,
 
 /* Subscriptions Page */
 html[global_enable="true"][remove_sub_shorts="true"]   ytd-grid-video-renderer[is_sub_short],
