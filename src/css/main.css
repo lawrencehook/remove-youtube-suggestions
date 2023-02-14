@@ -194,7 +194,7 @@ html[global_enable="true"] ytm-companion-ad-renderer,
 html[global_enable="true"] ytm-promoted-sparkles-web-renderer,
 
 /* Main */
-html[global_enable="true"][remove_homepage="true"] .rich-grid-renderer-contents,
+html[global_enable="true"][remove_homepage="true"] div[tab-identifier="FEwhat_to_watch"] .rich-grid-renderer-contents,
 html[global_enable="true"][remove_sidebar="true"] ytm-item-section-renderer[section-identifier="related-items"],
 
 /* Left Bar Navigation */
@@ -203,6 +203,7 @@ html[global_enable="true"][remove_shorts_link="true"] ytm-pivot-bar-item-rendere
 html[global_enable="true"][remove_explore_link="true"] ytm-chip-cloud-chip-renderer[chip-style="STYLE_EXPLORE_LAUNCHER_CHIP"],
 
 /* Homepage */
+html[global_enable="true"][remove_header="true"] div[tab-identifier="FEwhat_to_watch"] div.chip-bar-contents,
 html[global_enable="true"][remove_infinite_scroll="true"] div.rich-grid-renderer-contents > ytm-continuation-item-renderer,
 
 /* Video Player */
