@@ -1,8 +1,4 @@
 
-if (typeof browser === 'undefined') {
-  browser = typeof chrome !== 'undefined' ? chrome : null;
-}
-
 // Globals
 const HTML = document.documentElement;
 const SIDEBAR = document.getElementById('sidebar');
@@ -49,12 +45,6 @@ browser.runtime.onMessage.addListener((data, sender) => {
     console.log(error);
   }
 });
-
-
-sendGetDonorsRequest().then(x => {
-  console.log(x);
-  // console.log(JSON.parse(x));
-}).catch(error => console.log(error));
 
 
 function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {

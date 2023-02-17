@@ -1,8 +1,4 @@
 
-if (typeof browser === 'undefined') {
-  browser = typeof chrome !== 'undefined' ? chrome : null;
-}
-
 // Some global constants.
 const HTML = document.documentElement;
 

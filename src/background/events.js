@@ -1,6 +1,3 @@
-if (typeof browser === 'undefined') {
-  browser = typeof chrome !== 'undefined' ? chrome : null;
-}
 
 const uninstallUrl = "http://lawrencehook.com/rys/👋";
 browser.runtime.setUninstallURL(uninstallUrl);
@@ -14,16 +11,16 @@ browser.runtime.onInstalled.addListener(object => {
 
 // Change the browserAction icon if the extension is disabled
 const inactiveIcons = { path: {
-  16: "images/16_dark.png",
-  32: "images/32_dark.png",
-  64: "images/64_dark.png",
-  128: "images/128_dark.png",
+  16: "/images/16_dark.png",
+  32: "/images/32_dark.png",
+  64: "/images/64_dark.png",
+  128: "/images/128_dark.png",
 }};
 const activeIcons = { path: {
-  16: "images/16.png",
-  32: "images/32.png",
-  64: "images/64.png",
-  128: "images/128.png",
+  16: "/images/16.png",
+  32: "/images/32.png",
+  64: "/images/64.png",
+  128: "/images/128.png",
 }};
 browser.storage.onChanged.addListener((changes, area) => {
   const changedItems = Object.keys(changes);

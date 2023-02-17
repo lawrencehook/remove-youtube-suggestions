@@ -1,0 +1,191 @@
+:root {
+	--header-height: 60px;
+	--footer-height: 180px;
+}
+
+html[dark_mode='false'], html:not([dark_mode]) {
+	--body-color: #303030;
+	--body-background-color: #EEEEEE;
+	--label-color: #101010;
+	--box-shadow-color: rgba(0, 0, 0, 0.30);
+}
+
+body {
+	padding: var(--header-height) 10px var(--footer-height);
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+html, html * {
+	font-family: serif;
+}
+
+#back-button {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+
+	text-decoration: none;
+}
+#info {
+/*	position: relative;*/
+/*	left: 30px;*/
+}
+
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: var(--header-height);
+
+	background-color: var(--body-background-color);
+	border-bottom: 1px solid var(--label-color);
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+}
+
+
+main {
+	width: 500px;
+	margin-bottom: 20px;
+
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+.donors-list {
+	padding-left: 20px;
+	padding-right: 20px;
+
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	column-gap: 25px;
+	row-gap: 10px;
+}
+
+.donors-list p {
+	margin: 0;
+}
+
+
+footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	max-height: var(--footer-height);
+
+	padding: 5px 20px;
+
+	background-color: var(--body-background-color);
+	border-top: 1px solid var(--label-color);
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+}
+footer p {
+	margin: 0;
+	font-size: 18px;
+	text-align: center;
+}
+
+#button-container {
+	width: 100%;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#info {
+	position: relative;
+}
+#tooltip {
+	visibility: hidden;
+
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	transform: translateX(-50%);
+	z-index: 10;
+	opacity: 0.98;
+
+	padding: 10px;
+
+	background-color: var(--body-color);
+	color: var(--body-background-color);
+
+	font-weight: normal;
+	font-size: 1rem;
+}
+#info:hover #tooltip, #tooltip:hover {
+	visibility: visible;
+}
+
+#donate_button {
+	padding: 3px 10px;
+	font-size: 18px;
+
+	text-decoration: none;
+	background-color: white;
+	color: black;
+
+	border: 1px solid rgba(127, 127, 127, 0.90);
+	outline: none;
+}
+#donate_button:hover {
+	--accent-color: #F5D5D7;
+
+	background-color: var(--accent-color);
+	border: 1px solid var(--accent-color);
+	box-shadow: 0px 0px 1px 1px var(--accent-color);
+}
+
+
+#donate-links-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 20;
+
+	background-color: rgba(0, 0, 0, 0.5);
+}
+#donate-links {
+	position: absolute;
+	padding: 0;
+	z-index: 25;
+
+	background-color: var(--body-background-color);
+	border: 1px solid var(--body-color);
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
+}
+#donate-links > * {
+	padding: 10px 20px;
+	text-decoration: none;
+	box-sizing: border-box;
+}
+#donate-links > *:hover {
+	--accent-color: #F5D5D7;
+	background-color: var(--accent-color);
+}

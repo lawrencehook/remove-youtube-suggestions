@@ -1,5 +1,9 @@
-const HOST = 'https://lawrencehook.com/rys/';
 
+if (typeof browser === 'undefined') {
+  browser = typeof chrome !== 'undefined' ? chrome : null;
+}
+
+const HOST = 'https://lawrencehook.com/rys/';
 const SECTIONS = [
   {
     name: "General",

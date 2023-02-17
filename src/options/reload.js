@@ -1,8 +1,3 @@
-
-if (typeof browser === 'undefined') {
-  browser = typeof chrome !== 'undefined' ? chrome : null;
-}
-
 const reloadButton = document.getElementById("reload_button");
 reloadButton.addEventListener("click", sendReloadMessage);
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html loaded>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Remove Youtube Suggestions</title>
+
+    <link rel="icon" href="/images/128.png">
+
+    <link rel="stylesheet" type="text/css" href="/options/general.css">
+    <link rel="stylesheet" type="text/css" href="/options/donors.css">
+
+    <script defer src="/shared/main.js"></script>
+    <script defer src="/shared/https.js"></script>
+    <script defer src="/shared/analytics.js"></script>
+    <script defer src="/options/donors.js"></script>
+
+  </head>
+
+  <body>
+
+    <div hidden id="donate-links-container">
+      <div id="donate-links">
+        <a href="https://paypal.me/lawrencehook" target="_blank">PayPal</a>
+        <a href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' target="_blank">Credit or Debit Card</a>
+      </div>
+    </div>
+
+
+    <header>
+      <a href="/options/main.html" id="back-button">Back</a>
+      <h1>Donors</h1>
+    </header>
+
+    <main>
+      <template id='template-donor'>
+        <p></p>
+      </template>
+
+      <article id='tier-1' class="tier" min-amount="25">
+        <h3>Tier 1 • $25</h3>
+        <div class="donors-list">
+          <p>None yet, be the first</p>
+        </div>
+      </article>
+
+      <article id='tier-2' class="tier" min-amount="10">
+        <h3>Tier 2 • $10</h3>
+        <div class="donors-list">
+          <p>None yet, be the first</p>
+        </div>
+      </article>
+
+      <article id='tier-3' class="tier" min-amount="5">
+        <h3>Tier 3 • $5</h3>
+        <div class="donors-list">
+          <p>None yet, be the first</p>
+        </div>
+      </article>
+
+      <!-- <article id='acknowledgments'> -->
+        <!-- <h1>Special Acknowledgements</h1> -->
+        <!-- <div class="donors-list"> -->
+          <!-- <p>Sample Donor</p> -->
+        <!-- </div> -->
+      <!-- </article> -->
+
+    </main>
+
+    <footer>
+      <p>RYS is made possible by people like you. A donation goes a long way toward the continued maintenance and development of this extension. You can also share RYS with your friends or leave a <a id="review-link" target="_blank">review</a>!</p>
+
+      <div id="button-container">
+        <h3>Join the ranks of our generous donors <a id="info">ⓘ <div id='tooltip'>Don't see your name? Want to have it removed or edited? Please email me at lawrencehook@gmail.com.</div></a></h3>
+
+        <button id='donate_button'>Donate</button>
+      </div>
+
+    </footer>
+
+  </body>
+
+</html>

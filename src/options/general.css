@@ -7,6 +7,7 @@
   --border-radius: 3px;
 
   --blue-color: #0006FB;
+  font-size: 18px;
 }
 
 html:not([loaded]), html:not([loaded]) body {
