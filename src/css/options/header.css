@@ -1,12 +1,3 @@
-/* Visual cues when the extension is enabled vs. disabled */
-#header-toggle-circle {
-  -webkit-transition: cx 0.1s;
-  -moz-transition: cx 0.1s;
-  -o-transition: cx 0.1s;
-  transition: cx 0.1s;
-}
-html[global_enable="true"] #header-toggle-circle { cx: 11px }
-html[global_enable="true"] #header-toggle-outer-path { fill: green }
 
 /* Visual cues for dark mode */
 html[dark_mode='false'] { --svg-color: #464646 }
@@ -29,41 +20,52 @@ html[dark_mode='false'] #header-light { display: none }
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 7px;
 
   --icon-dim: 30px;
 }
 
-#header-left {
-  width: 75%;
+#header_hr {
+  text-align: center;
 
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
+  height: 1px;
+  width: 99%;
+  margin: 1px 0;
+  border-width: 0;
+
+  background-color: var(--box-shadow-color);
 }
-#header-left a {
-  display: flex;
-  align-items: center;
-}
+
 #header-logo {
   height: var(--icon-dim);
   max-height: var(--icon-dim);
   max-width: var(--icon-dim);
 }
 #header-text {
+  margin-right: auto;
   font-size: 20px;
   color: var(--label-color);
 }
 
-#header-right {
-  width: 25%;
+#search_bar input {
+  padding: 3px 6px 3px 6px;
 
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 7px;
+  background-color: var(--body-background-color);
+
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
+
+  font-size: 18px;
 }
+#search_bar input:focus {
+  outline: none;
+}
+
 #global_enable {
+  margin-left: auto;
+
   display: flex;
   align-items: center;
 }
@@ -137,28 +139,4 @@ html[log_enabled="false"] #log-disable,
 html[foo=bar]
 {
   display: none
-}
-
-
-#search_bar {
-  display: flex;
-  justify-content: center;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-#search_bar input {
-  width: 50%;
-  margin-top: 5px;
-  padding: 3px 6px 3px 6px;
-
-  background-color: var(--body-background-color);
-
-  border: none;
-  border-radius: var(--border-radius);
-  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
-
-  font-size: 18px;
-}
-#search_bar input:focus {
-  outline: none;
 }
