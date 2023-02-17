@@ -51,6 +51,12 @@ browser.runtime.onMessage.addListener((data, sender) => {
 });
 
 
+sendGetDonorsRequest().then(x => {
+  console.log(x);
+  // console.log(JSON.parse(x));
+}).catch(error => console.log(error));
+
+
 function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Clear the options list, and the sidebar

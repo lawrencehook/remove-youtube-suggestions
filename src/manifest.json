@@ -14,17 +14,22 @@
 
   "background": {
     "scripts": [
-      "js/shared/main.js",
-      "js/background/events.js",
-      "js/background/main.js"
+      "/shared/main.js",
+      "/shared/https.js",
+      "/background/events.js",
+      "/background/main.js"
     ],
     "persistent": true
   },
 
   "content_scripts": [
     {
-      "js": ["js/content-script.js"],
-      "css": ["css/main.css"],
+      "js": [
+        "/shared/main.js",
+        "/shared/https.js",
+        "/content-script/main.js"
+      ],
+      "css": ["/content-script/main.css"],
       "all_frames": true,
       "matches": ["*://*.youtube.com/*"],
       "run_at": "document_start"
@@ -32,7 +37,7 @@
   ],
 
   "browser_action": {
-    "default_popup": "options.html",
+    "default_popup": "/options/main.html",
     "default_title": "Remove Youtube Suggestions",
     "default_icon": {
       "16": "images/16.png",
@@ -43,7 +48,7 @@
   },
 
   "options_ui": {
-    "page": "options.html",
+    "page": "/options/main.html",
     "open_in_tab": true
   },
   "permissions": [

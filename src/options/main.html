@@ -7,20 +7,20 @@
 
     <title>Remove Youtube Suggestions</title>
 
-    <link rel="icon" href="images/128.png">
+    <link rel="icon" href="/images/128.png">
 
-    <link rel="stylesheet" type="text/css" href="css/options/general.css">
-    <link rel="stylesheet" type="text/css" href="css/options/header.css">
-    <link rel="stylesheet" type="text/css" href="css/options/options.css">
-    <link rel="stylesheet" type="text/css" href="css/options/body.css">
-    <link rel="stylesheet" type="text/css" href="css/options/footer.css">
+    <link rel="stylesheet" type="text/css" href="/options/general.css">
+    <link rel="stylesheet" type="text/css" href="/options/header.css">
+    <link rel="stylesheet" type="text/css" href="/options/options.css">
+    <link rel="stylesheet" type="text/css" href="/options/body.css">
+    <link rel="stylesheet" type="text/css" href="/options/footer.css">
 
-    <script defer src="js/shared/main.js"></script>
-    <script defer src="js/shared/https.js"></script>
-    <script defer src="js/analytics/main.js"></script>
-    <script defer src="js/options/reload.js"></script>
-    <script defer src="js/options/main.js"></script>
-    <script defer src="js/options/settings-menu.js"></script>
+    <script defer src="/shared/main.js"></script>
+    <script defer src="/shared/https.js"></script>
+    <script defer src="/shared/analytics.js"></script>
+    <script defer src="/options/reload.js"></script>
+    <script defer src="/options/main.js"></script>
+    <script defer src="/options/settings-menu.js"></script>
 
   </head>
 
@@ -60,13 +60,14 @@
       <hr>
       <a href='https://github.com/lawrencehook/remove-youtube-suggestions' target='_blank'>View Source Code</a>
       <a href='https://docs.google.com/forms/d/1AzQQxTWgG6M5N87jinvXKQkGS6Mehzg19XV4mjteTK0' target='_blank'>Give Feedback</a>
+      <a href='https://lawrencehook.com/rys/' target='_blank'>Homepage</a>
       <a href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' target='_blank'>❤️ Donate</a>
     </div>
 
     <div id='header'>
 
       <a href='https://lawrencehook.com/rys' target='_blank'>
-        <img id='header-logo' src="images/rys.svg">
+        <img id='header-logo' src="/images/rys.svg">
       </a>
 
       <div id='header-text'>RYS</div>
@@ -146,17 +147,10 @@
     <hr id='footer_hr'>
 
     <div id='footer'>
-      <a id='donate_button' href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' title='Support (Paypal)' target='_blank'>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490.4 490.4">
-          <path class='footer-path' d="M59.7,86.8c22.6-22.6,52.7-35.1,84.7-35.1s62.2,12.5,84.9,35.2l7.4,7.4c2.3,2.3,5.4,3.6,8.7,3.6l0,0c3.2,0,6.4-1.3,8.7-3.6l7.2-7.2c22.7-22.7,52.8-35.2,84.9-35.2c32,0,62.1,12.5,84.7,35.1c22.7,22.7,35.1,52.8,35.1,84.8s-12.5,62.1-35.2,84.8L251,436.4c-2.9,2.9-8.2,2.9-11.2,0l-180-180c-22.7-22.7-35.2-52.8-35.2-84.8C24.6,139.6,37.1,109.5,59.7,86.8z" fill="white" stroke="black" stroke-width="30"/>
-        </svg>
-      </a>
 
-      <a id='info_button' href='https://lawrencehook.com/rys/' title='Info' target="_blank">
-        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-          <path class='footer-path' d="M16,12a2,2,0,1,1,2-2A2,2,0,0,1,16,12Zm0-2Z"/>
-          <path class='footer-path' d="M16,29A13,13,0,1,1,29,16,13,13,0,0,1,16,29ZM16,5A11,11,0,1,0,27,16,11,11,0,0,0,16,5Z"/>
-          <path class='footer-path' d="M16,24a2,2,0,0,1-2-2V16a2,2,0,0,1,4,0v6A2,2,0,0,1,16,24Zm0-8v0Z"/>
+      <a id='reload_button' title='Refresh Page'>
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path class='footer-path' d="M35.3 12.7c-2.89-2.9-6.88-4.7-11.3-4.7-8.84 0-15.98 7.16-15.98 16s7.14 16 15.98 16c7.45 0 13.69-5.1 15.46-12h-4.16c-1.65 4.66-6.07 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.31 0 6.28 1.38 8.45 3.55l-6.45 6.45h14v-14l-4.7 4.7z"/>
         </svg>
       </a>
 
@@ -166,14 +160,13 @@
         </svg>
       </a>
 
-      <a id='reload_button' title='Refresh Page'>
-        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path class='footer-path' d="M35.3 12.7c-2.89-2.9-6.88-4.7-11.3-4.7-8.84 0-15.98 7.16-15.98 16s7.14 16 15.98 16c7.45 0 13.69-5.1 15.46-12h-4.16c-1.65 4.66-6.07 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.31 0 6.28 1.38 8.45 3.55l-6.45 6.45h14v-14l-4.7 4.7z"/>
+      <a id='donate_button' href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' title='Support (Paypal)' target='_blank'>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490.4 490.4">
+          <path class='footer-path' d="M59.7,86.8c22.6-22.6,52.7-35.1,84.7-35.1s62.2,12.5,84.9,35.2l7.4,7.4c2.3,2.3,5.4,3.6,8.7,3.6l0,0c3.2,0,6.4-1.3,8.7-3.6l7.2-7.2c22.7-22.7,52.8-35.2,84.9-35.2c32,0,62.1,12.5,84.7,35.1c22.7,22.7,35.1,52.8,35.1,84.8s-12.5,62.1-35.2,84.8L251,436.4c-2.9,2.9-8.2,2.9-11.2,0l-180-180c-22.7-22.7-35.2-52.8-35.2-84.8C24.6,139.6,37.1,109.5,59.7,86.8z" fill="white" stroke="black" stroke-width="30"/>
         </svg>
       </a>
 
     </div>
 
   </body>
-
 </html>
