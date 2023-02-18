@@ -67,6 +67,6 @@ html[dark_mode='true'] #donate_button .footer-path  {
   fill: #F6000B;
 }
 
-#donors {
+#feedback, #donors {
   text-decoration: none;
 }
