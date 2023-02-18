@@ -9,6 +9,13 @@ html[dark_mode='false'], html:not([dark_mode]) {
 	--box-shadow-color: rgba(0, 0, 0, 0.30);
 }
 
+html[dark_mode='true'] {
+  --body-color: #DDDDDD;
+  --body-background-color: #393939;
+  --label-color: #E9E9E9;
+  --box-shadow-color: rgba(127, 127, 127, 0.90);
+}
+
 body {
 	padding: var(--header-height) 10px 0;
 
@@ -49,9 +56,7 @@ header {
 
 main {
 	width: 500px;
-	margin-bottom: 20px;
 
 	display: flex;
 	flex-direction: column;
-	gap: 30px;
 }
