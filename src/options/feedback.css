@@ -1,0 +1,57 @@
+:root {
+	--header-height: 60px;
+}
+
+html[dark_mode='false'], html:not([dark_mode]) {
+	--body-color: #303030;
+	--body-background-color: #EEEEEE;
+	--label-color: #101010;
+	--box-shadow-color: rgba(0, 0, 0, 0.30);
+}
+
+body {
+	padding: var(--header-height) 10px 0;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+html, html * {
+	font-family: serif;
+}
+
+#back-button {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+
+	text-decoration: none;
+}
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: var(--header-height);
+
+	background-color: var(--body-background-color);
+	border-bottom: 1px solid var(--label-color);
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+}
+
+
+main {
+	width: 500px;
+	margin-bottom: 20px;
+
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
