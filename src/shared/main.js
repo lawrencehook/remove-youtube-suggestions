@@ -27,7 +27,7 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
-        name: "Hide the notifications bell",
+        name: "Hide the notification bell",
         id: "remove_notif_bell",
         defaultValue: false,
       },
@@ -89,7 +89,7 @@ const SECTIONS = [
         defaultValue: true
       },
       {
-        name: "Disable play on hover (page refresh required)",
+        name: "Disable play on hover (page reload required)",
         id: "disable_play_on_hover",
         defaultValue: false
       },
