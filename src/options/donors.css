@@ -1,6 +1,6 @@
 :root {
-	--header-height: 60px;
-	--footer-height: 180px;
+	--header-height: 120px;
+	--footer-height: 60px;
 }
 
 html[dark_mode='false'], html:not([dark_mode]) {
@@ -11,7 +11,7 @@ html[dark_mode='false'], html:not([dark_mode]) {
 }
 
 body {
-	padding: var(--header-height) 10px var(--footer-height);
+	padding: var(--header-height) 10px calc(30px + var(--footer-height));
 
 	display: flex;
 	justify-content: center;
@@ -46,10 +46,20 @@ header {
 	box-sizing: border-box;
 
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 15px;
+}
+
+header h1 {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 26px;
+}
+
+header p {
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 
 
@@ -117,6 +127,7 @@ footer p {
 }
 #tooltip {
 	visibility: hidden;
+	width: 300px;
 
 	position: absolute;
 	bottom: 100%;

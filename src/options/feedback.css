@@ -53,6 +53,9 @@ header {
 	gap: 15px;
 }
 
+header h1 {
+	font-size: 26px;
+}
 
 main {
 	width: 500px;
