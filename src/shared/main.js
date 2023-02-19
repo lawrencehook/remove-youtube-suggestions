@@ -26,6 +26,11 @@ const SECTIONS = [
         id: "search_engine_mode",
         defaultValue: false,
       },
+      {
+        name: "Hide the notifications bell",
+        id: "remove_notif_bell",
+        defaultValue: false,
+      },
     ]
   },
   {
@@ -483,6 +488,7 @@ const idToShortId = {
   "remove_all_shorts":                 '54',
   "remove_video_thumbnails":           '55',
   "search_engine_mode":                '56',
+  "remove_notif_bell":                 '57',
 };
 
 
