@@ -61,24 +61,24 @@ sendGetDonorsRequest().then(x => {
 			tieredDonors[tier].push(donor);
 		});
 
-	  Object.entries(tieredDonors).forEach(([tier, donors]) => {
-	  	if (donors.length === 0) return;
+		Object.entries(tieredDonors).forEach(([tier, donors]) => {
+			if (donors.length === 0) return;
 
-	  	const tierNode = document.querySelector(`.tier[min-amount='${tier}']`);
-	  	const donorList = tierNode.querySelector('.donors-list');
-	  	donorList.innerHTML = '';
+			const tierNode = document.querySelector(`.tier[min-amount='${tier}']`);
+			const donorList = tierNode.querySelector('.donors-list');
+			donorList.innerHTML = '';
 
-	  	// Sort in descending order, by timestamp
-	  	donors.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+			// Sort in descending order, by timestamp
+			donors.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
 
-	  	donors.forEach(donor => {
-	  		const donorNode = templateDonor.cloneNode(true);
-	  		const pNode = donorNode.querySelector('p');
-	  		pNode.innerText = donor.name || 'anonymous';
-	  		donorList.appendChild(donorNode);
-	  	});
+			donors.forEach(donor => {
+				const donorNode = templateDonor.cloneNode(true);
+				const pNode = donorNode.querySelector('p');
+				pNode.innerText = donor.showName ? (donor.name || 'anonymous') : 'anonymous';
+				donorList.appendChild(donorNode);
+			});
 
-	  });
+		});
 	} catch (error) {
 		console.log(error);
 	}

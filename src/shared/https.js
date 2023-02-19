@@ -1,6 +1,5 @@
-const DONORS_LIST_HOST = 'http://localhost:8080/rys/donors.json';
-// const DONORS_LIST_HOST = 'https://lawrencehook.com/rys/donors.json';
-// const DONORS_LIST_HOST = 'https://lawrencehook.github.io/HunterQuest/src/edu/virginia/hunterquest/HunterQuest.js';
+// const DONORS_LIST_HOST = 'http://localhost:8080/rys/donors.json';
+const DONORS_LIST_HOST = 'https://lawrencehook.com/rys/donors.json';
 
 function sendHTTPRequest(type, url, jsonParams, token) {
   const request = new Promise((resolve, reject) => {

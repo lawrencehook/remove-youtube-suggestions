@@ -10,6 +10,13 @@ html[dark_mode='false'], html:not([dark_mode]) {
 	--box-shadow-color: rgba(0, 0, 0, 0.30);
 }
 
+html[dark_mode='true'] {
+  --body-color: #DDDDDD;
+  --body-background-color: #393939;
+  --label-color: #E9E9E9;
+  --box-shadow-color: rgba(127, 127, 127, 0.90);
+}
+
 body {
 	padding: var(--header-height) 10px calc(30px + var(--footer-height));
 
@@ -199,4 +206,5 @@ footer p {
 #donate-links > *:hover {
 	--accent-color: #F5D5D7;
 	background-color: var(--accent-color);
+	color: #303030;
 }
