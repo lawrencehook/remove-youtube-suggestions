@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+recordEvent('Page View: Options');
+
+
 // Receive messages
 browser.runtime.onMessage.addListener((data, sender) => {
   try {

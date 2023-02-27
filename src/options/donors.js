@@ -1,3 +1,4 @@
+recordEvent('Page View: Donors');
 
 const HTML = document.documentElement;
 browser.storage.local.get('dark_mode', ({ dark_mode }) => {
@@ -77,8 +78,8 @@ sendGetDonorsRequest().then(x => {
 				pNode.innerText = donor.showName ? (donor.name || 'anonymous') : 'anonymous';
 				donorList.appendChild(donorNode);
 			});
-
 		});
+
 	} catch (error) {
 		console.log(error);
 	}
