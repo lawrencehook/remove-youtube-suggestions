@@ -122,6 +122,56 @@
 }
 
 
+/* Scheduling Modal */
+#schedule_container_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+}
+
+#schedule_container, #schedule_container * {
+  color: var(--body-color);
+}
+
+#schedule_container {
+  height: fit-content;
+  width: min(90vw, 800px);
+  margin-top: calc(3 * var(--header-height));
+  margin-right: auto;
+  margin-left: auto;
+  padding: 20px;
+
+  text-align: center;
+
+  background-color: var(--body-background-color);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
+  box-sizing: border-box;
+
+  border: 1px solid var(--box-shadow-color);
+  border-radius: 2px;
+
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#times-container, #days-container {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* Menu Timer */
 #timer_container {
   position: fixed;

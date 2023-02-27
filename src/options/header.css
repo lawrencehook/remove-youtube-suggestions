@@ -103,8 +103,7 @@ html[dark_mode='false'] #header-light { display: none }
   position: fixed;
   z-index: 10;
 
-  top: calc(var(--header-height) + 2 * var(--header-padding));
-  right: calc(2 * var(--header-padding));
+  top: calc(5px + var(--header-height) + 2 * var(--header-padding));
   padding: 3px 1px;
 
   background-color: var(--body-background-color);

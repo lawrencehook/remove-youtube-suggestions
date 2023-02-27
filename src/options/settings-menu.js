@@ -8,6 +8,10 @@ const settingsListener = e => {
   SETTINGS_MENU.classList.remove('hidden');
   SETTINGS_BUTTON.removeEventListener('click', settingsListener);
 
+  const { right } = SETTINGS_BUTTON.getBoundingClientRect();
+  const { width } = SETTINGS_MENU.getBoundingClientRect();
+  SETTINGS_MENU.style.left = (right - width) + 'px';
+
   const hideSettingsMenu1 = e => {
     document.removeEventListener('mousedown', hideSettingsMenu1);
 
@@ -25,11 +29,35 @@ const settingsListener = e => {
 }
 SETTINGS_BUTTON.addEventListener('click', settingsListener);
 
+
 // Global toggle
 const SETTINGS_ENABLE = document.getElementById('settings-enable');
 SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
 const SETTINGS_DISABLE = document.getElementById('settings-disable');
 SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', false));
+
+
+// Scheduling
+const scheduleModalContainer = document.getElementById('schedule_container_background');
+const SCHEDULING_OPTION = document.getElementById('settings-schedule');
+
+scheduleModalContainer.addEventListener('click', e => {
+  if (e.target !== scheduleModalContainer) return;
+  scheduleModalContainer.setAttribute('hidden', '');
+});
+
+SCHEDULING_OPTION.addEventListener('click', e => {
+  openScheduleModal();
+});
+
+function openScheduleModal() {
+  scheduleModalContainer.removeAttribute('hidden');
+}
+
+function closeScheduleModal() {
+  scheduleModalContainer.setAttribute('hidden', '');
+}
+
 
 // Logging toggle
 const LOG_ENABLE = document.getElementById('log-enable');
@@ -37,12 +65,6 @@ LOG_ENABLE.addEventListener('click', e => updateSetting('log_enabled', true));
 const LOG_DISABLE = document.getElementById('log-disable');
 LOG_DISABLE.addEventListener('click', e => updateSetting('log_enabled', false));
 
-
-// Import settings
-const IMPORT_SETTINGS = document.getElementById('import-settings');
-IMPORT_SETTINGS.addEventListener('click', e => {
-  openImportModal();
-});
 
 // Export settings
 const EXPORT_SETTINGS = document.getElementById('export-settings');
@@ -55,6 +77,14 @@ EXPORT_SETTINGS.addEventListener('click', e => {
     displayStatus('Settings copied to clipboard');
   });
 });
+
+
+// Import settings
+const IMPORT_SETTINGS = document.getElementById('import-settings');
+IMPORT_SETTINGS.addEventListener('click', e => {
+  openImportModal();
+});
+
 
 // Import Modal
 const importModalContainer = document.getElementById('import_container_background');
@@ -86,6 +116,15 @@ importSubmit.addEventListener('click', e => {
 
 });
 
+function openImportModal() {
+  importModalContainer.removeAttribute('hidden');
+}
+
+function closeImportModal() {
+  importModalContainer.setAttribute('hidden', '');
+}
+
+
 function updateSettings(settings) {
   Object.entries(settings).forEach(([ id, value ]) => {
     HTML.setAttribute(id, value);
@@ -106,12 +145,6 @@ function updateSettings(settings) {
   }
 }
 
-function openImportModal() {
-  importModalContainer.removeAttribute('hidden');
-}
-function closeImportModal() {
-  importModalContainer.setAttribute('hidden', '');
-}
 
 // Status overlay 
 const statusOverlayContainer = document.getElementById('status_overlay_container');
@@ -123,6 +156,7 @@ function displayStatus(msg, fadeTime=1500) {
   setTimeout(() => statusOverlayContainer.setAttribute('hidden', ''), fadeTime);
 }
 
+
 function settingsObjToStr(settings) {
   const getId = id => idToShortId[id];
   const getVal = val => val === true ? 't' : 'f';
@@ -132,6 +166,7 @@ function settingsObjToStr(settings) {
                 map(([id, val]) => `${getId(id)}${delimiter1}${getVal(val)}`).join(delimiter2);
   return prefix + str;
 }
+
 
 function settingsStrToObj(settingsStr) {
   const getId = id => {
