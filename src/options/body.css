@@ -163,13 +163,47 @@
   align-items: center;
 }
 
+#enable-schedule {
+  margin-bottom: 20px;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+#enable-schedule p {
+  margin: 0;
+}
+
 #times-container, #days-container {
   width: 100%;
 
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.predefined-options {
+  display: flex;
+  gap: 10px;
+}
+
+.custom-option {
+  display: flex;
+  justify-content: right;
+}
+
+.predefined-options a, .custom-option a {
+  cursor: pointer;
 }
 
 /* Menu Timer */
