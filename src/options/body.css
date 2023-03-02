@@ -165,7 +165,8 @@
 
 #enable-schedule {
   margin-bottom: 20px;
-  width: 100%;
+  cursor: default;
+  user-select: none;
 
   display: flex;
   flex-direction: row;
@@ -199,7 +200,35 @@
 
 .custom-option {
   display: flex;
+  gap: 10px;
   justify-content: right;
+}
+
+#schedule-times {
+  font-size: 0.8rem;
+  padding: 2px 5px;
+  box-sizing: border-box;
+}
+#schedule-times[invalid] {
+  /* TODO */
+}
+
+#schedule-days {
+  display: flex;
+  gap: 3px;
+  justify-content: right;
+}
+#schedule-days > div {
+  width: 30px;
+  padding: 1px 2px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+#schedule-days > div[active] {
+  color: white !important;
+  background-color: var(--light-blue);
+  border: 2px solid var(--blue-color);
 }
 
 .predefined-options a, .custom-option a {

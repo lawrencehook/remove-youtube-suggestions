@@ -417,6 +417,12 @@ const SECTIONS = [
   },
 ];
 
+const SCHEDULE_SETTINGS = {
+  schedule: false,
+  scheduleTimes: '9:00a-5:00p',
+  scheduleDays: 'Mo,Tu,We,Th,Fr',
+};
+
 const OTHER_SETTINGS = {
   global_enable: true,
   dark_mode: false,
@@ -426,7 +432,7 @@ const OTHER_SETTINGS = {
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
   fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
   return acc;
-}, { ...OTHER_SETTINGS });
+}, { ...OTHER_SETTINGS, ...SCHEDULE_SETTINGS });
 
 
 // For import/export

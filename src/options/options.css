@@ -17,7 +17,7 @@ div.option {
   transition: cx 0.1s;
 }
 .option_toggle[active] .option-toggle-circle { cx: 11px }
-.option_toggle[active] .option-toggle-outer-path { fill: #0006FB }
+.option_toggle[active] .option-toggle-outer-path { fill: var(--blue-color) }
 
 .option_toggle {
 	width: 25px;

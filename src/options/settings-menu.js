@@ -40,23 +40,59 @@ SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', f
 // Scheduling
 const scheduleModalContainer = document.getElementById('schedule_container_background');
 const SCHEDULING_OPTION = document.getElementById('settings-schedule');
-
-scheduleModalContainer.addEventListener('click', e => {
-  if (e.target !== scheduleModalContainer) return;
-  scheduleModalContainer.setAttribute('hidden', '');
-});
-
-SCHEDULING_OPTION.addEventListener('click', e => {
-  openScheduleModal();
-});
-
-function openScheduleModal() {
-  scheduleModalContainer.removeAttribute('hidden');
-}
+const scheduleToggleContainer = document.getElementById('enable-schedule');
+const scheduleToggle = scheduleToggleContainer.querySelector('svg');
+const SCHEDULE_TIMES = document.getElementById('schedule-times');
+const SCHEDULE_DAYS = document.getElementById('schedule-days');
+const SCHEDULE_DAYS_OPTIONS = Array.from(SCHEDULE_DAYS.querySelectorAll('div'));
 
 function closeScheduleModal() {
   scheduleModalContainer.setAttribute('hidden', '');
 }
+scheduleModalContainer.addEventListener('click', e => {
+  if (e.target !== scheduleModalContainer) return;
+  closeScheduleModal();
+});
+
+openScheduleModal();
+function openScheduleModal() {
+  scheduleModalContainer.removeAttribute('hidden');
+
+  // Populate with local data.
+  browser.storage.local.get(SCHEDULE_SETTINGS, settings => {
+    const { schedule, scheduleTimes, scheduleDays } = settings;
+
+    scheduleToggle.toggleAttribute('active', schedule);
+    SCHEDULE_TIMES.value = scheduleTimes;
+    scheduleDays.split(',').map(d => d.toLowerCase().trim()).forEach(day => {
+      const node = SCHEDULE_DAYS.querySelector(`div[day=${day}]`);
+      node.setAttribute('active', '');
+    });
+  });
+}
+SCHEDULING_OPTION.addEventListener('click', e => {
+  openScheduleModal();
+});
+
+// Schedule on/off
+scheduleToggleContainer.addEventListener('click', e => {
+  const enabled = scheduleToggle.toggleAttribute('active');
+});
+
+// Schedule times
+SCHEDULE_TIMES.addEventListener('input', e => {
+  // TODO: check validity, save to storage
+});
+
+// Schedule days
+SCHEDULE_DAYS_OPTIONS.forEach(o => {
+  console.log(o);
+  o.addEventListener('click', e => {
+    const selected = o.toggleAttribute('active');
+  });
+});
+
+// TODO: implement preset option click events.
 
 
 // Logging toggle

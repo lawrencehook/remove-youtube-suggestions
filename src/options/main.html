@@ -40,8 +40,7 @@
       </div>
     </div>
 
-    <!-- <div id="schedule_container_background" hidden> -->
-    <div id="schedule_container_background">
+    <div id="schedule_container_background" hidden>
       <div id="schedule_container">
 
         <div>Schedule — Set the times for RYS to be active</div>
@@ -66,7 +65,7 @@
               <a>9:30a-5:30p</a>
             </div>
             <div class="custom-option">
-              <a>Custom</a>
+              <input id="schedule-times" type='text' placeholder="9:00a-5:00p">
             </div>
           </div>
         </div>
@@ -81,7 +80,15 @@
               <a>Weekends</a>
             </div>
             <div class="custom-option">
-              <a>Custom</a>
+              <div id="schedule-days">
+                <div day="su">Su</div>
+                <div day="mo">Mo</div>
+                <div day="tu">Tu</div>
+                <div day="we">We</div>
+                <div day="th">Th</div>
+                <div day="fr">Fr</div>
+                <div day="sa">Sa</div>
+              </div>
             </div>
           </div>
         </div>
@@ -199,8 +206,8 @@
     <div id='footer'>
 
       <a id='reload_button' title='Reload the current page'>Reload</a>
-      <a id="feedback" href='/options/feedback.html' title='Need help? Have a feature idea?'>Feedback</a>
-      <a id="donors" href='/options/donors.html' title='View the donor page'>Donors</a>
+      <a id="feedback" href='/options/feedback/feedback.html' title='Need help? Have a feature idea?'>Feedback</a>
+      <a id="donors" href='/options/donors/donors.html' title='View the donor page'>Donors</a>
 
     </div>
 

@@ -6,7 +6,8 @@
 
   --border-radius: 3px;
 
-  --blue-color: #0006FB;
+  --blue-color: hsl(238 100% 49%);
+  --light-blue: hsl(238 50% 49%);
   font-size: 18px !important;
 }
 
