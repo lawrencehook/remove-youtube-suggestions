@@ -6,8 +6,9 @@
 
   --border-radius: 3px;
 
+  --red-color:  hsl(358 100% 49%);
   --blue-color: hsl(238 100% 49%);
-  --light-blue: hsl(238 50% 49%);
+  --light-blue: hsl(238 50% 60%);
   font-size: 18px !important;
 }
 
@@ -73,6 +74,18 @@ body, body * {
 
 .hidden {
   visibility: hidden;
+}
+
+input {
+  background-color: var(--body-background-color);
+
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
+}
+input:focus {
+  box-shadow: 0px 0px 2px 0.5px var(--box-shadow-color);
+  outline: none;
 }
 
 /* Chrome on Windows scrollbar styling */

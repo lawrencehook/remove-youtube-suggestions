@@ -50,17 +50,7 @@ html[dark_mode='false'] #header-light { display: none }
 
 #search_bar input {
   padding: 3px 6px 3px 6px;
-
-  background-color: var(--body-background-color);
-
-  border: none;
-  border-radius: var(--border-radius);
-  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
-
   font-size: 18px;
-}
-#search_bar input:focus {
-  outline: none;
 }
 
 #global_enable {

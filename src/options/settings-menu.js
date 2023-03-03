@@ -44,7 +44,24 @@ const scheduleToggleContainer = document.getElementById('enable-schedule');
 const scheduleToggle = scheduleToggleContainer.querySelector('svg');
 const SCHEDULE_TIMES = document.getElementById('schedule-times');
 const SCHEDULE_DAYS = document.getElementById('schedule-days');
-const SCHEDULE_DAYS_OPTIONS = Array.from(SCHEDULE_DAYS.querySelectorAll('div'));
+const SCHEDULE_DAYS_OPTIONS = qsa('div', SCHEDULE_DAYS);
+const TIME_PRESETS = qsa('#times-container .predefined-options a');
+const DAY_PRESETS = qsa('#days-container .predefined-options a');
+
+function updateTimes(times) {
+  SCHEDULE_TIMES.value = times;
+  const isValid = timeIsValid(times);
+  SCHEDULE_TIMES.toggleAttribute('invalid', !isValid);
+  updateSetting('scheduleTimes', times);
+}
+function updateDays(days) {
+  const daysArray = days.split(',').map(d => d.toLowerCase().trim());
+  SCHEDULE_DAYS_OPTIONS.forEach(node => {
+    const day = node.getAttribute('day');
+    node.toggleAttribute('active', daysArray.includes(day));
+  });
+  updateSetting('scheduleDays', days);
+}
 
 function closeScheduleModal() {
   scheduleModalContainer.setAttribute('hidden', '');
@@ -63,11 +80,8 @@ function openScheduleModal() {
     const { schedule, scheduleTimes, scheduleDays } = settings;
 
     scheduleToggle.toggleAttribute('active', schedule);
-    SCHEDULE_TIMES.value = scheduleTimes;
-    scheduleDays.split(',').map(d => d.toLowerCase().trim()).forEach(day => {
-      const node = SCHEDULE_DAYS.querySelector(`div[day=${day}]`);
-      node.setAttribute('active', '');
-    });
+    updateTimes(scheduleTimes);
+    updateDays(scheduleDays);
   });
 }
 SCHEDULING_OPTION.addEventListener('click', e => {
@@ -77,23 +91,51 @@ SCHEDULING_OPTION.addEventListener('click', e => {
 // Schedule on/off
 scheduleToggleContainer.addEventListener('click', e => {
   const enabled = scheduleToggle.toggleAttribute('active');
+  updateSetting('schedule', enabled);
 });
 
 // Schedule times
 SCHEDULE_TIMES.addEventListener('input', e => {
-  // TODO: check validity, save to storage
+  const times = SCHEDULE_TIMES.value;
+  const isValid = timeIsValid(times);
+
+  SCHEDULE_TIMES.toggleAttribute('invalid', !isValid);
+  if (!isValid) return;
+
+  updateSetting('scheduleTimes', times);
 });
 
 // Schedule days
 SCHEDULE_DAYS_OPTIONS.forEach(o => {
-  console.log(o);
   o.addEventListener('click', e => {
-    const selected = o.toggleAttribute('active');
+    const day = o.getAttribute('day');
+    const active = o.toggleAttribute('active');
+    const currentDays = HTML.getAttribute('scheduleDays').split(',');
+
+    let newDays;
+    if (active) {
+      newDays = currentDays.concat(day);
+    } else {
+      newDays = currentDays.filter(d => d.toLowerCase().trim() !== day);
+    }
+
+    updateSetting('scheduleDays', newDays.join(','))
   });
 });
 
-// TODO: implement preset option click events.
-
+// Schdule preset options
+TIME_PRESETS.forEach(node => {
+  node.addEventListener('click', e => {
+    const times = node.getAttribute('times');
+    updateTimes(times);
+  });
+});
+DAY_PRESETS.forEach(node => {
+  node.addEventListener('click', e => {
+    const days = node.getAttribute('days');
+    updateDays(days);
+  });
+});
 
 // Logging toggle
 const LOG_ENABLE = document.getElementById('log-enable');

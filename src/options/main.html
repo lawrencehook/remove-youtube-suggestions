@@ -18,6 +18,7 @@
     <script defer src="/shared/main.js"></script>
     <script defer src="/shared/https.js"></script>
     <script defer src="/shared/analytics.js"></script>
+    <script defer src="/shared/utils.js"></script>
     <script defer src="/options/reload.js"></script>
     <script defer src="/options/main.js"></script>
     <script defer src="/options/settings-menu.js"></script>
@@ -60,9 +61,9 @@
           <div>Hours of the day</div>
           <div class='options-container'>
             <div class="predefined-options">
-              <a>8:30a-4:30p</a>
-              <a>9:00a-5:00p</a>
-              <a>9:30a-5:30p</a>
+              <a times="8:30a-4:30p">8:30a-4:30p</a>
+              <a times="9:00a-5:00p">9:00a-5:00p</a>
+              <a times="9:30a-5:30p">9:30a-5:30p</a>
             </div>
             <div class="custom-option">
               <input id="schedule-times" type='text' placeholder="9:00a-5:00p">
@@ -75,9 +76,9 @@
           <div>Days of the week</div>
           <div class='options-container'>
             <div class="predefined-options">
-              <a>Everyday</a>
-              <a>Weekdays</a>
-              <a>Weekends</a>
+              <a days="su,mo,tu,we,th,fr,sa">Everyday</a>
+              <a days="mo,tu,we,th,fr">Weekdays</a>
+              <a days="sa,su">Weekends</a>
             </div>
             <div class="custom-option">
               <div id="schedule-days">

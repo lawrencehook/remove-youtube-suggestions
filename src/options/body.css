@@ -196,6 +196,7 @@
 .predefined-options {
   display: flex;
   gap: 10px;
+  user-select: none;
 }
 
 .custom-option {
@@ -205,24 +206,31 @@
 }
 
 #schedule-times {
-  font-size: 0.8rem;
+  width: 100%;
   padding: 2px 5px;
+  font-size: 0.8rem;
   box-sizing: border-box;
 }
 #schedule-times[invalid] {
-  /* TODO */
+  box-shadow: 0px 0px 1px 0.5px var(--red-color);
+}
+#schedule-times[invalid]:focus {
+  box-shadow: 0px 0px 2px 0.5px var(--red-color);
 }
 
 #schedule-days {
   display: flex;
   gap: 3px;
   justify-content: right;
+  user-select: none;
+  box-sizing: border-box;
 }
 #schedule-days > div {
-  width: 30px;
+  width: 35px;
   padding: 1px 2px;
   border-radius: 2px;
   box-sizing: border-box;
+  border: 2px solid var(--body-background-color);
   cursor: pointer;
 }
 #schedule-days > div[active] {

@@ -23,30 +23,43 @@ let counter = 0, theaterClicked = false, hyper = false;
 let onResultsPage = resultsPageRegex.test(location.href);
 let frameRequested = false;
 let dynamicIters = 0;
+// let lastRun = Date.now();
+let isRunning = false;
+let lastScheduleCheck;
+const scheduleInterval = 30_000; // 30 seconds
 
 
-// Send a "get settings" message to the background script.
-browser.runtime.sendMessage({ getSettings: true });
+// Respond to changes in settings
+function logStorageChange(changes, area) {
+  if (area !== 'local') return;
+
+  Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
+    if (oldValue === newValue) return;
+
+    HTML.setAttribute(id, newValue);
+    cache[id] = newValue;
+
+    if (id.includes('schedule')) {
+      lastScheduleCheck = null;
+    }
+  });
+}
+browser.storage.onChanged.addListener(logStorageChange);
 
 
-// Update HTML attributes in real time.
-//   receive messages from options.js
-browser.runtime.onMessage.addListener((data, sender) => {
-  const { settings } = data;
-
+// Get settings
+browser.storage.local.get(settings => {
   if (!settings) return;
+
   Object.entries(settings).forEach(([ id, value ]) => {
     HTML.setAttribute(id, value);
     cache[id] = value;
   });
 
   runDynamicSettings();
-
-  return true;
 });
 
 
-// Dynamic settings (i.e. js instead of css)
 document.addEventListener("DOMContentLoaded", event => {
   url = undefined;
   counter = 0;
@@ -57,8 +70,8 @@ document.addEventListener("DOMContentLoaded", event => {
   handleNewPage();
 });
 
-// let lastRun = Date.now();
-let isRunning = false;
+
+// Dynamic settings (i.e. js instead of css)
 function runDynamicSettings() {
   if (isRunning) return;
   isRunning = true;
@@ -67,8 +80,30 @@ function runDynamicSettings() {
   // console.log('runDynamicSettings', Date.now() - lastRun);
   // lastRun = Date.now();
 
+  // Scheduling
+  try {
+    const scheduleEnabled = cache['schedule'];
+    const scheduleCheckTimeElapsed = Date.now() - lastScheduleCheck > scheduleInterval;
+    if (scheduleEnabled && (!lastScheduleCheck || scheduleCheckTimeElapsed)) {
+      console.log('yo');
+      lastScheduleCheck = Date.now();
+      const scheduleIsActive = checkSchedule(cache['scheduleTimes'], cache['scheduleDays']);
+      if (scheduleIsActive) {
+        if (!cache['global_enable']) {
+          updateSetting('global_enable', true);
+        }
+      } else {
+        if (cache['global_enable']) {
+          updateSetting('global_enable', false);
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
   if ('global_enable' in cache && cache['global_enable'] !== true) {
-    requestRunDynamicSettings()
+    requestRunDynamicSettings();
     return;
   }
 
@@ -81,7 +116,7 @@ function runDynamicSettings() {
     handleNewPage();
   }
 
-  // Dyanmic settings
+  // Dynamic settings
   try {
 
     // Hide all shorts
@@ -396,4 +431,10 @@ function getCookie(cname) {
     }
   }
   return "";
+}
+
+function updateSetting(id, value) {
+  HTML.setAttribute(id, value);
+  cache[id] = value;
+  browser.storage.local.set({ [id]: value });
 }
