@@ -417,6 +417,11 @@ const SECTIONS = [
   },
 ];
 
+const TIMED_SETTINGS = {
+  nextTimedChange: false,
+  nextTimedValue: true,
+};
+
 const SCHEDULE_SETTINGS = {
   schedule: false,
   scheduleTimes: '9:00a-5:00p',
@@ -427,7 +432,8 @@ const OTHER_SETTINGS = {
   global_enable: true,
   dark_mode: false,
   log_enabled: true,
-  ...SCHEDULE_SETTINGS
+  ...TIMED_SETTINGS,
+  ...SCHEDULE_SETTINGS,
 };
 
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
@@ -496,6 +502,9 @@ const idToShortId = {
   "remove_video_thumbnails":           '55',
   "search_engine_mode":                '56',
   "remove_notif_bell":                 '57',
+  "schedule":                          '58',
+  "scheduleTimes":                     '59',
+  "scheduleDays":                      '60',
 };
 
 

@@ -1,4 +1,4 @@
-// browser.runtime.openOptionsPage();
+browser.runtime.openOptionsPage();
 
 const uninstallUrl = "http://lawrencehook.com/rys/👋";
 browser.runtime.setUninstallURL(uninstallUrl);

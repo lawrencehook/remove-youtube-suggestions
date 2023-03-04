@@ -1,3 +1,15 @@
+
+/* Visual cues for schedule */
+html[schedule='true'][nextTimedChange="false"] #disabled_message,
+html[schedule='true'][nextTimedChange="false"] #turn_back_on,
+html[schedule='false'] #disabled_message_schedule,
+html[schedule='false'] #disabled_message_open_schedule,
+html:not([nextTimedChange="false"]) #disabled_message_schedule,
+html:not([nextTimedChange="false"]) #disabled_message_open_schedule,
+html[foo="bar"] {
+  display: none;
+}
+
 #disabled_message_container {
   text-align: center;
   height: var(--body-height);
@@ -9,21 +21,19 @@
   justify-content: center;
   align-content: center;
   flex-direction: column;
-  gap: 5vh;
+  gap: 30px;
 }
 
-#turn_back_on {
+#turn_back_on, #disabled_message_open_schedule {
   width: fit-content;
+  height: fit-content;
   margin: 0 auto;
-  padding: 2vh 3vw;
+  padding: 10px 25px;
   user-select: none;
-
   border: 2px solid var(--label-color);
-
   border-radius: 999px;
 }
-
-#turn_back_on:hover {
+#turn_back_on:hover, #disabled_message_open_schedule:hover {
   background-color: var(--label-color);
   color: var(--body-background-color);
 }

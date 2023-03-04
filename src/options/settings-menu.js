@@ -4,40 +4,37 @@ const delimiter2 = ',';
 
 const SETTINGS_MENU = document.getElementById('settings-menu');
 const SETTINGS_BUTTON = document.getElementById('header-settings');
-const settingsListener = e => {
-  SETTINGS_MENU.classList.remove('hidden');
-  SETTINGS_BUTTON.removeEventListener('click', settingsListener);
-
-  const { right } = SETTINGS_BUTTON.getBoundingClientRect();
-  const { width } = SETTINGS_MENU.getBoundingClientRect();
-  SETTINGS_MENU.style.left = (right - width) + 'px';
-
-  const hideSettingsMenu1 = e => {
-    document.removeEventListener('mousedown', hideSettingsMenu1);
-
-    const hideSettingsMenu2 = e => {
-      document.removeEventListener('mousedown', hideSettingsMenu1);
-      document.removeEventListener('mouseup', hideSettingsMenu2);
-      setTimeout(() => {
-        SETTINGS_MENU.classList.add('hidden')
-        SETTINGS_BUTTON.addEventListener('click', settingsListener);
-      }, 50);
-    }
-    document.addEventListener('mouseup', hideSettingsMenu2);
-  };
-  document.addEventListener('mousedown', hideSettingsMenu1);
-}
-SETTINGS_BUTTON.addEventListener('click', settingsListener);
+hydrateDropdown(SETTINGS_BUTTON, SETTINGS_MENU,
+  x => x.classList.remove('hidden'),
+  x => x.classList.add('hidden')
+);
 
 
 // Global toggle
 const SETTINGS_ENABLE = document.getElementById('settings-enable');
-SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
 const SETTINGS_DISABLE = document.getElementById('settings-disable');
+const POWER_ICON = qs('#power-icon');
+const POWER_OPTIONS_MENU = qs('#power-options');
+const POWER_OPTIONS = qsa('#power-options > div');
+SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
 SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', false));
+hydrateDropdown(POWER_ICON, POWER_OPTIONS_MENU);
+POWER_OPTIONS.forEach(o => {
+  const minutes = o.getAttribute('minutes');
+  if (!minutes) return;
+
+  o.addEventListener('click', e => {
+    const enabled = HTML.getAttribute('global_enable') === 'true';
+    updateSetting('global_enable', !enabled);
+    updateSetting('nextTimedChange', Date.now() + 60_000 * Number(minutes));
+    updateSetting('nextTimedValue', enabled);
+  });
+});
 
 
-// Scheduling
+/**************
+ * Scheduling *
+ **************/
 const scheduleModalContainer = document.getElementById('schedule_container_background');
 const SCHEDULING_OPTION = document.getElementById('settings-schedule');
 const scheduleToggleContainer = document.getElementById('enable-schedule');
@@ -71,7 +68,7 @@ scheduleModalContainer.addEventListener('click', e => {
   closeScheduleModal();
 });
 
-openScheduleModal();
+// openScheduleModal();
 function openScheduleModal() {
   scheduleModalContainer.removeAttribute('hidden');
 
@@ -205,22 +202,8 @@ function closeImportModal() {
 
 function updateSettings(settings) {
   Object.entries(settings).forEach(([ id, value ]) => {
-    HTML.setAttribute(id, value);
-
-    const svg = document.querySelector(`div#${id} svg`);
-    svg?.toggleAttribute('active', value);
+    updateSetting(id, value, false);
   });
-
-  try {
-    // Update running tabs.
-    browser.tabs.query({ url: '*://*.youtube.com/*' }, tabs => {
-      tabs.forEach(tab => {
-        browser.tabs.sendMessage(tab.id, { settings });
-      });
-    });
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 
@@ -237,7 +220,13 @@ function displayStatus(msg, fadeTime=1500) {
 
 function settingsObjToStr(settings) {
   const getId = id => idToShortId[id];
-  const getVal = val => val === true ? 't' : 'f';
+  const getVal = val => {
+    if (val === true || val === false) return val === true ? 't' : 'f';
+
+    // Schedule settings
+    return val.replaceAll(delimiter1, '<d1>').replaceAll(delimiter2, '<d2>')
+
+  }
 
   const str = Object.entries(settings).
                 filter(([id, val]) => getId(id)).
@@ -251,7 +240,12 @@ function settingsStrToObj(settingsStr) {
     if (!(id in shortIdToId)) throw new Error('Invalid ID: ' + id);
     return shortIdToId[id];
   }
-  const getVal = val => val === 't';
+  const getVal = val => {
+    if (val === 't' || val === 'f') return val === 't';
+
+    // Schedule settings
+    return val.replaceAll('<d1>', delimiter1).replaceAll('<d2>', delimiter2);
+  }
 
   if (settingsStr.substring(0, prefix.length) !== prefix) throw new Error('Invalid settings string');
 

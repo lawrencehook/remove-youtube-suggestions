@@ -1,5 +1,6 @@
 
 // Globals
+const cache = {};
 const HTML = document.documentElement;
 const SIDEBAR = document.getElementById('sidebar');
 const TEMPLATE_SIDEBAR_SECTION = document.getElementById('template_sidebar_section');
@@ -18,36 +19,34 @@ const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
 const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
 
 document.addEventListener("DOMContentLoaded", () => {
-  browser.runtime.sendMessage({ getFieldsets: true });
+  recordEvent('Page View: Options');
+  browser.storage.local.get(localSettings => {
+    const settings = { ...DEFAULT_SETTINGS, ...localSettings };
+    const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
+      acc[id] = id in localSettings ? localSettings[id] : value;
+      return acc;
+    }, {});
+
+    browser.tabs.query({ currentWindow: true, active: true }, tabs => {
+      if (!tabs || tabs.length === 0) return;
+      const [{ url }] = tabs;
+      currentUrl = url;
+      populateOptions(SECTIONS, headerSettings, settings);
+    });
+  });
   document.addEventListener("keydown", handleEnter, false);
 });
 
+// Respond to changes in settings
+function logStorageChange(changes, area) {
+  if (area !== 'local') return;
 
-recordEvent('Page View: Options');
-
-
-// Receive messages
-browser.runtime.onMessage.addListener((data, sender) => {
-  try {
-    const { SECTIONS, headerSettings, settings } = data;
-
-    // Initial page load.
-    if (SECTIONS) {
-      browser.tabs.query({ currentWindow: true, active: true }, tabs => {
-        if (!tabs || tabs.length === 0) return;
-        const [{ url }] = tabs;
-        currentUrl = url;
-        populateOptions(SECTIONS, headerSettings, settings);
-        HTML.setAttribute('loaded', true);
-      });
-    }
-
-    return true;
-
-  } catch (error) {
-    console.log(error);
-  }
-});
+  Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
+    if (oldValue === newValue) return;
+    updateSetting(id, newValue, { write: false });
+  });
+}
+browser.storage.onChanged.addListener(logStorageChange);
 
 
 function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
@@ -88,11 +87,12 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       const svg = optionNode.querySelector('svg');
       const value = id in SETTING_VALUES ? SETTING_VALUES[id] : defaultValue;
       HTML.setAttribute(id, value);
+      cache[id] = value;
       svg.toggleAttribute('active', value);
 
       optionNode.addEventListener('click', e => {
         const value = svg.toggleAttribute('active');
-        updateSetting(id, value);
+        updateSetting(id, value, { manual: true });
 
         if (effects && value in effects) {
           Object.entries(effects[value]).forEach(([id, value]) => {
@@ -124,6 +124,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   if (headerSettings) {
     Object.entries(headerSettings).forEach(([ id, value ]) => {
       HTML.setAttribute(id, value);
+      cache[id] = value;
 
       const svg = document.querySelector(`div#${id} svg`);
       svg?.toggleAttribute('active', value);
@@ -131,7 +132,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       const elt = document.querySelector(`#${id}`);
       elt?.addEventListener('click', e => {
         const value = !(HTML.getAttribute(id) === 'true');
-        updateSetting(id, value);
+        updateSetting(id, value, { manual: true });
       });
     });
   }
@@ -151,37 +152,94 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   searchBar.addEventListener('input', onSearchInput);
 
   const turnBackOn = document.getElementById('turn_back_on');
-  turnBackOn.addEventListener('click', e => updateSetting('global_enable', true));
+  turnBackOn.addEventListener('click', e => updateSetting('global_enable', true, { manual: true }));
 
   if (SETTING_VALUES['menu_timer']) {
-    HTML.setAttribute('menu_timer_counting_down', '')
+    HTML.setAttribute('menu_timer_counting_down', '');
     timerLoop();
   }
+
+  const openScheduleButton = document.getElementById('disabled_message_open_schedule');
+  openScheduleButton.addEventListener('click', e => openScheduleModal());
+
+  // Begin time loop -- checks for timedChanges, scheduling
+  timeLoop();
+  HTML.setAttribute('loaded', true);
 }
 
 
-function updateSetting(id, value) {
+function updateTimeInfo() {
 
-  recordEvent('Setting changed', { id, value });
+  // Timed changes
+  const { nextTimedChange, nextTimedValue } = cache;
+  const disabledMessage = qs('#disabled_message span');
+  if (nextTimedChange) {
+    const nextChange = new Date(nextTimedChange);
+    const message = formatDateMessageShort(nextChange);
+    disabledMessage.innerText = message;
+
+    const remainingTime = nextChange - Date.now();
+    const { hours, minutes, seconds } = parseTimeRemaining(remainingTime);
+    let title = `Turning ${nextTimedValue ? 'on' : 'off'} in `;
+    if (hours) title = title.concat(hours, ' hours and ');
+    if (minutes) title = title.concat(minutes, ' minutes and ');
+    title = title.concat(seconds, ' seconds.');
+    POWER_ICON.setAttribute('title', title);
+  }
+
+  // Scheduling
+  const { schedule, scheduleTimes, scheduleDays } = cache;
+  const scheduleIsActive = checkSchedule(scheduleTimes, scheduleDays);
+  const nextChange = nextScheduleChange(scheduleTimes, scheduleDays);
+  const scheduleMessageNode = qs('#disabled_message_schedule span');
+  const scheduleMessage = formatDateMessage(nextChange)
+  scheduleMessageNode.innerText = scheduleMessage;
+
+  if (!nextTimedChange) {
+    const remainingTime = nextChange - Date.now();
+    const { days, hours, minutes, seconds } = parseTimeRemaining(remainingTime);
+    let title = `Turning ${nextTimedValue ? 'on' : 'off'} in `;
+    if (days) title = title.concat(days, ' days and ');
+    if (hours) title = title.concat(hours, ' hours and ');
+    if (minutes) title = title.concat(minutes, ' minutes and ');
+    title = title.concat(seconds, ' seconds.');
+    POWER_ICON.setAttribute('title', title);
+  }
+
+  // Default
+  if (!nextTimedChange && !schedule) {
+    const title = `On/Off`;
+    POWER_ICON.setAttribute('title', title);
+  }
+
+}
+
+
+function updateSetting(id, value, { write=true, manual=false }={}) {
+
+  if (manual) recordEvent('Setting changed', { id, value });
 
   HTML.setAttribute(id, value);
+  cache[id] = value;
 
   const svg = document.querySelector(`div#${id} svg`);
   svg?.toggleAttribute('active', value);
 
   // Update local storage.
-  browser.storage.local.set({ [id]: value });
+  if (write) browser.storage.local.set({ [id]: value });
 
-  const settings = { [id]: value };
-  try {
-    // Update running tabs.
-    browser.tabs.query({ url: '*://*.youtube.com/*' }, tabs => {
-      tabs.forEach(tab => {
-        browser.tabs.sendMessage(tab.id, { settings });
-      });
-    });
-  } catch (error) {
-    console.log(error);
+
+  // Special cases
+  if (id === 'global_enable' && manual) {
+    updateSetting('nextTimedChange', false);
+  }
+
+  const timeInfoIds = [
+    'nextTimedChange', 'schedule',
+    'scheduleTimes', 'scheduleDays'
+  ];
+  if (timeInfoIds.includes(id)) {
+    updateTimeInfo();
   }
 }
 
@@ -281,6 +339,7 @@ function handleEnter(e) {
 }
 
 
+// For the menu timer option
 function timerLoop() {
   const timeLeft = 9 - Math.floor((Date.now() - openedTime) / 1000);
   const timeLeftElt = TIMER_CONTAINER.querySelector('div:nth-child(2)');
@@ -291,4 +350,34 @@ function timerLoop() {
   } else {
     setTimeout(timerLoop, 50);
   }
+}
+
+
+// For timedChanged and scheduling
+function timeLoop() {
+  const {
+    schedule, scheduleTimes, scheduleDays,
+    nextTimedChange, nextTimedValue
+  } = cache;
+
+  if (nextTimedChange) {
+    if (Date.now() > nextTimedChange) {
+      updateSetting('nextTimedChange', false);
+      updateSetting('global_enable', nextTimedValue);
+    }
+  } else if (schedule) {
+    const scheduleIsActive = checkSchedule(scheduleTimes, scheduleDays);
+    if (scheduleIsActive) {
+      if (!cache['global_enable']) {
+        updateSetting('global_enable', true);
+      }
+    } else {
+      if (cache['global_enable']) {
+        updateSetting('global_enable', false);
+      }
+    }
+  }
+
+  updateTimeInfo();
+  setTimeout(() => timeLoop(), 2_000);
 }

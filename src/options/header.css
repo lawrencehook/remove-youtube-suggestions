@@ -3,6 +3,14 @@
 html[dark_mode='false'] { --svg-color: #464646 }
 html[dark_mode='true']  { --svg-color: #E9E9E9 }
 
+/* Visual cues for schedule */
+/*html[schedule='true'] #global_enable,*/
+html[schedule='true'] #settings-enable,
+html[schedule='true'] #settings-disable,
+html[foo="bar"]{
+  display: none;
+}
+
 #header-settings circle,
 #header-toggle path,
 .dark_mode circle, .dark_mode path
@@ -48,17 +56,14 @@ html[dark_mode='false'] #header-light { display: none }
   color: var(--label-color);
 }
 
+#search_bar {
+  margin-right: auto;
+}
 #search_bar input {
   padding: 3px 6px 3px 6px;
   font-size: 18px;
 }
 
-#global_enable {
-  margin-left: auto;
-
-  display: flex;
-  align-items: center;
-}
 #header-toggle {
   cursor: pointer;
 
@@ -67,6 +72,51 @@ html[dark_mode='false'] #header-light { display: none }
   max-height: var(--power-icon-dim);
   max-width: var(--power-icon-dim);
 }
+#power-options {
+  font-size: 16px;
+
+  position: fixed;
+  z-index: 10;
+
+  top: calc(5px + var(--header-height) + 2 * var(--header-padding));
+  padding: 3px 1px;
+
+  user-select: none;
+  background-color: var(--body-background-color);
+  color: var(--body-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 6px 3px var(--box-shadow-color);
+
+  display: flex;
+  flex-direction: column;
+}
+#power-options hr {
+  width: 92%;
+  margin: 3px auto;
+}
+#power-options > *:not(hr) {
+  border-radius: var(--border-radius);
+  margin: 1px 3px;
+  padding: 4px 6px;
+  cursor: default;
+}
+#power-options > *:not(hr):hover,
+#power-options > *:not(hr):hover * {
+  background-color: #0600FB;
+  color: white !important;
+}
+#power-options a, #power-options span {
+  text-decoration: none;
+}
+html[schedule="true"] #power-options div:not([minutes]),
+html[schedule="true"] #power-options hr,
+html[global_enable="true"] #power-options span.on,
+html[global_enable="false"] #power-options span.off,
+html[foo=bar]
+{
+  display: none
+}
+
 #dark_mode {
   display: flex;
   align-items: center;
@@ -96,6 +146,7 @@ html[dark_mode='false'] #header-light { display: none }
   top: calc(5px + var(--header-height) + 2 * var(--header-padding));
   padding: 3px 1px;
 
+  user-select: none;
   background-color: var(--body-background-color);
   color: var(--body-color);
   border-radius: var(--border-radius);

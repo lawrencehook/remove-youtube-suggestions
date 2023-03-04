@@ -51,10 +51,16 @@ browser.storage.onChanged.addListener(logStorageChange);
 browser.storage.local.get(settings => {
   if (!settings) return;
 
-  Object.entries(settings).forEach(([ id, value ]) => {
+  Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {
     HTML.setAttribute(id, value);
     cache[id] = value;
   });
+
+  const init = {};
+  Object.entries(DEFAULT_SETTINGS).forEach(([ id, value]) => {
+    if (!(id in settings)) init[id] = value;
+  });
+  browser.storage.local.set(init);
 
   runDynamicSettings();
 });
@@ -74,18 +80,28 @@ document.addEventListener("DOMContentLoaded", event => {
 // Dynamic settings (i.e. js instead of css)
 function runDynamicSettings() {
   if (isRunning) return;
+  // console.log('runDynamicSettings', Date.now() - lastRun);
+  // lastRun = Date.now();
   isRunning = true;
   dynamicIters += 1;
 
-  // console.log('runDynamicSettings', Date.now() - lastRun);
-  // lastRun = Date.now();
+  // Scheduling, timedChanges
+  timeBlock: try {
 
-  // Scheduling
-  try {
+    // Timed changes
+    const { nextTimedChange, nextTimedValue } = cache;
+    if (nextTimedChange) {
+      if (Date.now() > nextTimedChange) {
+        updateSetting('nextTimedChange', false);
+        updateSetting('global_enable', nextTimedValue);
+      }
+      break timeBlock;
+    }
+
+    // Scheduling
     const scheduleEnabled = cache['schedule'];
     const scheduleCheckTimeElapsed = Date.now() - lastScheduleCheck > scheduleInterval;
     if (scheduleEnabled && (!lastScheduleCheck || scheduleCheckTimeElapsed)) {
-      console.log('yo');
       lastScheduleCheck = Date.now();
       const scheduleIsActive = checkSchedule(cache['scheduleTimes'], cache['scheduleDays']);
       if (scheduleIsActive) {
