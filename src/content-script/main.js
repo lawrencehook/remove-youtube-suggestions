@@ -23,6 +23,7 @@ let theaterClicked = false, hyper = false;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
+let onVideo = videoRegex.test(url);
 let onSubs = subsRegex.test(url);
 
 let dynamicIters = 0;
@@ -222,12 +223,18 @@ function runDynamicSettings() {
     }
 
     // Initialize the settings menu -- creates toggles for ambient mode and annotations.
-    const ambientLabel = qsa('.ytp-menuitem-label').
-                          filter(l => l.innerText.toLowerCase() === 'ambient mode');
-    if (!ambientLabel || ambientLabel.length === 0) {
-      const settingsButton = qsa('#ytd-player button.ytp-settings-button');
-      settingsButton.forEach(b => b.click());
-      settingsButton.forEach(b => b.click());
+    if (onVideo) {
+      const ambientLabel = qsa('.ytp-menuitem-label').
+                            filter(l => l.innerText.toLowerCase() === 'ambient mode');
+      if (!ambientLabel || ambientLabel.length === 0) {
+        const settingsButton = qsa('#ytd-player button.ytp-settings-button');
+        settingsButton.forEach(b => {
+          if (b && b.offsetParent) {
+            b.click();
+            b.click();
+          }
+        });
+      }
     }
 
     // Disable ambient mode
@@ -416,7 +423,8 @@ function handleNewPage() {
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
   onShorts = shortsRegex.test(url);
-  onSubs = subsRegex.test(url)
+  onVideo = videoRegex.test(url);
+  onSubs = subsRegex.test(url);
 
   // Mark whether or not we're on the search results page
   HTML.setAttribute('on_results_page', onResultsPage);
