@@ -8,23 +8,12 @@ html[dark_mode='true'] #donate_button .footer-path  {
   fill: var(--body-background-color);
 }
 
-#footer_hr {
-  text-align: center;
-
-  height: 1px;
-  width: 99%;
-  margin: 1px 0;
-  border-width: 0;
-
-  background-color: var(--box-shadow-color);
-}
-
 #footer {
   position: relative;
   text-align: center;
   height: var(--footer-height);
-  margin-top: 4px;
 
+  border-top: 1.5px solid var(--box-shadow-color);
   /*border: 1px groove gray;*/
 
   display: flex;

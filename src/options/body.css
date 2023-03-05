@@ -16,7 +16,7 @@ html[foo="bar"] {
   height: var(--body-height);
   padding: 1px;
 
-  font-size: 18px;
+  font-size: 1rem;
 
   display: flex;
   justify-content: center;
@@ -154,7 +154,7 @@ html[foo="bar"] {
 #schedule_container {
   height: fit-content;
   width: min(90vw, 800px);
-  margin-top: calc(3 * var(--header-height));
+  margin-top: calc(1.2 * var(--header-height));
   margin-right: auto;
   margin-left: auto;
   padding: 20px;
@@ -169,13 +169,31 @@ html[foo="bar"] {
   border-radius: 2px;
 
   display: flex;
+  gap: 60px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#schedule_modal_header {
+  display: flex;
   gap: 15px;
   flex-direction: column;
   align-items: center;
 }
 
+#schedule_modal_header div:first-child {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* Gray out options when disabled */
+html[schedule="false"] #schedule_container > *:not(#schedule_modal_header) {
+  opacity: 0.2;
+  pointer-events: none;
+  user-select: none;
+}
+
 #enable-schedule {
-  margin-bottom: 20px;
   cursor: default;
   user-select: none;
 
@@ -187,6 +205,7 @@ html[foo="bar"] {
 }
 #enable-schedule p {
   margin: 0;
+  font-size: 0.9rem;
 }
 
 #times-container, #days-container {
@@ -195,29 +214,31 @@ html[foo="bar"] {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  gap: 20px;
+  align-items: flex-end;
 }
 
-.options-container {
+.label-container {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  align-items: flex-start;
+}
+
+.label-container > div:first-child {
+  font-weight: bold;
 }
 
 .predefined-options {
   display: flex;
   gap: 10px;
   user-select: none;
-}
-
-.custom-option {
-  display: flex;
-  gap: 10px;
-  justify-content: right;
+  font-size: 0.8rem;
 }
 
 #schedule-times {
   width: 100%;
+  max-width: 215px;
   padding: 2px 5px;
   font-size: 0.8rem;
   box-sizing: border-box;
@@ -237,7 +258,7 @@ html[foo="bar"] {
   box-sizing: border-box;
 }
 #schedule-days > div {
-  width: 35px;
+  width: 30px;
   padding: 1px 2px;
   border-radius: 2px;
   box-sizing: border-box;
@@ -250,7 +271,7 @@ html[foo="bar"] {
   border: 2px solid var(--blue-color);
 }
 
-.predefined-options a, .custom-option a {
+.predefined-options a {
   cursor: pointer;
 }
 
@@ -262,7 +283,7 @@ html[foo="bar"] {
   bottom: calc(var(--footer-height) + 3px);
   width: 100vw;
   z-index: 100;
-  font-size: 18px;
+  font-size: 1rem;
 
   background-color: rgba(255, 255, 255, 0.97);
 
@@ -279,7 +300,7 @@ html[foo="bar"] {
 }
 
 #sidebar {
-  height: var(--body-height);
+  height: calc(6px + var(--body-height));
   width: 150px;
   padding: 10px 3px;
   overflow: hidden;
@@ -287,8 +308,9 @@ html[foo="bar"] {
   box-sizing: border-box;
   user-select: none;
 
-  border-radius: 3px;
-  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
+  border-radius: 1px;
+  border-right: 1.5px solid var(--box-shadow-color);
+/*  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);*/
 
   display: flex;
   flex-direction: column;
@@ -296,7 +318,7 @@ html[foo="bar"] {
 }
 #sidebar .sidebar_section {
   padding: 7px;
-  border-radius: 3px;
+  border-radius: var(--border-radius);
   box-sizing: border-box;
 
   font-size: 16px;
@@ -319,23 +341,4 @@ html[foo="bar"] {
   display: flex;
   flex-direction: column;
   gap: 3px;
-}
-
-#primary_options .section_container {
-  margin: 0px 5px;
-  padding: 10px;
-  box-sizing: border-box;
-
-  background-color: var(--body-background-color);
-  border-radius: 1px;
-  box-shadow: 0px 0px 0.5px 0.5px var(--box-shadow-color);
-}
-
-#primary_options .section_label {
-  margin-bottom: 5px;
-  margin-left: 10px;
-
-  font-size: 18px;
-  text-align: left;
-  color: var(--label-color);
 }

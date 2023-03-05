@@ -4,8 +4,8 @@
 }
 
 html[dark_mode='false'], html:not([dark_mode]) {
-	--body-color: #303030;
-	--body-background-color: #EEEEEE;
+	--body-color: #161616;
+	--body-background-color: #FAFAFA;
 	--label-color: #101010;
 	--box-shadow-color: rgba(0, 0, 0, 0.30);
 }
@@ -116,7 +116,7 @@ footer {
 }
 footer p {
 	margin: 0;
-	font-size: 18px;
+	font-size: 1rem;
 	text-align: center;
 }
 
@@ -157,7 +157,7 @@ footer p {
 
 #donate_button {
 	padding: 3px 10px;
-	font-size: 18px;
+	font-size: 1rem;
 
 	text-decoration: none;
 	background-color: white;

@@ -4,7 +4,7 @@
   --body-height: 400px;
   --footer-height: 25px;
 
-  --border-radius: 3px;
+  --border-radius: 1px;
 
   --red-color:  hsl(358 100% 49%);
   --blue-color: hsl(238 100% 49%);
@@ -19,7 +19,7 @@ html:not([loaded]), html:not([loaded]) body {
 
 body {
   margin: auto;
-  font-size: 18px !important;
+  font-size: 1rem !important;
 }
 
 html[dark_mode='true'] {
@@ -63,9 +63,7 @@ a {
 body {
   width: 600px;
   height: fit-content;
-
-  /* top, right, bottom, left */
-  padding: 2px 4px 3px 4px;
+  padding: 1px;
 }
 
 body, body * {
@@ -74,6 +72,9 @@ body, body * {
 
 .hidden {
   visibility: hidden;
+}
+.removed {
+  display: none !important;
 }
 
 input {

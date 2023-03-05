@@ -247,9 +247,11 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
 function onSearchInput(e) {
   const { target } = e;
   const { value } = target;
-  const sections = Array.from(document.querySelectorAll('.section_container:not(#template_section)'));
+  const sidebarSections = qsa('.sidebar_section');
+  const sections = qsa('.section_container:not(#template_section)');
 
   // Reset
+  sidebarSections.forEach(s => s.removeAttribute('selected'));
   sections.forEach(section => {
     section.classList.remove('removed');
     const options = Array.from(section.querySelectorAll('div.option'));
@@ -289,10 +291,10 @@ function onSearchInput(e) {
 
 function sidebarSectionListener(e) {
   const sidebarSection = e.target;
-  const sidebarSections = Array.from(document.querySelectorAll('.sidebar_section'));
+  const sidebarSections = qsa('.sidebar_section');
   const selected = sidebarSection.toggleAttribute('selected');
   const tag = sidebarSection.getAttribute('tag');
-  const sections = Array.from(document.querySelectorAll('.section_container:not(#template_section)'));
+  const sections = qsa('.section_container:not(#template_section)');
 
   recordEvent('Section selected', { tag, selected });
 

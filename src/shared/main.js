@@ -22,14 +22,19 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Hide the notification bell",
+        id: "remove_notif_bell",
+        defaultValue: false,
+      },
+      {
         name: "Enable search engine mode",
         id: "search_engine_mode",
         defaultValue: false,
       },
       {
-        name: "Hide the notification bell",
-        id: "remove_notif_bell",
-        defaultValue: false,
+        name: "Enable menu timer - 10 seconds",
+        id: "menu_timer",
+        defaultValue: false
       },
     ]
   },
@@ -401,17 +406,6 @@ const SECTIONS = [
         id: "redirect_off",
         defaultValue: true,
         display: false
-      },
-    ]
-  },
-  {
-    name: "Extension Settings",
-    tags: "Settings",
-    options: [
-      {
-        name: "Enable menu timer - 10 seconds",
-        id: "menu_timer",
-        defaultValue: false
       },
     ]
   },

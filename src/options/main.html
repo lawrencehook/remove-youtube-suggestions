@@ -44,52 +44,49 @@
     <div id="schedule_container_background" hidden>
       <div id="schedule_container">
 
-        <div>Schedule — Set the times for RYS to be active</div>
-
-        <div id='enable-schedule'>
-          <svg class='option_toggle' viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <path class='option-toggle-outer-path' fill="gray"  d="M 11, 3 H 5 C 2.239, 3, 0, 5.239, 0, 8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761, 3, 11, 3 z"/>
-            <circle class='option-toggle-circle' fill="white" cx="5" cy="8" r="3"/>
-          </svg>
-          <p>Enable Schedule</p>
+        <div id='schedule_modal_header'>
+          <div>Schedule</div>
+          <div id='enable-schedule'>
+            <svg class='option_toggle' viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <path class='option-toggle-outer-path' fill="gray"  d="M 11, 3 H 5 C 2.239, 3, 0, 5.239, 0, 8 s 2.239, 5, 5, 5 h 6 c 2.761, 0, 5 -2.239, 5 -5 S 13.761, 3, 11, 3 z"/>
+              <circle class='option-toggle-circle' fill="white" cx="5" cy="8" r="3"/>
+            </svg>
+            <p>Set times for RYS to be active</p>
+          </div>
         </div>
 
 
         <!-- schedule times -->
         <div id='times-container'>
-          <div>Hours of the day</div>
-          <div class='options-container'>
+          <div class='label-container'>
+            <div>Hours of the day</div>
             <div class="predefined-options">
               <a times="8:30a-4:30p">8:30a-4:30p</a>
               <a times="9:00a-5:00p">9:00a-5:00p</a>
               <a times="9:30a-5:30p">9:30a-5:30p</a>
             </div>
-            <div class="custom-option">
-              <input id="schedule-times" type='text' placeholder="9:00a-5:00p">
-            </div>
           </div>
+          <input id="schedule-times" type='text' placeholder="ex. 9:00a-12:00p, 1:00p-5:00p">
         </div>
 
         <!-- schedule days -->
         <div id='days-container'>
-          <div>Days of the week</div>
-          <div class='options-container'>
+          <div class='label-container'>
+            <div>Days of the week</div>
             <div class="predefined-options">
               <a days="su,mo,tu,we,th,fr,sa">Everyday</a>
               <a days="mo,tu,we,th,fr">Weekdays</a>
               <a days="sa,su">Weekends</a>
             </div>
-            <div class="custom-option">
-              <div id="schedule-days">
-                <div day="su">Su</div>
-                <div day="mo">Mo</div>
-                <div day="tu">Tu</div>
-                <div day="we">We</div>
-                <div day="th">Th</div>
-                <div day="fr">Fr</div>
-                <div day="sa">Sa</div>
-              </div>
-            </div>
+          </div>
+          <div id="schedule-days">
+            <div day="su">S</div>
+            <div day="mo">M</div>
+            <div day="tu">T</div>
+            <div day="we">W</div>
+            <div day="th">T</div>
+            <div day="fr">F</div>
+            <div day="sa">S</div>
           </div>
         </div>
 
@@ -102,8 +99,6 @@
     </div>
 
     <div id='settings-menu' class='hidden'>
-      <div id='settings-enable'>Enable</div>
-      <div id='settings-disable'>Disable</div>
       <div id='settings-schedule'>Schedule</div>
       <hr>
       <div id='import-settings'>Import settings</div>
@@ -123,6 +118,8 @@
 
     <div id="power-options" hidden>
       <div id='global_enable'>Turn <span class="on">on</span><span class='off'>off</span></div>
+      <div id='open-schedule'>Edit Schedule</div>
+      <div id='resume-schedule'>Resume Schedule</div>
       <hr>
       <div minutes="10">Turn <span class="on">on</span><span class='off'>off</span> for 10 minutes</div>
       <div minutes="30">Turn <span class="on">on</span><span class='off'>off</span> for 30 minutes</div>
@@ -133,7 +130,7 @@
 
     <div id='header'>
 
-      <a href='https://lawrencehook.com/rys' target='_blank'>
+      <a id="header-logo-link" href='https://lawrencehook.com/rys' target='_blank'>
         <img id='header-logo' src="/images/rys.svg">
       </a>
 
@@ -178,8 +175,6 @@
 
     </div>
 
-    <hr id='header_hr'>
-
     <div id="disabled_message_container">
       <div id="disabled_message">
         <p>RYS is disabled</p>
@@ -191,7 +186,7 @@
         <p>RYS is disabled.</p>
         <p>Will be re-enabled on <span></span>.</p>
       </div>
-      <div id="disabled_message_open_schedule">Change schedule</div>
+      <div id="disabled_message_open_schedule">Edit schedule</div>
     </div>
 
     <div id="main_container">
@@ -205,7 +200,7 @@
       <div id="primary_options" tabindex="-1">
 
         <div id='template_section' class='section_container removed'>
-          <div class='section_label'><a></a></div>
+          <div class='section_label'><a target="_blank"></a></div>
         </div>
 
         <div id='template_option' class='option removed' tabindex="0">
@@ -219,8 +214,6 @@
 
       </div>
     </div>
-
-    <hr id='footer_hr'>
 
     <div id='footer'>
 

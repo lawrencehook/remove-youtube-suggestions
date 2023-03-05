@@ -3,14 +3,6 @@
 html[dark_mode='false'] { --svg-color: #464646 }
 html[dark_mode='true']  { --svg-color: #E9E9E9 }
 
-/* Visual cues for schedule */
-/*html[schedule='true'] #global_enable,*/
-html[schedule='true'] #settings-enable,
-html[schedule='true'] #settings-disable,
-html[foo="bar"]{
-  display: none;
-}
-
 #header-settings circle,
 #header-toggle path,
 .dark_mode circle, .dark_mode path
@@ -26,6 +18,8 @@ html[dark_mode='false'] #header-light { display: none }
   height: var(--header-height);
   padding: var(--header-padding);
 
+  border-bottom: 1.5px solid var(--box-shadow-color);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,17 +28,10 @@ html[dark_mode='false'] #header-light { display: none }
   --icon-dim: 30px;
 }
 
-#header_hr {
-  text-align: center;
-
-  height: 1px;
-  width: 99%;
-  margin: 1px 0;
-  border-width: 0;
-
-  background-color: var(--box-shadow-color);
+#header-logo-link {
+  display: flex;
+  align-items: center;
 }
-
 #header-logo {
   height: var(--icon-dim);
   max-height: var(--icon-dim);
@@ -52,7 +39,7 @@ html[dark_mode='false'] #header-light { display: none }
 }
 #header-text {
   margin-right: auto;
-  font-size: 20px;
+  font-size: 1.3rem;
   color: var(--label-color);
 }
 
@@ -60,11 +47,22 @@ html[dark_mode='false'] #header-light { display: none }
   margin-right: auto;
 }
 #search_bar input {
-  padding: 3px 6px 3px 6px;
-  font-size: 18px;
+  padding: 3px 10px;
+  font-size: 1rem;
+
+  background-color: var(--body-background-color);
+
+  border: 1px solid var(--box-shadow-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 0px 0px var(--box-shadow-color);
+
 }
 
-#header-toggle {
+#power-icon {
+  display: flex;
+  justify-content: center;
+}
+#power-icon svg {
   cursor: pointer;
 
   --power-icon-dim: calc(var(--icon-dim) - 6px);
@@ -108,8 +106,11 @@ html[dark_mode='false'] #header-light { display: none }
 #power-options a, #power-options span {
   text-decoration: none;
 }
-html[schedule="true"] #power-options div:not([minutes]),
-html[schedule="true"] #power-options hr,
+html[schedule="false"] #power-options #resume-schedule,
+html[nextTimedChange="false"] #power-options #resume-schedule,
+html[schedule="true"]:not([nextTimedChange="false"]) #power-options *:not(#resume-schedule),
+html[schedule="true"] #power-options #global_enable,
+html[schedule="false"] #power-options #open-schedule,
 html[global_enable="true"] #power-options span.on,
 html[global_enable="false"] #power-options span.off,
 html[foo=bar]
@@ -172,8 +173,6 @@ html[foo=bar]
 #settings-menu a {
   text-decoration: none;
 }
-html[global_enable="true"] #settings-enable,
-html[global_enable="false"] #settings-disable,
 html[log_enabled="true"] #log-enable,
 html[log_enabled="false"] #log-disable,
 html[foo=bar]

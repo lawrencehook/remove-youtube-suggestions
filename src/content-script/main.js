@@ -18,15 +18,20 @@ const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
-let url;
-let counter = 0, theaterClicked = false, hyper = false;
-let onResultsPage = resultsPageRegex.test(location.href);
-let frameRequested = false;
+let url = location.href;
+let theaterClicked = false, hyper = false;
+let onResultsPage = resultsPageRegex.test(url);
+let onHomepage = homepageRegex.test(url);
+let onShorts = shortsRegex.test(url);
+let onSubs = subsRegex.test(url);
+
 let dynamicIters = 0;
-// let lastRun = Date.now();
+let frameRequested = false;
 let isRunning = false;
+// let lastRun = Date.now();
+// let counter = 0;
 let lastScheduleCheck;
-const scheduleInterval = 30_000; // 30 seconds
+const scheduleInterval = 2_000; // 2 seconds
 
 
 // Respond to changes in settings
@@ -66,15 +71,7 @@ browser.storage.local.get(settings => {
 });
 
 
-document.addEventListener("DOMContentLoaded", event => {
-  url = undefined;
-  counter = 0;
-  theaterClicked = false;
-  hyper = false;
-  onResultsPage = resultsPageRegex.test(location.href);
-
-  handleNewPage();
-});
+document.addEventListener("DOMContentLoaded", e => handleNewPage());
 
 
 // Dynamic settings (i.e. js instead of css)
@@ -84,6 +81,7 @@ function runDynamicSettings() {
   // lastRun = Date.now();
   isRunning = true;
   dynamicIters += 1;
+  const on = cache['global_enable'] === true;
 
   // Scheduling, timedChanges
   timeBlock: try {
@@ -104,31 +102,24 @@ function runDynamicSettings() {
     if (scheduleEnabled && (!lastScheduleCheck || scheduleCheckTimeElapsed)) {
       lastScheduleCheck = Date.now();
       const scheduleIsActive = checkSchedule(cache['scheduleTimes'], cache['scheduleDays']);
-      if (scheduleIsActive) {
-        if (!cache['global_enable']) {
-          updateSetting('global_enable', true);
-        }
-      } else {
-        if (cache['global_enable']) {
-          updateSetting('global_enable', false);
-        }
+      const scheduleChange = (scheduleIsActive && !on) || (!scheduleIsActive && on);
+      if (scheduleChange) {
+        updateSetting('global_enable', !on);
       }
     }
   } catch (error) {
     console.log(error);
   }
 
-  if ('global_enable' in cache && cache['global_enable'] !== true) {
+  if (!on) {
+    frameRequested = false;
+    isRunning = false;
     requestRunDynamicSettings();
     return;
   }
 
   // Check if the URL has changed (YouTube is a Single-Page Application)
   if (url !== location.href) {
-    url = location.href;
-    theaterClicked = false;
-    hyper = false;
-    onResultsPage = resultsPageRegex.test(location.href);
     handleNewPage();
   }
 
@@ -166,7 +157,7 @@ function runDynamicSettings() {
     });
 
     // Subscriptions page options
-    if (subsRegex.test(url)) {
+    if (onSubs) {
       const badgeSelector = 'ytd-badge-supported-renderer';
       const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]';
       const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
@@ -367,6 +358,8 @@ function requestRunDynamicSettings() {
 
 
 function injectScripts() {
+  const on = cache['global_enable'] === true;
+  if (!on) return;
 
   // Disable playlist autoplay
   if (cache['disable_playlist_autoplay']) {
@@ -394,14 +387,16 @@ setInterval(f, 100);
 
 
 function handleNewPage() {
-  if (cache['global_enable'] !== true) return;
+  const on = cache['global_enable'] === true;
 
   dynamicIters = 0;
-
-  const currentUrl = location.href;
-  const onHomepage = homepageRegex.test(currentUrl);
-  const onResultsPage = resultsPageRegex.test(currentUrl);
-  const onShorts = shortsRegex.test(currentUrl);
+  url = location.href;
+  theaterClicked = false;
+  hyper = false;
+  onResultsPage = resultsPageRegex.test(url);
+  onHomepage = homepageRegex.test(url);
+  onShorts = shortsRegex.test(url);
+  onSubs = subsRegex.test(url)
 
   // Mark whether or not we're on the search results page
   HTML.setAttribute('on_results_page', onResultsPage);
@@ -410,15 +405,15 @@ function handleNewPage() {
   HTML.setAttribute('on_homepage', onHomepage);
 
   // Homepage redirects
-  if (onHomepage && !cache['redirect_off']) {
+  if (on && onHomepage && !cache['redirect_off']) {
     if (cache['redirect_to_subs'])    location.replace(REDIRECT_URLS['redirect_to_subs']);
     if (cache['redirect_to_wl'])      location.replace(REDIRECT_URLS['redirect_to_wl']);
     if (cache['redirect_to_library']) location.replace(REDIRECT_URLS['redirect_to_library']);
   }
 
   // Redirect the shorts player
-  if (onShorts && cache['normalize_shorts']) {
-    const newUrl = currentUrl.replace('shorts', 'watch');
+  if (on && onShorts && cache['normalize_shorts']) {
+    const newUrl = url.replace('shorts', 'watch');
     location.replace(newUrl);
   }
 

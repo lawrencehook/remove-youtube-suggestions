@@ -11,13 +11,9 @@ hydrateDropdown(SETTINGS_BUTTON, SETTINGS_MENU,
 
 
 // Global toggle
-const SETTINGS_ENABLE = document.getElementById('settings-enable');
-const SETTINGS_DISABLE = document.getElementById('settings-disable');
 const POWER_ICON = qs('#power-icon');
 const POWER_OPTIONS_MENU = qs('#power-options');
 const POWER_OPTIONS = qsa('#power-options > div');
-SETTINGS_ENABLE.addEventListener('click', e => updateSetting('global_enable', true));
-SETTINGS_DISABLE.addEventListener('click', e => updateSetting('global_enable', false));
 hydrateDropdown(POWER_ICON, POWER_OPTIONS_MENU);
 POWER_OPTIONS.forEach(o => {
   const minutes = o.getAttribute('minutes');
@@ -37,6 +33,8 @@ POWER_OPTIONS.forEach(o => {
  **************/
 const scheduleModalContainer = document.getElementById('schedule_container_background');
 const SCHEDULING_OPTION = document.getElementById('settings-schedule');
+const OPEN_SCHEDULE_OPTION = qs('#open-schedule');
+const RESUME_SCHEDULE_OPTION = qs('#resume-schedule');
 const scheduleToggleContainer = document.getElementById('enable-schedule');
 const scheduleToggle = scheduleToggleContainer.querySelector('svg');
 const SCHEDULE_TIMES = document.getElementById('schedule-times');
@@ -68,7 +66,6 @@ scheduleModalContainer.addEventListener('click', e => {
   closeScheduleModal();
 });
 
-// openScheduleModal();
 function openScheduleModal() {
   scheduleModalContainer.removeAttribute('hidden');
 
@@ -83,6 +80,14 @@ function openScheduleModal() {
 }
 SCHEDULING_OPTION.addEventListener('click', e => {
   openScheduleModal();
+});
+OPEN_SCHEDULE_OPTION.addEventListener('click', e => {
+  openScheduleModal();
+});
+RESUME_SCHEDULE_OPTION.addEventListener('click', e => {
+  const scheduleIsActive = checkSchedule(cache['scheduleTimes'], cache['scheduleDays']);
+  updateSetting('global_enable', scheduleIsActive);
+  updateSetting('nextTimedChange', false);
 });
 
 // Schedule on/off
@@ -116,7 +121,7 @@ SCHEDULE_DAYS_OPTIONS.forEach(o => {
       newDays = currentDays.filter(d => d.toLowerCase().trim() !== day);
     }
 
-    updateSetting('scheduleDays', newDays.join(','))
+    updateSetting('scheduleDays', newDays.filter(d => d !== '').join(','))
   });
 });
 

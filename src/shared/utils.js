@@ -84,6 +84,7 @@ function nextScheduleChange(times, days) {
 
 
 function formatDateMessage(date) {
+	if (!date) return 'unknown date';
 	return date.toLocaleDateString('en-us', {
 		weekday:"long",
 		month:"long",
@@ -96,6 +97,7 @@ function formatDateMessage(date) {
 
 
 function formatDateMessageShort(date) {
+	if (!date) return 'unknown date';
 	return date.toLocaleDateString('en-us', {
 		hour: "numeric",
 		minute: "numeric",
