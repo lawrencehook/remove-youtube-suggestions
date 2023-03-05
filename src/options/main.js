@@ -174,7 +174,7 @@ function updateTimeInfo() {
   const { nextTimedChange, nextTimedValue } = cache;
   const disabledMessage = qs('#disabled_message span');
   if (nextTimedChange) {
-    const nextChange = new Date(nextTimedChange);
+    const nextChange = new Date(Number(nextTimedChange));
     const message = formatDateMessageShort(nextChange);
     disabledMessage.innerText = message;
 
@@ -361,7 +361,7 @@ function timeLoop() {
   } = cache;
 
   if (nextTimedChange) {
-    if (Date.now() > nextTimedChange) {
+    if (Date.now() > Number(nextTimedChange)) {
       updateSetting('nextTimedChange', false);
       updateSetting('global_enable', nextTimedValue);
     }

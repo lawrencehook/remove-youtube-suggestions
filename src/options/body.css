@@ -1,5 +1,6 @@
 
 /* Visual cues for schedule */
+html[nextTimedChange="false"] #timed-change-message,
 html[schedule='true'][nextTimedChange="false"] #disabled_message,
 html[schedule='true'][nextTimedChange="false"] #turn_back_on,
 html[schedule='false'] #disabled_message_schedule,

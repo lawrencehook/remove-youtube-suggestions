@@ -91,7 +91,7 @@ function runDynamicSettings() {
     // Timed changes
     const { nextTimedChange, nextTimedValue } = cache;
     if (nextTimedChange) {
-      if (Date.now() > nextTimedChange) {
+      if (Date.now() > Number(nextTimedChange)) {
         updateSetting('nextTimedChange', false);
         updateSetting('global_enable', nextTimedValue);
       }

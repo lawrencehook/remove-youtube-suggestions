@@ -224,7 +224,7 @@ function settingsObjToStr(settings) {
     if (val === true || val === false) return val === true ? 't' : 'f';
 
     // Schedule settings
-    return val.replaceAll(delimiter1, '<d1>').replaceAll(delimiter2, '<d2>')
+    return val.toString().replaceAll(delimiter1, '<d1>').replaceAll(delimiter2, '<d2>');
 
   }
 

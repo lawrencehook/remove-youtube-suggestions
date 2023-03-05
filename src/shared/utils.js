@@ -28,6 +28,8 @@ function checkSchedule(times, days, now=new Date()) {
 	const matchFound = timesArray.some(time => {
 		const [ startString, endString ] = time.split('-');
 		const startTime = parseScheduleTime(startString.trim(), now);
+
+		// TODO -> force endTime to come after startTime
 		const endTime = parseScheduleTime(endString.trim(), now);
 
 		return now > startTime && now < endTime;

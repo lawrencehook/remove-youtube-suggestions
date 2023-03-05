@@ -505,6 +505,8 @@ const idToShortId = {
   "schedule":                          '58',
   "scheduleTimes":                     '59',
   "scheduleDays":                      '60',
+  "nextTimedChange":                   '61',
+  "nextTimedValue":                    '62',
 };
 
 
