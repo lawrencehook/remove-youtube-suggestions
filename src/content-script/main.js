@@ -222,11 +222,11 @@ function runDynamicSettings() {
       });
     }
 
-    // Initialize the settings menu -- creates toggles for ambient mode and annotations.
     if (onVideo) {
-      const ambientLabel = qsa('.ytp-menuitem-label').
-                            filter(l => l.innerText.toLowerCase() === 'ambient mode');
-      if (!ambientLabel || ambientLabel.length === 0) {
+
+      // Initialize the settings menu -- creates toggles for ambient mode and annotations.
+      const checkMenuItems = qsa('#ytp-id-18 .ytp-panel-menu > div');
+      if (!checkMenuItems || checkMenuItems.length === 0) {
         const settingsButton = qsa('#ytd-player button.ytp-settings-button');
         settingsButton.forEach(b => {
           if (b && b.offsetParent) {
@@ -235,26 +235,26 @@ function runDynamicSettings() {
           }
         });
       }
-    }
 
-    // Disable ambient mode
-    if (cache['disable_ambient_mode'] === true) {
-      qsa('.ytp-menuitem-label').
-        filter(label => label.innerText.toLowerCase() === 'ambient mode').
-        map(n => n.parentNode).
-        filter(n => n.getAttribute('aria-checked') === 'true').
-        map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
-        forEach(n => n.click());
-    }
+      const menuItems = qsa('#ytp-id-18 .ytp-panel-menu > div');
+      const checkBoxes = menuItems.filter(n => n.getAttribute('aria-checked'));
+      const [ ambientToggle, annotationsToggle ] = checkBoxes;
 
-    // Disable annotations
-    if (cache['disable_annotations'] === true) {
-      qsa('.ytp-menuitem-label').
-        filter(label => label.innerText.toLowerCase() === 'annotations').
-        map(n => n.parentNode).
-        filter(n => n.getAttribute('aria-checked') === 'true').
-        map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
-        forEach(n => n.click());
+      // Disable ambient mode
+      if (cache['disable_ambient_mode'] === true) {
+        if (ambientToggle?.getAttribute('aria-checked') === 'true') {
+          console.log('yo1');
+          ambientToggle.click();
+        }
+      }
+
+      // Disable annotations
+      if (cache['disable_annotations'] === true) {
+        if (annotationsToggle?.getAttribute('aria-checked') === 'true') {
+          console.log('yo2');
+          annotationsToggle.click();
+        }
+      }
     }
 
     // // Enable theater mode
