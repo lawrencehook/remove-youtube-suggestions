@@ -221,24 +221,33 @@ function runDynamicSettings() {
       });
     }
 
+    // Initialize the settings menu -- creates toggles for ambient mode and annotations.
+    const ambientLabel = qsa('.ytp-menuitem-label').
+                          filter(l => l.innerText.toLowerCase() === 'ambient mode');
+    if (!ambientLabel || ambientLabel.length === 0) {
+      const settingsButton = qsa('#ytd-player button.ytp-settings-button');
+      settingsButton.forEach(b => b.click());
+      settingsButton.forEach(b => b.click());
+    }
+
     // Disable ambient mode
     if (cache['disable_ambient_mode'] === true) {
-      const ambientToggle = Array.from(document.querySelectorAll('.ytp-menuitem-label')).
-                              filter(label => label.innerText.toLowerCase() === 'ambient mode').
-                              map(n => n.parentNode).
-                              filter(n => n.getAttribute('aria-checked') === 'true').
-                              map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
-                              forEach(n => n.click());
+      qsa('.ytp-menuitem-label').
+        filter(label => label.innerText.toLowerCase() === 'ambient mode').
+        map(n => n.parentNode).
+        filter(n => n.getAttribute('aria-checked') === 'true').
+        map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
+        forEach(n => n.click());
     }
 
     // Disable annotations
     if (cache['disable_annotations'] === true) {
-      const annotationsToggle = Array.from(document.querySelectorAll('.ytp-menuitem-label')).
-                                  filter(label => label.innerText.toLowerCase() === 'annotations').
-                                  map(n => n.parentNode).
-                                  filter(n => n.getAttribute('aria-checked') === 'true').
-                                  map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
-                                  forEach(n => n.click());
+      qsa('.ytp-menuitem-label').
+        filter(label => label.innerText.toLowerCase() === 'annotations').
+        map(n => n.parentNode).
+        filter(n => n.getAttribute('aria-checked') === 'true').
+        map(n => n.querySelector('.ytp-menuitem-toggle-checkbox')).
+        forEach(n => n.click());
     }
 
     // // Enable theater mode
