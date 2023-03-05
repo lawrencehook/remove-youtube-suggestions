@@ -348,6 +348,13 @@ function runDynamicSettings() {
         }
       }
     }
+
+    // Show description if comments are hidden
+    if (cache['remove_comments']) {
+      const expandButton = qsa('#description #expand.button');
+      expandButton.forEach(b => b.click());
+    }
+
   } catch (error) {
     console.log(error);
   }
