@@ -130,7 +130,7 @@ function runDynamicSettings() {
     // Hide all shorts
     if (cache['remove_all_shorts']) {
       const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
-      const shortBadges = document.querySelectorAll(shortsBadgeSelector);
+      const shortBadges = qsa(shortsBadgeSelector);
       shortBadges?.forEach(badge => {
         const sidebarVid = badge.closest('ytd-compact-video-renderer');
         sidebarVid?.setAttribute('is_short', '');
@@ -139,7 +139,7 @@ function runDynamicSettings() {
       });
 
       const shortsShelfSelector = '*[is-shorts]';
-      const shortsShelves = document.querySelectorAll(shortsShelfSelector);
+      const shortsShelves = qsa(shortsShelfSelector);
       shortsShelves?.forEach(shelf => {
         const shelfContainer = shelf.closest('ytd-rich-section-renderer');
         shelfContainer?.setAttribute('is_short', '');
@@ -147,7 +147,7 @@ function runDynamicSettings() {
     }
 
     // Mark the left nav bar sections
-    const leftSections = document.querySelectorAll('ytd-guide-section-renderer');
+    const leftSections = qsa('ytd-guide-section-renderer');
     leftSections.forEach(section => {
       const title = section.querySelector('#guide-section-title');
       if (!title?.innerText) return;
@@ -171,15 +171,15 @@ function runDynamicSettings() {
       };
 
       // Live / Premiere
-      const badges = document.querySelectorAll(badgeSelector);
+      const badges = qsa(badgeSelector);
       badges.forEach(addBadgeTextToVideo);
 
       // Upcoming
-      const upcomingBadges = document.querySelectorAll(upcomingBadgeSelector);
+      const upcomingBadges = qsa(upcomingBadgeSelector);
       upcomingBadges.forEach(addBadgeTextToVideo);
 
       // Shorts
-      const shortBadges = document.querySelectorAll(shortsBadgeSelector);
+      const shortBadges = qsa(shortsBadgeSelector);
       shortBadges.forEach(badge => {
         const video = badge.closest('ytd-grid-video-renderer');
         video?.setAttribute('is_sub_short', '');
@@ -188,7 +188,7 @@ function runDynamicSettings() {
 
     // Hide shorts on the results page
     if (onResultsPage) {
-      const shortResults = Array.from(document.querySelectorAll('a[href^="/shorts/"]:not([marked_as_short])'));
+      const shortResults = qsa('a[href^="/shorts/"]:not([marked_as_short])');
       shortResults.forEach(sr => {
         sr.setAttribute('marked_as_short', true);
         const result = sr.closest('ytd-video-renderer');
@@ -197,7 +197,7 @@ function runDynamicSettings() {
     }
 
     // Click on "dismiss" buttons
-    const dismissButtons = document.querySelectorAll('#dismiss-button');
+    const dismissButtons = qsa('#dismiss-button');
     dismissButtons.forEach(dismissButton => {
       if (dismissButton && dismissButton.offsetParent) {
         dismissButton.click();
@@ -206,7 +206,7 @@ function runDynamicSettings() {
 
     // Disable autoplay
     if (cache['disable_autoplay'] === true) {
-      const autoplayButton = document.querySelectorAll('.ytp-autonav-toggle-button[aria-checked=true]');
+      const autoplayButton = qsa('.ytp-autonav-toggle-button[aria-checked=true]');
       autoplayButton?.forEach(e => {
         if (e && e.offsetParent) {
           e.click();
@@ -214,7 +214,7 @@ function runDynamicSettings() {
       });
 
       // mobile
-      const mAutoplayButton = document.querySelectorAll('.ytm-autonav-toggle-button-container[aria-pressed=true]');
+      const mAutoplayButton = qsa('.ytm-autonav-toggle-button-container[aria-pressed=true]');
       mAutoplayButton?.forEach(e => {
         if (e && e.offsetParent) {
           e.click();
@@ -243,7 +243,6 @@ function runDynamicSettings() {
       // Disable ambient mode
       if (cache['disable_ambient_mode'] === true) {
         if (ambientToggle?.getAttribute('aria-checked') === 'true') {
-          console.log('yo1');
           ambientToggle.click();
         }
       }
@@ -251,7 +250,6 @@ function runDynamicSettings() {
       // Disable annotations
       if (cache['disable_annotations'] === true) {
         if (annotationsToggle?.getAttribute('aria-checked') === 'true') {
-          console.log('yo2');
           annotationsToggle.click();
         }
       }
@@ -259,7 +257,7 @@ function runDynamicSettings() {
 
     // // Enable theater mode
     // if (cache['enable_theater'] === true && !theaterClicked) {
-    //   const theaterButton = document.querySelectorAll('button[title="Theater mode (t)"]')?.[0];
+    //   const theaterButton = qsa('button[title="Theater mode (t)"]')?.[0];
     //   if (theaterButton && theaterButton.display !== 'none') {
     //     console.log('theaterButton.click();')
     //     theaterButton.click();
@@ -271,17 +269,17 @@ function runDynamicSettings() {
     if (cache['auto_skip_ads'] === true) {
 
       // Close overlay ads.
-      Array.from(document.querySelectorAll('.ytp-ad-overlay-close-button'))?.forEach(e => {
+      qsa('.ytp-ad-overlay-close-button')?.forEach(e => {
         if (e && e.offsetParent) {
           e.click();
         }
       });
 
       // Click on "Skip ad" button
-      const skipButtons = Array.from(document.querySelectorAll('.ytp-ad-skip-button'));
+      const skipButtons = qsa('.ytp-ad-skip-button');
       const skippableAd = skipButtons.some(button => button.offsetParent);
       if (skippableAd) {
-        document.querySelectorAll('.ytp-ad-skip-button')?.forEach(e => {
+        qsa('.ytp-ad-skip-button')?.forEach(e => {
           if (e && e.offsetParent) {
             e.click();
           }
@@ -290,7 +288,7 @@ function runDynamicSettings() {
 
         // Speed through ads that can't be skipped (yet).
         let adSelector = '.ytp-ad-player-overlay-instream-info';
-        let adElement = document.querySelectorAll(adSelector)[0];
+        let adElement = qsa(adSelector)[0];
         const adActive = adElement && window.getComputedStyle(adElement).display !== 'none';
         const video = document.getElementsByTagName("video")[0];
         if (adActive) {
@@ -325,7 +323,7 @@ function runDynamicSettings() {
 
     // Hide all but the timestamped comments
     if (cache['remove_non_timestamp_comments']) {
-      const timestamps = document.querySelectorAll('yt-formatted-string:not(.published-time-text).ytd-comment-renderer > a.yt-simple-endpoint[href^="/watch"]');
+      const timestamps = qsa('yt-formatted-string:not(.published-time-text).ytd-comment-renderer > a.yt-simple-endpoint[href^="/watch"]');
       timestamps.forEach(timestamp => {
         const comment = timestamp.closest('ytd-comment-thread-renderer');
         comment?.setAttribute('timestamp_comment', '');
