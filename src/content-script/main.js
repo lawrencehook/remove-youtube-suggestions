@@ -146,17 +146,6 @@ function runDynamicSettings() {
       });
     }
 
-    // Mark the left nav bar sections
-    const leftSections = qsa('ytd-guide-section-renderer');
-    leftSections.forEach(section => {
-      const title = section.querySelector('#guide-section-title');
-      if (!title?.innerText) return;
-      const titleText = title.innerText.toLowerCase();
-      if (titleText.includes('subscriptions')) section.setAttribute('rys_sub_section', '');
-      if (titleText.includes('explore'))       section.setAttribute('rys_explore_section', '');
-      if (titleText.includes('more from'))     section.setAttribute('rys_more_section', '');
-    });
-
     // Subscriptions page options
     if (onSubs) {
       const badgeSelector = 'ytd-badge-supported-renderer';

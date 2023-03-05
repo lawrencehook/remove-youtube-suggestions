@@ -4,6 +4,7 @@ html[global_enable="true"] ytd-mealbar-promo-renderer,
 html[global_enable="true"] ytd-carousel-ad-renderer,
 html[global_enable="true"] .ytd-display-ad-renderer,
 html[global_enable="true"] ytd-ad-slot-renderer,
+html[global_enable="true"] ytd-action-companion-ad-renderer,
 
 /* General */
 html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
@@ -31,9 +32,13 @@ html[global_enable="true"][remove_left_nav_bar="true"] tp-yt-app-drawer#guide,
 html[global_enable="true"][remove_left_nav_bar="true"] ytd-mini-guide-renderer[role="navigation"],
 html[global_enable="true"][remove_left_nav_bar="true"] yt-icon-button#guide-button,
 html[global_enable="true"][remove_quick_links_section="true"] ytd-guide-collapsible-section-entry-renderer,
-html[global_enable="true"][remove_sub_section="true"]     ytd-guide-section-renderer[rys_sub_section],
-html[global_enable="true"][remove_explore_section="true"] ytd-guide-section-renderer[rys_explore_section],
-html[global_enable="true"][remove_more_section="true"]    ytd-guide-section-renderer[rys_more_section],
+
+html[global_enable="true"][remove_sub_section="true"]      ytd-guide-section-renderer.style-scope:nth-child(2),
+html[global_enable="true"][remove_explore_section="true"]  ytd-guide-section-renderer.style-scope:nth-child(3),
+html[global_enable="true"][remove_more_section="true"]     ytd-guide-section-renderer.style-scope:nth-child(4),
+html[global_enable="true"][remove_settings_section="true"] ytd-guide-section-renderer.style-scope:nth-child(5),
+html[global_enable="true"][remove_footer_section="true"]   #guide-renderer > div#footer,
+
 
 /* Homepage */
 html[global_enable="true"][remove_header="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > div#header,

@@ -161,6 +161,16 @@ const SECTIONS = [
         id: "remove_more_section",
         defaultValue: true
       },
+      {
+        name: "Hide section - Settings",
+        id: "remove_settings_section",
+        defaultValue: false
+      },
+      {
+        name: "Hide section - Footer",
+        id: "remove_footer_section",
+        defaultValue: false
+      },
     ]
   },
   {
@@ -501,6 +511,8 @@ const idToShortId = {
   "scheduleDays":                      '60',
   "nextTimedChange":                   '61',
   "nextTimedValue":                    '62',
+  "remove_settings_section":           '63',
+  "remove_footer_section":             '64',
 };
 
 
