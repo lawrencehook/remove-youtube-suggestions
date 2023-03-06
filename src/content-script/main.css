@@ -207,6 +207,12 @@ html[global_enable="true"][search_engine_mode="true"] #container.ytd-masthead {
 html[global_enable="true"] ytm-companion-ad-renderer,
 html[global_enable="true"] ytm-promoted-sparkles-web-renderer,
 
+/* General */
+html[global_enable="true"][remove_all_shorts="true"] ytm-reel-shelf-renderer,
+html[global_enable="true"][remove_all_shorts="true"] ytm-search ytd-video-renderer[is_short="true"],
+html[global_enable="true"][remove_all_shorts="true"] ytm-search ytm-video-with-context-renderer[is_short="true"],
+html[global_enable="true"][remove_all_shorts="true"] ytm-search ytm-reel-shelf-renderer,
+
 /* Main */
 html[global_enable="true"][remove_homepage="true"] div[tab-identifier="FEwhat_to_watch"] .rich-grid-renderer-contents,
 html[global_enable="true"][remove_sidebar="true"] ytm-item-section-renderer[section-identifier="related-items"],
@@ -219,6 +225,7 @@ html[global_enable="true"][remove_explore_link="true"] ytm-chip-cloud-chip-rende
 /* Homepage */
 html[global_enable="true"][remove_header="true"] div[tab-identifier="FEwhat_to_watch"] div.chip-bar-contents,
 html[global_enable="true"][remove_infinite_scroll="true"] div.rich-grid-renderer-contents > ytm-continuation-item-renderer,
+html[global_enable="true"][remove_extra_rows="true"] div[tab-identifier="FEwhat_to_watch"] ytm-reel-shelf-renderer,
 
 /* Video Player */
 html[global_enable="true"][remove_comments="true"] ytm-comments-entry-point-header-renderer,
@@ -226,7 +233,9 @@ html[global_enable="true"][remove_menu_buttons="true"] ytm-slim-video-action-bar
 
 /* Search Results Page */
 html[global_enable="true"][remove_search_suggestions="true"] .searchbox-dropdown,
-html[global_enable="true"][on_results_page="true"][remove_shorts_results="true"] ytd-video-renderer[is_short="true"],
+html[global_enable="true"][remove_shorts_results="true"] ytm-search ytd-video-renderer[is_short="true"],
+html[global_enable="true"][remove_shorts_results="true"] ytm-search ytm-video-with-context-renderer[is_short="true"],
+html[global_enable="true"][remove_shorts_results="true"] ytm-search ytm-reel-shelf-renderer,
 
 html[global_enable="true"][foo=bar]
 

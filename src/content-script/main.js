@@ -182,7 +182,11 @@ function runDynamicSettings() {
         sr.setAttribute('marked_as_short', true);
         const result = sr.closest('ytd-video-renderer');
         result?.setAttribute('is_short', true);
-      })
+
+        // Mobile
+        const mobileResult = sr.closest('ytm-video-with-context-renderer');
+        mobileResult?.setAttribute('is_short', true);
+      });
     }
 
     // Click on "dismiss" buttons
