@@ -25,6 +25,7 @@ let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
 let onVideo = videoRegex.test(url);
 let onSubs = subsRegex.test(url);
+let settingsInit = false
 
 let dynamicIters = 0;
 let frameRequested = false;
@@ -215,26 +216,28 @@ function runDynamicSettings() {
       });
     }
 
+    // Disable ambient mode and annotations
     if (onVideo) {
 
       // Check if the video player is visible
       const video = qs('ytd-player');
-      if (video && video.offsetParent) {
+      if (video && video.offsetParent && !settingsInit) {
 
         // Initialize the settings menu -- creates toggles for ambient mode and annotations.
-        const checkMenuItems = qsa('.ytp-settings-menu .ytp-panel-menu > div');
+        const checkMenuItems = qsa('.ytp-settings-menu .ytd-player .ytp-panel-menu > div');
         if (checkMenuItems?.length === 0) {
           const settingsButton = qsa('#ytd-player button.ytp-settings-button');
           settingsButton.forEach(b => {
             if (b && b.offsetParent) {
               b.click();
               b.click();
+              settingsInit = true;
             }
           });
         }
       }
 
-      const menuItems = qsa('.ytp-settings-menu .ytp-panel-menu > div');
+      const menuItems = qsa('.ytp-settings-menu .ytd-player .ytp-panel-menu > div');
       const checkBoxes = menuItems.filter(n => n.getAttribute('aria-checked'));
       const [ ambientToggle, annotationsToggle ] = checkBoxes;
 
@@ -421,6 +424,7 @@ function handleNewPage() {
   onShorts = shortsRegex.test(url);
   onVideo = videoRegex.test(url);
   onSubs = subsRegex.test(url);
+  settingsInit = false;
 
   // Mark whether or not we're on the search results page
   HTML.setAttribute('on_results_page', onResultsPage);
