@@ -217,19 +217,24 @@ function runDynamicSettings() {
 
     if (onVideo) {
 
-      // Initialize the settings menu -- creates toggles for ambient mode and annotations.
-      const checkMenuItems = qsa('#ytp-id-18 .ytp-panel-menu > div');
-      if (!checkMenuItems || checkMenuItems.length === 0) {
-        const settingsButton = qsa('#ytd-player button.ytp-settings-button');
-        settingsButton.forEach(b => {
-          if (b && b.offsetParent) {
-            b.click();
-            b.click();
-          }
-        });
+      // Check if the video player is visible
+      const video = qs('ytd-player');
+      if (video && video.offsetParent) {
+
+        // Initialize the settings menu -- creates toggles for ambient mode and annotations.
+        const checkMenuItems = qsa('.ytp-settings-menu .ytp-panel-menu > div');
+        if (checkMenuItems?.length === 0) {
+          const settingsButton = qsa('#ytd-player button.ytp-settings-button');
+          settingsButton.forEach(b => {
+            if (b && b.offsetParent) {
+              b.click();
+              b.click();
+            }
+          });
+        }
       }
 
-      const menuItems = qsa('#ytp-id-18 .ytp-panel-menu > div');
+      const menuItems = qsa('.ytp-settings-menu .ytp-panel-menu > div');
       const checkBoxes = menuItems.filter(n => n.getAttribute('aria-checked'));
       const [ ambientToggle, annotationsToggle ] = checkBoxes;
 
