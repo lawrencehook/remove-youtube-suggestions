@@ -186,7 +186,7 @@ const SECTIONS = [
       {
         name: "Disable autoplay",
         id: "disable_autoplay",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Disable ambient mode",

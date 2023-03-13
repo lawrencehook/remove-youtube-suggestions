@@ -244,14 +244,14 @@ function runDynamicSettings() {
       // Disable ambient mode
       if (cache['disable_ambient_mode'] === true) {
         if (ambientToggle?.getAttribute('aria-checked') === 'true') {
-          ambientToggle.click();
+          qs('.ytp-menuitem-toggle-checkbox', ambientToggle)?.click();
         }
       }
 
       // Disable annotations
       if (cache['disable_annotations'] === true) {
         if (annotationsToggle?.getAttribute('aria-checked') === 'true') {
-          annotationsToggle.click();
+          qs('.ytp-menuitem-toggle-checkbox', annotationsToggle)?.click();
         }
       }
     }
