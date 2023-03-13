@@ -124,7 +124,7 @@ html[foo="bar"] {
 #import_container input {
   width: min(75%, 200px);
   padding: 2px 7px;
-  color: black;
+  color: var(--body-color);
 }
 #import_container button {
   width: fit-content;
