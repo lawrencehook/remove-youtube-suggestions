@@ -21,8 +21,12 @@ POWER_OPTIONS.forEach(o => {
 
   o.addEventListener('click', e => {
     const enabled = HTML.getAttribute('global_enable') === 'true';
+    const nextTimedChange = Date.now() + 60_000 * Number(minutes);
+
+    recordEvent('Timed Change', { enabled, minutes });
+
     updateSetting('global_enable', !enabled);
-    updateSetting('nextTimedChange', Date.now() + 60_000 * Number(minutes));
+    updateSetting('nextTimedChange', nextTimedChange);
     updateSetting('nextTimedValue', enabled);
   });
 });
@@ -86,6 +90,9 @@ OPEN_SCHEDULE_OPTION.addEventListener('click', e => {
 });
 RESUME_SCHEDULE_OPTION.addEventListener('click', e => {
   const scheduleIsActive = checkSchedule(cache['scheduleTimes'], cache['scheduleDays']);
+
+  recordEvent('Resume schedule', { scheduleIsActive });
+
   updateSetting('global_enable', scheduleIsActive);
   updateSetting('nextTimedChange', false);
 });
@@ -93,7 +100,7 @@ RESUME_SCHEDULE_OPTION.addEventListener('click', e => {
 // Schedule on/off
 scheduleToggleContainer.addEventListener('click', e => {
   const enabled = scheduleToggle.toggleAttribute('active');
-  updateSetting('schedule', enabled);
+  updateSetting('schedule', enabled, { manual: true });
 });
 
 // Schedule times
@@ -104,7 +111,7 @@ SCHEDULE_TIMES.addEventListener('input', e => {
   SCHEDULE_TIMES.toggleAttribute('invalid', !isValid);
   if (!isValid) return;
 
-  updateSetting('scheduleTimes', times);
+  updateSetting('scheduleTimes', times, { manual: true });
 });
 
 // Schedule days
@@ -121,11 +128,12 @@ SCHEDULE_DAYS_OPTIONS.forEach(o => {
       newDays = currentDays.filter(d => d.toLowerCase().trim() !== day);
     }
 
-    updateSetting('scheduleDays', newDays.filter(d => d !== '').join(','))
+    const newDaysStr = newDays.filter(d => d !== '').join(',');
+    updateSetting('scheduleDays', newDaysStr, { manual: true });
   });
 });
 
-// Schdule preset options
+// Schedule preset options
 TIME_PRESETS.forEach(node => {
   node.addEventListener('click', e => {
     const times = node.getAttribute('times');
@@ -141,9 +149,13 @@ DAY_PRESETS.forEach(node => {
 
 // Logging toggle
 const LOG_ENABLE = document.getElementById('log-enable');
-LOG_ENABLE.addEventListener('click', e => updateSetting('log_enabled', true));
+LOG_ENABLE.addEventListener('click', e => {
+  updateSetting('log_enabled', true, { manual: true });
+});
 const LOG_DISABLE = document.getElementById('log-disable');
-LOG_DISABLE.addEventListener('click', e => updateSetting('log_enabled', false));
+LOG_DISABLE.addEventListener('click', e => {
+  updateSetting('log_enabled', false, { manual: true });
+});
 
 
 // Export settings
