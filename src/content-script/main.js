@@ -125,6 +125,11 @@ function runDynamicSettings() {
     handleNewPage();
   }
 
+  // Double check for redirects.
+  if (on && onHomepage && !cache['redirect_off']) {
+    handleNewPage();
+  }
+
   // Dynamic settings
   try {
 
@@ -434,9 +439,17 @@ function handleNewPage() {
 
   // Homepage redirects
   if (on && onHomepage && !cache['redirect_off']) {
-    if (cache['redirect_to_subs'])    location.replace(REDIRECT_URLS['redirect_to_subs']);
-    if (cache['redirect_to_wl'])      location.replace(REDIRECT_URLS['redirect_to_wl']);
-    if (cache['redirect_to_library']) location.replace(REDIRECT_URLS['redirect_to_library']);
+    if (cache['redirect_to_subs']) {
+      const button = qs('a#endpoint[href="/feed/subscriptions"]');
+      button?.click();
+    }
+    if (cache['redirect_to_wl']) {
+      location.replace(REDIRECT_URLS['redirect_to_wl']);
+    }
+    if (cache['redirect_to_library']) {
+      const button = qs('a#endpoint[href="/feed/library"]');
+      button?.click();
+    }
   }
 
   // Redirect the shorts player
