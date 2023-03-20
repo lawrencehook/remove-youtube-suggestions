@@ -27,6 +27,11 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Autofocus the search bar",
+        id: "autofocus_search",
+        defaultValue: false,
+      },
+      {
         name: "Enable search engine mode",
         id: "search_engine_mode",
         defaultValue: false,
@@ -519,6 +524,7 @@ const idToShortId = {
   "remove_settings_section":           '63',
   "remove_footer_section":             '64',
   "remove_infinite_scroll_search":     '65',
+  "autofocus_search":                  '66',
 };
 
 

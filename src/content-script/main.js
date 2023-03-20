@@ -458,6 +458,12 @@ function handleNewPage() {
     location.replace(newUrl);
   }
 
+  // Autofocus the search bar
+  if (on && !onVideo && (cache['autofocus_search'] || cache['search_engine_mode'])) {
+    const searchBar = qs('input#search');
+    searchBar?.focus();
+  }
+
   injectScripts();
   requestRunDynamicSettings();
 }
