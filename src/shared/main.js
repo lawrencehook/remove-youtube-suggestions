@@ -226,6 +226,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Disable infinite scroll - sidebar",
+        id: "remove_sidebar_infinite_scroll",
+        defaultValue: false
+      },
+      {
         name: "Hide info cards",
         id: "remove_info_cards",
         defaultValue: false
@@ -513,6 +518,7 @@ const idToShortId = {
   "nextTimedValue":                    '62',
   "remove_settings_section":           '63',
   "remove_footer_section":             '64',
+  "remove_infinite_scroll_search":     '65',
 };
 
 
