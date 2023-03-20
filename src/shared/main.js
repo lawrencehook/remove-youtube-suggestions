@@ -22,24 +22,9 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
-        name: "Hide the notification bell",
-        id: "remove_notif_bell",
-        defaultValue: false,
-      },
-      {
-        name: "Autofocus the search bar",
-        id: "autofocus_search",
-        defaultValue: false,
-      },
-      {
         name: "Enable search engine mode",
         id: "search_engine_mode",
         defaultValue: false,
-      },
-      {
-        name: "Enable menu timer - 10 seconds",
-        id: "menu_timer",
-        defaultValue: false
       },
     ]
   },
@@ -429,6 +414,32 @@ const SECTIONS = [
       },
     ]
   },
+  {
+    name: "Other",
+    tags: "Other",
+    options: [
+      {
+        name: "Hide playlist suggestions",
+        id: "remove_playlist_suggestions",
+        defaultValue: false,
+      },
+      {
+        name: "Hide the notification bell",
+        id: "remove_notif_bell",
+        defaultValue: false,
+      },
+      {
+        name: "Autofocus the search bar",
+        id: "autofocus_search",
+        defaultValue: false,
+      },
+      {
+        name: "Enable the menu timer - 10 seconds",
+        id: "menu_timer",
+        defaultValue: false,
+      },
+    ]
+  },
 ];
 
 const TIMED_SETTINGS = {
@@ -525,6 +536,7 @@ const idToShortId = {
   "remove_footer_section":             '64',
   "remove_infinite_scroll_search":     '65',
   "autofocus_search":                  '66',
+  "remove_playlist_suggestions":       '67',
 };
 
 

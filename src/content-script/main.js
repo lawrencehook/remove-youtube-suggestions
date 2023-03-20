@@ -126,7 +126,7 @@ function runDynamicSettings() {
   }
 
   // Double check for redirects.
-  if (on && onHomepage && !cache['redirect_off']) {
+  if (onHomepage && !cache['redirect_off']) {
     handleNewPage();
   }
 
@@ -368,6 +368,15 @@ function runDynamicSettings() {
           b.click();
         }
       });
+    }
+
+    // Hide playlist suggestions
+    if (cache['remove_playlist_suggestions']) {
+      const identifier = qs('ytd-item-section-header-renderer[title-style="ITEM_SECTION_HEADER_TITLE_STYLE_PLAYLIST_RECOMMENDATIONS"]');
+      if (identifier) {
+        const section = identifier.closest('ytd-item-section-renderer');
+        section?.setAttribute('is-playlist-suggestions', '');
+      }
     }
 
   } catch (error) {
