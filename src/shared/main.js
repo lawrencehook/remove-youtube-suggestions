@@ -434,6 +434,11 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Reverse sort channel videos: oldest, least popular",
+        id: "reverse_channel_video_list",
+        defaultValue: false,
+      },
+      {
         name: "Enable the menu timer - 10 seconds",
         id: "menu_timer",
         defaultValue: false,

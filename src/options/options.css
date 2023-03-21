@@ -49,6 +49,7 @@ div.option {
 
 .option_toggle {
 	width: 25px;
+  flex-shrink: 0;
 }
 
 .option_label {
