@@ -11,14 +11,12 @@ html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
 html[global_enable="true"][remove_all_shorts="true"] *[is_short],
 html[global_enable="true"][remove_all_shorts="true"] ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_video_thumbnails="true"] ytd-thumbnail,
-html[global_enable="true"][remove_notif_bell="true"] ytd-notification-topbar-button-renderer,
 
 /* Main */
 html[global_enable="true"][remove_homepage="true"] ytd-browse[page-subtype="home"],
 html[global_enable="true"][remove_sidebar="true"] #secondary > div.circle,
 html[global_enable="true"][remove_sidebar="true"] #related,
 html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
-html[global_enable="true"][remove_playlist_suggestions="true"] ytd-item-section-renderer[is-playlist-suggestions],
 
 /* Left Bar Navigation */
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
@@ -84,6 +82,10 @@ html[global_enable="true"][remove_sub_shorts="true"]   ytd-grid-video-renderer[i
 html[global_enable="true"][remove_sub_live="true"]     ytd-grid-video-renderer[badge-text="live"],
 html[global_enable="true"][remove_sub_upcoming="true"] ytd-grid-video-renderer[badge-text="upcoming"],
 html[global_enable="true"][remove_sub_premiere="true"] ytd-grid-video-renderer[badge-text="premiere"],
+
+/* Other */
+html[global_enable="true"][remove_notif_bell="true"] ytd-notification-topbar-button-renderer,
+html[global_enable="true"][remove_playlist_suggestions="true"] ytd-item-section-renderer[is-playlist-suggestions],
 
 html[global_enable="true"][foo=bar] {
 	display: none !important;

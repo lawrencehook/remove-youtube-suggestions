@@ -379,6 +379,32 @@ function runDynamicSettings() {
       }
     }
 
+    // Show video length when thumbnails are hidden
+    if (cache['search_engine_mode'] || cache['remove_video_thumbnails']) {
+      const thumbnails = qsa('ytd-thumbnail');
+      thumbnails.forEach(thumbnail => {
+        const videoRow = thumbnail.closest('ytd-video-renderer');
+        if (!videoRow) return;
+        const exists = qs('.inline-metadata-item[metadata-time]', videoRow);
+        if (exists) return;
+
+        const timeNode = qs('ytd-thumbnail-overlay-time-status-renderer #text', thumbnail);
+        const time = timeNode?.innerText?.trim();
+        if (!time) return;
+
+        const metadata = qs('#metadata-line', videoRow);
+        if (!metadata) return;
+        const lastMetadataLine = qs('.inline-metadata-item:last-of-type', metadata);
+        if (!lastMetadataLine) return;
+
+        // length metadata goes between views and age.
+        const metadataLine = lastMetadataLine.cloneNode(true);
+        metadataLine.setAttribute('metadata-time', '');
+        metadataLine.innerText = time;
+        metadata.insertBefore(metadataLine, lastMetadataLine);
+      });
+    }
+
   } catch (error) {
     console.log(error);
   }
