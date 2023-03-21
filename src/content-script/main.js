@@ -480,6 +480,8 @@ function handleNewPage() {
     }
     if (cache['redirect_to_wl']) {
       location.replace(REDIRECT_URLS['redirect_to_wl']);
+      handleNewPage();
+      return;
     }
     if (cache['redirect_to_library']) {
       const button = qs('a#endpoint[href="/feed/library"]');
