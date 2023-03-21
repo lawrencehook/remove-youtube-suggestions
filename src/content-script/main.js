@@ -34,6 +34,8 @@ let isRunning = false;
 // let counter = 0;
 let lastScheduleCheck;
 const scheduleInterval = 2_000; // 2 seconds
+let lastRedirect;
+const redirectInterval = 1_000; // 1 second
 
 
 // Respond to changes in settings
@@ -473,19 +475,25 @@ function handleNewPage() {
   HTML.setAttribute('on_homepage', onHomepage);
 
   // Homepage redirects
-  if (on && onHomepage && !cache['redirect_off']) {
+  if (
+    on &&
+    onHomepage &&
+    !cache['redirect_off'] &&
+    !lastRedirect || Date.now() - lastRedirect > redirectInterval
+  ) {
     if (cache['redirect_to_subs']) {
       const button = qs('a#endpoint[href="/feed/subscriptions"]');
       button?.click();
+      lastRedirect = Date.now();
     }
     if (cache['redirect_to_wl']) {
       location.replace(REDIRECT_URLS['redirect_to_wl']);
-      handleNewPage();
-      return;
+      lastRedirect = Date.now();
     }
     if (cache['redirect_to_library']) {
       const button = qs('a#endpoint[href="/feed/library"]');
       button?.click();
+      lastRedirect = Date.now();
     }
   }
 
