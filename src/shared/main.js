@@ -542,6 +542,7 @@ const idToShortId = {
   "remove_infinite_scroll_search":     '65',
   "autofocus_search":                  '66',
   "remove_playlist_suggestions":       '67',
+  "reverse_channel_video_list":        '68',
 };
 
 
