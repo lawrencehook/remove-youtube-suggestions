@@ -479,7 +479,7 @@ function handleNewPage() {
     on &&
     onHomepage &&
     !cache['redirect_off'] &&
-    !lastRedirect || Date.now() - lastRedirect > redirectInterval
+    (!lastRedirect || Date.now() - lastRedirect > redirectInterval)
   ) {
     if (cache['redirect_to_subs']) {
       const button = qs('a#endpoint[href="/feed/subscriptions"]');
