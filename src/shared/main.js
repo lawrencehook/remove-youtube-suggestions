@@ -189,6 +189,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Auto-expand the description",
+        id: "expand_description",
+        defaultValue: false
+      },
+      {
         name: "Disable autoplay for playlists",
         id: "disable_playlist_autoplay",
         defaultValue: false
@@ -543,6 +548,7 @@ const idToShortId = {
   "autofocus_search":                  '66',
   "remove_playlist_suggestions":       '67',
   "reverse_channel_video_list":        '68',
+  "expand_description":                '69',
 };
 
 
