@@ -86,6 +86,7 @@ html[global_enable="true"][remove_sub_premiere="true"] ytd-grid-video-renderer[b
 /* Other */
 html[global_enable="true"][remove_notif_bell="true"] ytd-notification-topbar-button-renderer,
 html[global_enable="true"][remove_playlist_suggestions="true"] ytd-item-section-renderer[is-playlist-suggestions],
+html[global_enable="true"][remove_context="true"] ytd-info-panel-container-renderer,
 
 html[global_enable="true"][foo=bar] {
 	display: none !important;

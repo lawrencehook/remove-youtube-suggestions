@@ -444,6 +444,11 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Remove context boxes",
+        id: "remove_context",
+        defaultValue: false,
+      },
+      {
         name: "Enable the menu timer - 10 seconds",
         id: "menu_timer",
         defaultValue: false,
