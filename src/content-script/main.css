@@ -82,6 +82,8 @@ html[global_enable="true"][remove_sub_shorts="true"]   ytd-grid-video-renderer[i
 html[global_enable="true"][remove_sub_live="true"]     ytd-grid-video-renderer[badge-text="live"],
 html[global_enable="true"][remove_sub_upcoming="true"] ytd-grid-video-renderer[badge-text="upcoming"],
 html[global_enable="true"][remove_sub_premiere="true"] ytd-grid-video-renderer[badge-text="premiere"],
+html[global_enable="true"][remove_sub_vods="true"]     ytd-grid-video-renderer[is_vod],
+
 
 /* Other */
 html[global_enable="true"][remove_notif_bell="true"] ytd-notification-topbar-button-renderer,

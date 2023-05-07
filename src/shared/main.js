@@ -359,6 +359,11 @@ const SECTIONS = [
         name: "Hide premiere videos",
         id: "remove_sub_premiere",
         defaultValue: false
+      },
+      {
+        name: "Hide VODs (English only)",
+        id: "remove_sub_vods",
+        defaultValue: false
       }
     ]
   },
@@ -554,6 +559,8 @@ const idToShortId = {
   "remove_playlist_suggestions":       '67',
   "reverse_channel_video_list":        '68',
   "expand_description":                '69',
+  "remove_context":                    '70',
+  "remove_sub_vods":                   '71',
 };
 
 

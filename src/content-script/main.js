@@ -181,6 +181,14 @@ function runDynamicSettings() {
         const video = badge.closest('ytd-grid-video-renderer');
         video?.setAttribute('is_sub_short', '');
       });
+
+      // VODs
+      const vodSelector = '#metadata-line span:nth-child(2)';
+      const vodSpans = qsa(vodSelector).filter(span => span.innerText.includes('Streamed'));
+      vodSpans.forEach(span => {
+        const video = span.closest('ytd-grid-video-renderer');
+        video?.setAttribute('is_vod', '');
+      });
     }
 
     // Hide shorts on the results page
