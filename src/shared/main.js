@@ -444,13 +444,18 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Remove context boxes",
+        id: "remove_context",
+        defaultValue: false,
+      },
+      {
         name: "Reverse sort channel videos: oldest, least popular",
         id: "reverse_channel_video_list",
         defaultValue: false,
       },
       {
-        name: "Remove context boxes",
-        id: "remove_context",
+        name: "Disable autoplay on the channel page",
+        id: "disable_channel_autoplay",
         defaultValue: false,
       },
       {
@@ -561,6 +566,7 @@ const idToShortId = {
   "expand_description":                '69',
   "remove_context":                    '70',
   "remove_sub_vods":                   '71',
+  "disable_channel_autoplay":          '72',
 };
 
 

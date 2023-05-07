@@ -135,6 +135,11 @@ function runDynamicSettings() {
   // Dynamic settings
   try {
 
+    // Pause autoplaying channel trailers
+    if (cache['disable_channel_autoplay'] && dynamicIters <= 10) {
+      qs('ytd-channel-video-player-renderer video').pause();
+    }
+
     // Hide all shorts
     if (cache['remove_all_shorts']) {
       const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
