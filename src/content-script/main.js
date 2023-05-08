@@ -137,7 +137,7 @@ function runDynamicSettings() {
 
     // Pause autoplaying channel trailers
     if (cache['disable_channel_autoplay'] && dynamicIters <= 10) {
-      qs('ytd-channel-video-player-renderer video').pause();
+      qs('ytd-channel-video-player-renderer video')?.pause();
     }
 
     // Hide all shorts
