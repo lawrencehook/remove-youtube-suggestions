@@ -84,6 +84,12 @@ html[global_enable="true"][remove_sub_upcoming="true"] ytd-grid-video-renderer[b
 html[global_enable="true"][remove_sub_premiere="true"] ytd-grid-video-renderer[badge-text="premiere"],
 html[global_enable="true"][remove_sub_vods="true"]     ytd-grid-video-renderer[is_vod],
 
+html[global_enable="true"][remove_sub_shorts="true"]   ytd-rich-item-renderer[is_sub_short],
+html[global_enable="true"][remove_sub_live="true"]     ytd-rich-item-renderer[badge-text="live"],
+html[global_enable="true"][remove_sub_upcoming="true"] ytd-rich-item-renderer[badge-text="upcoming"],
+html[global_enable="true"][remove_sub_premiere="true"] ytd-rich-item-renderer[badge-text="premiere"],
+html[global_enable="true"][remove_sub_vods="true"]     ytd-rich-item-renderer[is_vod],
+
 
 /* Other */
 html[global_enable="true"][remove_notif_bell="true"] ytd-notification-topbar-button-renderer,

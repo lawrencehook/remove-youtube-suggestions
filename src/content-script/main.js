@@ -149,6 +149,8 @@ function runDynamicSettings() {
         sidebarVid?.setAttribute('is_short', '');
         const gridVideo = badge.closest('ytd-grid-video-renderer');
         gridVideo?.setAttribute('is_short', '');
+        const updatedGridVideo = badge.closest('ytd-rich-item-renderer');
+        updatedGridVideo?.setAttribute('is_short', '');
       });
 
       const shortsShelfSelector = '*[is-shorts]';
@@ -168,7 +170,9 @@ function runDynamicSettings() {
         const badgeText = badge.innerText.trim().toLowerCase();
         if (badgeText) {
           const gridVideo = badge.closest('ytd-grid-video-renderer');
+          const updatedGridVideo = badge.closest('ytd-rich-item-renderer');
           gridVideo?.setAttribute('badge-text', badgeText);
+          updatedGridVideo?.setAttribute('badge-text', badgeText);
         }
       };
 
@@ -184,7 +188,9 @@ function runDynamicSettings() {
       const shortBadges = qsa(shortsBadgeSelector);
       shortBadges.forEach(badge => {
         const video = badge.closest('ytd-grid-video-renderer');
+        const updatedGridVideo = badge.closest('ytd-rich-item-renderer');
         video?.setAttribute('is_sub_short', '');
+        updatedGridVideo?.setAttribute('is_sub_short', '');
       });
 
       // VODs
@@ -192,7 +198,9 @@ function runDynamicSettings() {
       const vodSpans = qsa(vodSelector).filter(span => span.innerText.includes('Streamed'));
       vodSpans.forEach(span => {
         const video = span.closest('ytd-grid-video-renderer');
+        const updatedGridVideo = badge.closest('ytd-rich-item-renderer');
         video?.setAttribute('is_vod', '');
+        updatedGridVideo?.setAttribute('is_vod', '');
       });
     }
 
