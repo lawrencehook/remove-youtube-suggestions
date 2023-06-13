@@ -134,6 +134,12 @@ html[global_enable="true"][reverse_channel_video_list="true"] ytd-browse[page-su
 }
 
 
+/* Blur thumbnails */
+html[global_enable="true"][blur_video_thumbnails="true"] ytd-thumbnail img, ytd-playlist-thumbnail img, .video-thumbnail-img {
+  filter: blur(20px);
+}
+
+
 /**********************
  * Search engine mode *
  **********************/

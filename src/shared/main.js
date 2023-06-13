@@ -22,6 +22,12 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Blur video thumbnails",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "blur_video_thumbnails",
+        defaultValue: false,
+      },
+      {
         name: "Enable search engine mode",
         id: "search_engine_mode",
         defaultValue: false,
