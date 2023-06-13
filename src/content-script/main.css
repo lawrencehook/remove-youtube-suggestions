@@ -143,6 +143,18 @@ html[global_enable="true"][blur_video_thumbnails="true"] ytd-thumbnail img, ytd-
 }
 
 
+/* Subs page */
+html[global_enable="true"] ytd-rich-grid-row[empty="false"],
+html[global_enable="true"] ytd-rich-grid-row[empty="false"] #contents {
+	width: fit-content;
+}
+html[global_enable="true"] ytd-rich-grid-row[empty="true"] {
+	width: 0;
+}
+html[global_enable="true"] ytd-rich-grid-row #contents {
+	margin: 0;
+}
+
 /**********************
  * Search engine mode *
  **********************/

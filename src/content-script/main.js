@@ -202,6 +202,18 @@ function runDynamicSettings() {
         video?.setAttribute('is_vod', '');
         updatedGridVideo?.setAttribute('is_vod', '');
       });
+
+      // Reduce empty space.
+      const subsRows = qsa('ytd-rich-grid-row');
+      subsRows.forEach(row => {
+        const contents = qs('#contents', row);
+        if (!contents) return;
+        const items = qsa('ytd-rich-item-renderer', contents);
+        if (!items) return;
+        const activeItems = items.filter(item => item.offsetParent);
+        activeItems.forEach(item => item.style.setProperty('--ytd-rich-grid-items-per-row', activeItems.length));
+        row.setAttribute('empty', activeItems.length === 0);
+      });
     }
 
     // Hide shorts on the results page
