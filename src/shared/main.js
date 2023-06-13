@@ -246,6 +246,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Hide the description",
+        id: "remove_vid_description",
+        defaultValue: false
+      },
+      {
         name: "Hide chat (live-streaming)",
         id: "remove_chat",
         defaultValue: false

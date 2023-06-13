@@ -52,6 +52,7 @@ html[global_enable="true"][remove_sidebar_infinite_scroll="true"] #secondary #co
 html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
 html[global_enable="true"][remove_chat="true"] #chat,
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
+html[global_enable="true"][remove_vid_description="true"] ytd-watch-metadata #description,
 html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
 html[global_enable="true"][remove_menu_buttons="true"] #actions,
 html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-overlay,
