@@ -128,7 +128,7 @@ html[foobar] {
 
 
 /* Reverse channel videos list */
-html[global_enable="true"][reverse_channel_video_list="true"] #contents.ytd-rich-grid-renderer {
+html[global_enable="true"][reverse_channel_video_list="true"] ytd-browse[page-subtype="channels"] #contents.ytd-rich-grid-renderer {
 	flex-direction: column-reverse;
 }
 
