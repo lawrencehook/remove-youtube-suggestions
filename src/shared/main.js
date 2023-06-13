@@ -222,16 +222,6 @@ const SECTIONS = [
     tags: "Video Player",
     options: [
       {
-        name: "Center contents - removes the sidebar",
-        id: "remove_entire_sidebar",
-        defaultValue: false
-      },
-      {
-        name: "Disable infinite scroll - sidebar",
-        id: "remove_sidebar_infinite_scroll",
-        defaultValue: false
-      },
-      {
         name: "Hide info cards",
         id: "remove_info_cards",
         defaultValue: false
@@ -257,14 +247,35 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Hide chat (live-streaming)",
-        id: "remove_chat",
-        defaultValue: false
-      },
-      {
         name: "Hide panel - \"More Videos\" in embedded player",
         id: "remove_embedded_more_videos",
         defaultValue: true
+      },
+    ]
+  },
+  {
+    name: "Video Player - Sidebar",
+    tags: "Video Player",
+    options: [
+      {
+        name: "Center contents - removes the sidebar",
+        id: "remove_entire_sidebar",
+        defaultValue: false
+      },
+      {
+        name: "Disable infinite scroll - sidebar",
+        id: "remove_sidebar_infinite_scroll",
+        defaultValue: false
+      },
+      {
+        name: "Hide extra sidebar tags (English only)",
+        id: "remove_extra_sidebar_tags",
+        defaultValue: false
+      },
+      {
+        name: "Hide the live-stream chat",
+        id: "remove_chat",
+        defaultValue: false
       },
     ]
   },
@@ -580,6 +591,7 @@ const idToShortId = {
   "disable_channel_autoplay":          '72',
   "remove_vid_description":            '73',
   "blur_video_thumbnails":             '74',
+  "remove_extra_sidebar_tags":         '75',
 };
 
 

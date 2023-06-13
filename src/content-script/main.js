@@ -428,6 +428,23 @@ function runDynamicSettings() {
       });
     }
 
+    // Hide all but the related tag in the sidebar
+    if (onVideo && cache['remove_extra_sidebar_tags']) {
+      const getChip = name => {
+        const text = qs(`yt-chip-cloud-chip-renderer yt-formatted-string[title="${name}"]`);
+        const chip = text?.closest('yt-chip-cloud-chip-renderer');
+        return chip;
+      }
+      const allChip = getChip('All');
+      const relatedChip = getChip('Related');
+
+      const chips = qsa('yt-chip-cloud-chip-renderer');
+      chips.forEach(chip => {
+        const hideChip = (chip !== relatedChip) && (chip !== allChip);
+        chip.toggleAttribute('hide-chip', hideChip);
+      });
+    }
+
   } catch (error) {
     console.log(error);
   }

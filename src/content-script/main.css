@@ -49,8 +49,11 @@ html[global_enable="true"][remove_infinite_scroll="true"] ytd-browse[page-subtyp
 /* Video Player - UI*/
 html[global_enable="true"][remove_entire_sidebar="true"] #secondary,
 html[global_enable="true"][remove_sidebar_infinite_scroll="true"] #secondary #contents ytd-continuation-item-renderer,
-html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
+html[global_enable="true"][remove_extra_sidebar_tags="true"] yt-chip-cloud-chip-renderer[hide-chip],
 html[global_enable="true"][remove_chat="true"] #chat,
+
+/* Video Player - UI*/
+html[global_enable="true"][remove_play_next_button="true"] a.ytp-next-button,
 html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-element,
 html[global_enable="true"][remove_vid_description="true"] ytd-watch-metadata #description,
 html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
