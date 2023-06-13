@@ -578,6 +578,8 @@ const idToShortId = {
   "remove_context":                    '70',
   "remove_sub_vods":                   '71',
   "disable_channel_autoplay":          '72',
+  "remove_vid_description":            '73',
+  "blur_video_thumbnails":             '74',
 };
 
 
