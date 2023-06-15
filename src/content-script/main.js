@@ -194,11 +194,11 @@ function runDynamicSettings() {
       });
 
       // VODs
-      const vodSelector = '#metadata-line span:nth-child(2)';
+      const vodSelector = '#metadata-line span';
       const vodSpans = qsa(vodSelector).filter(span => span.innerText.includes('Streamed'));
       vodSpans.forEach(span => {
         const video = span.closest('ytd-grid-video-renderer');
-        const updatedGridVideo = badge.closest('ytd-rich-item-renderer');
+        const updatedGridVideo = span.closest('ytd-rich-item-renderer');
         video?.setAttribute('is_vod', '');
         updatedGridVideo?.setAttribute('is_vod', '');
       });
