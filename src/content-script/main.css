@@ -151,7 +151,7 @@ html[global_enable="true"] ytd-rich-grid-row[empty="false"] #contents {
 html[global_enable="true"] ytd-rich-grid-row[empty="true"] {
 	width: 0;
 }
-html[global_enable="true"] ytd-rich-grid-row #contents {
+html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 	margin: 0;
 }
 

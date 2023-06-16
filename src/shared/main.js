@@ -82,12 +82,12 @@ const SECTIONS = [
       {
         name: "Hide extra rows (Shorts, Trending, etc.)",
         id: "remove_extra_rows",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Disable infinite scroll - homepage",
         id: "remove_infinite_scroll",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Disable play on hover (page reload required)",
@@ -119,12 +119,12 @@ const SECTIONS = [
       {
         name: "Hide button - Explore/Trending",
         id: "remove_explore_link",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide button - Shorts",
         id: "remove_shorts_link",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide button - Subscriptions",
@@ -150,12 +150,12 @@ const SECTIONS = [
       {
         name: "Hide section - Explore",
         id: "remove_explore_section",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide section - More from YouTube",
         id: "remove_more_section",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide section - Settings",
@@ -339,12 +339,12 @@ const SECTIONS = [
       {
         name: "Hide results - shorts",
         id: "remove_shorts_results",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Hide results - For You, Trending, etc.",
         id: "remove_extra_results",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Disable the thumbnail slideshow - on hover",
