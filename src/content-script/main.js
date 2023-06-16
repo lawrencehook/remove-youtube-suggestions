@@ -371,29 +371,29 @@ function runDynamicSettings() {
       });
     }
 
-    // Disable play on hover
-    if (dynamicIters % 10 === 0) {
-      const prefCookie = getCookie('PREF');
-      const prefObj = prefCookie?.split('&')?.reduce((acc, x) => {
-        const [ key, value ] = x.split('=');
-        acc[key] = value;
-        return acc;
-      }, {});
-      if (prefObj) {
-        const f7 = prefObj['f7'] || '0';
-        const playOnHoverEnabled = f7[f7.length-1] === '0';
+    // // Disable play on hover
+    // if (dynamicIters % 10 === 0) {
+    //   const prefCookie = getCookie('PREF');
+    //   const prefObj = prefCookie?.split('&')?.reduce((acc, x) => {
+    //     const [ key, value ] = x.split('=');
+    //     acc[key] = value;
+    //     return acc;
+    //   }, {});
+    //   if (prefObj) {
+    //     const f7 = prefObj['f7'] || '0';
+    //     const playOnHoverEnabled = f7[f7.length-1] === '0';
 
-        if (cache['disable_play_on_hover'] && playOnHoverEnabled) {
-          prefObj['f7'] = f7.substring(0, f7.length-1) + '1';
-          const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
-          setCookie('PREF', newPref);
-        } else if (!cache['disable_play_on_hover'] && !playOnHoverEnabled) {
-          prefObj['f7'] = f7.substring(0, f7.length-1) + '0';
-          const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
-          setCookie('PREF', newPref);
-        }
-      }
-    }
+    //     if (cache['disable_play_on_hover'] && playOnHoverEnabled) {
+    //       prefObj['f7'] = f7.substring(0, f7.length-1) + '1';
+    //       const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
+    //       setCookie('PREF', newPref);
+    //     } else if (!cache['disable_play_on_hover'] && !playOnHoverEnabled) {
+    //       prefObj['f7'] = f7.substring(0, f7.length-1) + '0';
+    //       const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
+    //       setCookie('PREF', newPref);
+    //     }
+    //   }
+    // }
 
     // Show description
     if (cache['expand_description'] || cache['remove_comments']) {

@@ -11,6 +11,8 @@ html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
 html[global_enable="true"][remove_all_shorts="true"] *[is_short],
 html[global_enable="true"][remove_all_shorts="true"] ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_video_thumbnails="true"] ytd-thumbnail,
+html[global_enable="true"][disable_play_on_hover="true"] #video-preview,
+html[global_enable="true"][disable_play_on_hover="true"] ytd-thumbnail-overlay-loading-preview-renderer[is-preview-loading],
 
 /* Main */
 html[global_enable="true"][remove_homepage="true"] ytd-browse[page-subtype="home"],
@@ -138,7 +140,9 @@ html[global_enable="true"][reverse_channel_video_list="true"] ytd-browse[page-su
 
 
 /* Blur thumbnails */
-html[global_enable="true"][blur_video_thumbnails="true"] ytd-thumbnail img, ytd-playlist-thumbnail img, .video-thumbnail-img {
+html[global_enable="true"][blur_video_thumbnails="true"] ytd-thumbnail img,
+html[global_enable="true"][blur_video_thumbnails="true"] ytd-playlist-thumbnail img,
+html[global_enable="true"][blur_video_thumbnails="true"] .video-thumbnail-img {
   filter: blur(20px);
 }
 

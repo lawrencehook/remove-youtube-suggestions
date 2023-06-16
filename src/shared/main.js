@@ -28,6 +28,11 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Disable play on hover",
+        id: "disable_play_on_hover",
+        defaultValue: false
+      },
+      {
         name: "Enable search engine mode",
         id: "search_engine_mode",
         defaultValue: false,
@@ -87,11 +92,6 @@ const SECTIONS = [
       {
         name: "Disable infinite scroll - homepage",
         id: "remove_infinite_scroll",
-        defaultValue: false
-      },
-      {
-        name: "Disable play on hover (page reload required)",
-        id: "disable_play_on_hover",
         defaultValue: false
       },
     ]
