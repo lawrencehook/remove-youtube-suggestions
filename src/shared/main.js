@@ -53,13 +53,19 @@ const SECTIONS = [
         name: "Hide sidebar suggestions",
         tags: "Video Player",
         id: "remove_sidebar",
-        defaultValue: true 
+        defaultValue: true
       },
       {
         name: "Hide end-of-video suggestions",
         tags: "Video Player",
         id: "remove_end_of_video",
-        defaultValue: true 
+        defaultValue: true
+      },
+      {
+        name: "Add a button to reveal suggestions",
+        tags: "Homepage, Video Player",
+        id: "add_reveal_button",
+        defaultValue: true
       },
     ]
   },

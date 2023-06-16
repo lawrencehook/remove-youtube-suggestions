@@ -457,6 +457,41 @@ function runDynamicSettings() {
       });
     }
 
+    // Reveal suggestions button
+    const revealButtons = [
+      {
+        containerSelector: 'ytd-page-manager', buttonId: 'rys_homepage_reveal_button',
+        innerText: 'Show homepage suggestions',
+        clickListener: e => HTML.setAttribute('remove_homepage', false),
+      },
+      {
+        containerSelector: '#secondary-inner', buttonId: 'rys_sidebar_reveal_button',
+        innerText: 'Show sidebar suggestions',
+        clickListener: e => HTML.setAttribute('remove_sidebar', false),
+      },
+      {
+        containerSelector: '#movie_player', buttonId: 'rys_end_of_video_reveal_button',
+        innerText: 'Show end-of-video suggestions',
+        clickListener: e => HTML.setAttribute('remove_end_of_video', false),
+      },
+    ];
+    revealButtons.forEach(obj => {
+      const { containerSelector, buttonId, innerText, clickListener } = obj;
+      const existingButton = qs(`#${buttonId}`);
+      if (!existingButton) {
+        const buttonContainer = document.createElement('div');
+        const newButton = document.createElement('button');
+        const container = qs(containerSelector);
+        buttonContainer.classList.add('rys_reveal_button_container');
+        newButton.setAttribute('id', buttonId);
+        newButton.classList.add('rys_reveal_button');
+        newButton.innerText = innerText;
+        newButton.addEventListener('click', clickListener);
+        buttonContainer.appendChild(newButton);
+        container?.appendChild(buttonContainer);
+      }
+    });
+
   } catch (error) {
     console.log(error);
   }
@@ -523,6 +558,9 @@ function handleNewPage() {
 
   // Mark whether or not we're on the homepage
   HTML.setAttribute('on_homepage', onHomepage);
+
+  // Mark whether or not we're on a video page
+  HTML.setAttribute('on_video', onVideo);
 
   // Homepage redirects
   if (

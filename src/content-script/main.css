@@ -159,6 +159,55 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 	margin: 0;
 }
 
+
+/* Reveal suggestions button */
+.rys_reveal_button_container {
+	width: auto;
+	height: auto;
+	margin: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.rys_reveal_button {
+	margin-top: 20%;
+	font-size: 20px;
+	padding: var(--yt-button-padding);
+
+	cursor: pointer;
+	z-index: 1000000;
+
+	color: var(--yt-spec-text-primary);
+	background-color: var(--yt-spec-base-background);
+	border: 3px solid var(--yt-spec-raised-background);
+	border-radius: var(--yt-button-border-radius);
+}
+.rys_reveal_button:hover {
+	background-color: var(--yt-spec-raised-background);
+}
+
+html:not([global_enable="true"]) #rys_homepage_reveal_button,
+html:not([add_reveal_button="true"]) #rys_homepage_reveal_button,
+html:not([remove_homepage="true"]) #rys_homepage_reveal_button,
+html:not([on_homepage="true"]) #rys_homepage_reveal_button,
+
+html:not([global_enable="true"]) #rys_sidebar_reveal_button,
+html:not([add_reveal_button="true"]) #rys_sidebar_reveal_button,
+html:not([remove_sidebar="true"]) #rys_sidebar_reveal_button,
+html:not([on_video="true"]) #rys_sidebar_reveal_button,
+
+html:not([global_enable="true"]) #rys_end_of_video_reveal_button,
+html:not([add_reveal_button="true"]) #rys_end_of_video_reveal_button,
+html:not([remove_end_of_video="true"]) #rys_end_of_video_reveal_button,
+html:not([on_video="true"]) #rys_end_of_video_reveal_button,
+#movie_player:not(.ended-mode) #rys_end_of_video_reveal_button,
+
+html[foo="bar"] {
+	display: none;
+}
+
+
 /**********************
  * Search engine mode *
  **********************/
