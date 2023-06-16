@@ -562,6 +562,9 @@ function handleNewPage() {
   // Mark whether or not we're on a video page
   HTML.setAttribute('on_video', onVideo);
 
+  // Refresh HTML attributes
+  Object.entries(cache).forEach(([key, value]) => HTML.setAttribute(key, value));
+
   // Homepage redirects
   if (
     on &&
