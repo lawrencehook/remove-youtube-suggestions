@@ -597,7 +597,7 @@ function handleNewPage() {
   // Autofocus the search bar
   if (on && !onVideo && (cache['autofocus_search'] || cache['search_engine_mode'])) {
     const searchBar = qs('input#search');
-    if (!searchBar.value) {
+    if (searchBar && !searchBar.value) {
       searchBar?.focus();
     }
   }
