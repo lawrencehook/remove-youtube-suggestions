@@ -171,11 +171,12 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 }
 
 .rys_reveal_button {
+	position: relative;
 	margin-top: 20%;
 	font-size: 20px;
 	padding: var(--yt-button-padding);
 
-	cursor: pointer;
+	cursor: default;
 	z-index: 1000000;
 
 	color: var(--yt-spec-text-primary);
@@ -185,6 +186,18 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 }
 .rys_reveal_button:hover {
 	background-color: var(--yt-spec-raised-background);
+}
+#close_reveal_button {
+	position: absolute;
+	top: 0;
+	right: 3px;
+
+	cursor: pointer;
+	z-index: 1000001;
+	color: var(--yt-spec-text-primary);
+	font-size: 12px;
+}
+#close_reveal_button:hover {
 }
 
 html:not([global_enable="true"]) #rys_homepage_reveal_button,

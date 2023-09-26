@@ -479,14 +479,25 @@ function runDynamicSettings() {
       const { containerSelector, buttonId, innerText, clickListener } = obj;
       const existingButton = qs(`#${buttonId}`);
       if (!existingButton) {
-        const buttonContainer = document.createElement('div');
-        const newButton = document.createElement('button');
         const container = qs(containerSelector);
+        const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('rys_reveal_button_container');
+
+        const newButton = document.createElement('button');
         newButton.setAttribute('id', buttonId);
         newButton.classList.add('rys_reveal_button');
         newButton.innerText = innerText;
         newButton.addEventListener('click', clickListener);
+
+        const closeButton = document.createElement('div');
+        closeButton.setAttribute('id', 'close_reveal_button');
+        closeButton.innerHTML = "&#10006;";
+        closeButton.addEventListener('click', e => {
+          e.stopPropagation();
+          updateSetting('add_reveal_button', false);
+        });
+        newButton.appendChild(closeButton);
+
         buttonContainer.appendChild(newButton);
         container?.appendChild(buttonContainer);
       }
