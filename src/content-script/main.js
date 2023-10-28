@@ -317,7 +317,7 @@ function runDynamicSettings() {
       });
 
       // Click on "Skip ad" button
-      const skipButtons = qsa('.ytp-ad-skip-button');
+      const skipButtons = qsa('.ytp-ad-skip-button').concat(qsa('.ytp-ad-skip-button-modern'));
       const skippableAd = skipButtons.some(button => button.offsetParent);
       if (skippableAd) {
         qsa('.ytp-ad-skip-button')?.forEach(e => {
