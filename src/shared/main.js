@@ -245,12 +245,22 @@ const SECTIONS = [
       {
         name: "Hide the menu buttons - Like, Share, etc.",
         id: "remove_menu_buttons",
-        defaultValue: false
+        defaultValue: false,
+        effects: {
+          true: {
+            remove_video_likes: true
+          }
+        }
       },
       {
         name: "Hide the likes",
         id: "remove_video_likes",
-        defaultValue: false
+        defaultValue: false,
+        effects: {
+          false: {
+            remove_menu_buttons: false
+          }
+        }
       },
       {
         name: "Hide the description",
@@ -603,6 +613,7 @@ const idToShortId = {
   "remove_vid_description":            '73',
   "blur_video_thumbnails":             '74',
   "remove_extra_sidebar_tags":         '75',
+  "remove_video_likes":                '76',
 };
 
 
