@@ -248,6 +248,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Hide the likes",
+        id: "remove_video_likes",
+        defaultValue: false
+      },
+      {
         name: "Hide the description",
         id: "remove_vid_description",
         defaultValue: false
