@@ -166,13 +166,11 @@ function runDynamicSettings() {
     // Channel page option
     if (onChannel) {
       if (cache['remove_channel_for_you']) {
-        console.log('remove_channel_for_you');
         const forYouSection = qsa('ytd-item-section-renderer[page-subtype=channels]').find(node => {
           const title = qs('span#title', node);
           return title?.innerText.toLowerCase() === 'for you';
         });
         forYouSection?.setAttribute('is-channel-for-you-section', '');
-        console.log(forYouSection.length);
       }
     }
 
