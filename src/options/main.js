@@ -13,10 +13,11 @@ let openedTime = Date.now();
 let currentUrl;
 
 const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
-const videoPageRegex =   new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
-const homepageRegex =    new RegExp('.*://(www|m)\\.youtube\\.com/$',  'i');
-const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
+const videoPageRegex   = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
+const homepageRegex    = new RegExp('.*://(www|m)\\.youtube\\.com/$',  'i');
+const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
+const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
+const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 document.addEventListener("DOMContentLoaded", () => {
   recordEvent('Page View: Options');
@@ -139,13 +140,15 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Pre-select sidebar option based on current window. Default to 'Basic'
   if (resultsPageRegex.test(currentUrl)) {
-    document.querySelector('.sidebar_section[tag="Search"]').click();
+    qs('.sidebar_section[tag="Search"]').click();
   } else if (videoPageRegex.test(currentUrl)) {
-    document.querySelector('.sidebar_section[tag="Video Player"]').click();
+    qs('.sidebar_section[tag="Video Player"]').click();
   } else if (subsRegex.test(currentUrl)) {
-    document.querySelector('.sidebar_section[tag="Subscriptions"]').click();
+    qs('.sidebar_section[tag="Subscriptions"]').click();
+  } else if (channelRegex.test(currentUrl)) {
+    qs('.sidebar_section[tag="Channel"]').click();
   } else {
-    document.querySelector('.sidebar_section[tag="Basic"]').click();
+    qs('.sidebar_section[tag="Basic"]').click();
   }
 
   const searchBar = document.getElementById('search_bar');

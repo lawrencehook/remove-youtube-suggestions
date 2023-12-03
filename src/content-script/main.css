@@ -84,6 +84,9 @@ html[global_enable="true"][remove_extra_results="true"] #container.ytd-search yt
 html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
 html[global_enable="true"][remove_infinite_scroll_search="true"] .ytd-search #contents > ytd-continuation-item-renderer,
 
+/* Channel Page */
+html[global_enable="true"][remove_channel_for_you="true"] *[is-channel-for-you-section],
+
 /* Subscriptions Page */
 html[global_enable="true"][remove_sub_shorts="true"]   ytd-grid-video-renderer[is_sub_short],
 html[global_enable="true"][remove_sub_live="true"]     ytd-grid-video-renderer[badge-text="live"],

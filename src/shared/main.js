@@ -379,7 +379,28 @@ const SECTIONS = [
       },
     ]
   },
-{
+  {
+    name: "Channel Page",
+    tags: "Channel",
+    options: [
+      {
+        name: "Disable autoplay - channel page",
+        id: "disable_channel_autoplay",
+        defaultValue: false,
+      },
+      {
+        name: "Hide the For You section - channel page",
+        id: "remove_channel_for_you",
+        defaultValue: false
+      },
+      {
+        name: "Reverse sort channel videos: oldest, least popular",
+        id: "reverse_channel_video_list",
+        defaultValue: false,
+      },
+    ]
+  },
+  {
     name: "Subscriptions Page",
     tags: "Subscriptions",
     options: [
@@ -489,16 +510,6 @@ const SECTIONS = [
       {
         name: "Remove context boxes",
         id: "remove_context",
-        defaultValue: false,
-      },
-      {
-        name: "Reverse sort channel videos: oldest, least popular",
-        id: "reverse_channel_video_list",
-        defaultValue: false,
-      },
-      {
-        name: "Disable autoplay on the channel page",
-        id: "disable_channel_autoplay",
         defaultValue: false,
       },
       {
@@ -614,6 +625,7 @@ const idToShortId = {
   "blur_video_thumbnails":             '74',
   "remove_extra_sidebar_tags":         '75',
   "remove_video_likes":                '76',
+  "remove_channel_for_you":            '77',
 };
 
 

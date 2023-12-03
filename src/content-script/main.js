@@ -11,10 +11,11 @@ const REDIRECT_URLS = {
 };
 
 const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
-const homepageRegex =    new RegExp('.*://(www|m)\.youtube\.com(/)?$',  'i');
-const shortsRegex =      new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const videoRegex =       new RegExp('.*://.*youtube\.com/watch\\?v=.*',  'i');
-const subsRegex =        new RegExp(/\/feed\/subscriptions$/, 'i');
+const homepageRegex    = new RegExp('.*://(www|m)\.youtube\.com(/)?$',  'i');
+const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
+const videoRegex       = new RegExp('.*://.*youtube\.com/watch\\?v=.*',  'i');
+const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
+const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
@@ -24,6 +25,7 @@ let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
 let onVideo = videoRegex.test(url);
+let onChannel = channelRegex.test(url);
 let onSubs = subsRegex.test(url);
 let settingsInit = false
 
@@ -159,6 +161,19 @@ function runDynamicSettings() {
         const shelfContainer = shelf.closest('ytd-rich-section-renderer');
         shelfContainer?.setAttribute('is_short', '');
       });
+    }
+
+    // Channel page option
+    if (onChannel) {
+      if (cache['remove_channel_for_you']) {
+        console.log('remove_channel_for_you');
+        const forYouSection = qsa('ytd-item-section-renderer[page-subtype=channels]').find(node => {
+          const title = qs('span#title', node);
+          return title?.innerText.toLowerCase() === 'for you';
+        });
+        forYouSection?.setAttribute('is-channel-for-you-section', '');
+        console.log(forYouSection.length);
+      }
     }
 
     // Subscriptions page options
@@ -561,6 +576,7 @@ function handleNewPage() {
   onHomepage = homepageRegex.test(url);
   onShorts = shortsRegex.test(url);
   onVideo = videoRegex.test(url);
+  onChannel = channelRegex.test(url);
   onSubs = subsRegex.test(url);
   settingsInit = false;
 
