@@ -211,6 +211,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Disable scroll in fullscreen",
+        id: "disable_fullscreen_scroll",
+        defaultValue: false
+      },
+      {
         name: "Redirect shorts to the default viewer",
         tags: "Redirects, Basic",
         id: "normalize_shorts",
@@ -626,6 +631,7 @@ const idToShortId = {
   "remove_extra_sidebar_tags":         '75',
   "remove_video_likes":                '76',
   "remove_channel_for_you":            '77',
+  "disable_fullscreen_scroll":         '78',
 };
 
 
