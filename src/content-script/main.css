@@ -21,6 +21,18 @@ html[global_enable="true"][remove_sidebar="true"] #related,
 html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
 
 /* Left Bar Navigation */
+html[global_enable="true"][remove_left_nav_bar="true"] tp-yt-app-drawer#guide,
+html[global_enable="true"][remove_left_nav_bar="true"] ytd-mini-guide-renderer[role="navigation"],
+html[global_enable="true"][remove_left_nav_bar="true"] yt-icon-button#guide-button,
+
+html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-section-entry-renderer #header,
+html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(1),
+html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(1),
+html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(2),
+html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(3),
+html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(4),
+html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-entry-renderer #expanded > ytd-guide-entry-renderer,
+
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/trending"],
 html[global_enable="true"][remove_explore_link="true"] a[href="/feed/explore"],
@@ -29,11 +41,7 @@ html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-rende
 html[global_enable="true"][remove_subscriptions_link="true"] a[href="/feed/subscriptions"],
 
 /* Left Bar Navigation Sections */
-html[global_enable="true"][remove_left_nav_bar="true"] tp-yt-app-drawer#guide,
-html[global_enable="true"][remove_left_nav_bar="true"] ytd-mini-guide-renderer[role="navigation"],
-html[global_enable="true"][remove_left_nav_bar="true"] yt-icon-button#guide-button,
 html[global_enable="true"][remove_quick_links_section="true"] ytd-guide-collapsible-section-entry-renderer,
-
 html[global_enable="true"][remove_sub_section="true"]      ytd-guide-section-renderer.style-scope:nth-child(2),
 html[global_enable="true"][remove_explore_section="true"]  ytd-guide-section-renderer.style-scope:nth-child(3),
 html[global_enable="true"][remove_more_section="true"]     ytd-guide-section-renderer.style-scope:nth-child(4),
@@ -228,6 +236,14 @@ html[foo="bar"] {
 }
 
 
+/* Only show playlists */
+html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-section-entry-renderer.ytd-guide-section-renderer {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+
 /**********************
  * Search engine mode *
  **********************/
@@ -258,6 +274,8 @@ html[global_enable="true"][search_engine_mode="true"] ytd-search *,
 html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy,
 html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy *,
 
+
+
 html[foo=bar] {
 	visibility: visible;
 }
@@ -268,10 +286,13 @@ html[global_enable="true"][search_engine_mode="true"] ytd-browse,
 html[global_enable="true"][search_engine_mode="true"] ytd-channel-renderer,
 /* Thumbnails */
 html[global_enable="true"][search_engine_mode="true"] ytd-thumbnail,
+/* video player */
+html[global_enable="true"][search_engine_mode="true"] .ytp-ce-element.ytp-ce-element,
 /* Next to video player */
 html[global_enable="true"][search_engine_mode="true"] #secondary,
 /* Below video player */
 html[global_enable="true"][search_engine_mode="true"] #top-row,
+html[global_enable="true"][search_engine_mode="true"] ytd-merch-shelf-renderer,
 /* Comments */
 html[global_enable="true"][search_engine_mode="true"] #comments,
 html[foobar] {

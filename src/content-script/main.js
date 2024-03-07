@@ -490,31 +490,40 @@ function runDynamicSettings() {
     ];
     revealButtons.forEach(obj => {
       const { containerSelector, buttonId, innerText, clickListener } = obj;
+
       const existingButton = qs(`#${buttonId}`);
-      if (!existingButton) {
-        const container = qs(containerSelector);
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('rys_reveal_button_container');
+      if (existingButton) return;
 
-        const newButton = document.createElement('button');
-        newButton.setAttribute('id', buttonId);
-        newButton.classList.add('rys_reveal_button');
-        newButton.innerText = innerText;
-        newButton.addEventListener('click', clickListener);
+      const container = qs(containerSelector);
+      const buttonContainer = document.createElement('div');
+      buttonContainer.classList.add('rys_reveal_button_container');
 
-        const closeButton = document.createElement('div');
-        closeButton.setAttribute('id', 'close_reveal_button');
-        closeButton.innerHTML = "&#10006;";
-        closeButton.addEventListener('click', e => {
-          e.stopPropagation();
-          updateSetting('add_reveal_button', false);
-        });
-        newButton.appendChild(closeButton);
+      const newButton = document.createElement('button');
+      newButton.setAttribute('id', buttonId);
+      newButton.classList.add('rys_reveal_button');
+      newButton.innerText = innerText;
+      newButton.addEventListener('click', clickListener);
 
-        buttonContainer.appendChild(newButton);
-        container?.appendChild(buttonContainer);
-      }
+      const closeButton = document.createElement('div');
+      closeButton.setAttribute('id', 'close_reveal_button');
+      closeButton.innerHTML = "&#10006;";
+      closeButton.addEventListener('click', e => {
+        e.stopPropagation();
+        updateSetting('add_reveal_button', false);
+      });
+      newButton.appendChild(closeButton);
+
+      buttonContainer.appendChild(newButton);
+      container?.appendChild(buttonContainer);
     });
+
+    // Expand the "You" section in the left sidebar
+    if (cache['only_show_playlists']) {
+      const showMoreButton = qs('#section-items > ytd-guide-collapsible-entry-renderer yt-interaction');
+      if (showMoreButton && showMoreButton.offsetParent) {
+        showMoreButton.click();
+      }
+    }
 
   } catch (error) {
     console.log(error);

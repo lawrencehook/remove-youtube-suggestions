@@ -110,7 +110,28 @@ const SECTIONS = [
         name: "Hide the entire sidebar",
         tags: "Basic",
         id: "remove_left_nav_bar",
-        defaultValue: false
+        defaultValue: false,
+        effects: { true: { only_show_playlists: false }}
+      },
+      {
+        name: "Only show playlists",
+        id: "only_show_playlists",
+        defaultValue: false,
+        effects: {
+          true: {
+            remove_left_nav_bar: false,
+            remove_quick_links_section: false,
+            remove_sub_section: true,
+            remove_explore_section: true,
+            remove_more_section: true,
+            remove_settings_section: true,
+            remove_footer_section: true,
+            remove_home_link: true,
+            remove_explore_link: true,
+            remove_shorts_link: true,
+            remove_subscriptions_link: true,
+          }
+        }
       },
       {
         name: "Disable the YouTube logo link",
@@ -120,22 +141,26 @@ const SECTIONS = [
       {
         name: "Hide button - Home",
         id: "remove_home_link",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide button - Explore/Trending",
         id: "remove_explore_link",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide button - Shorts",
         id: "remove_shorts_link",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide button - Subscriptions",
         id: "remove_subscriptions_link",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
     ]
   },
@@ -144,34 +169,40 @@ const SECTIONS = [
     tags: "Left Navbar",
     options: [
       {
-        name: "Hide section - Library, etc.",
+        name: "Hide section - You/Library",
         id: "remove_quick_links_section",
-        defaultValue: false
+        defaultValue: false,
+        effects: { true: { only_show_playlists: false }}
       },
       {
         name: "Hide section - Subscriptions",
         id: "remove_sub_section",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide section - Explore",
         id: "remove_explore_section",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide section - More from YouTube",
         id: "remove_more_section",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide section - Settings",
         id: "remove_settings_section",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
       {
         name: "Hide section - Footer",
         id: "remove_footer_section",
-        defaultValue: false
+        defaultValue: false,
+        effects: { false: { only_show_playlists: false }}
       },
     ]
   },
@@ -632,6 +663,7 @@ const idToShortId = {
   "remove_video_likes":                '76',
   "remove_channel_for_you":            '77',
   "disable_fullscreen_scroll":         '78',
+  "only_show_playlists":               '79',
 };
 
 
