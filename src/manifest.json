@@ -2,7 +2,7 @@
   "name": "RYS — Remove YouTube Suggestions",
   "description": "Spend less time on YouTube. Customize YouTube's user interface to be less engaging.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "version": "4.3.55",
 
   "icons": {
@@ -13,13 +13,7 @@
   },
 
   "background": {
-    "scripts": [
-      "/shared/main.js",
-      "/shared/https.js",
-      "/background/events.js",
-      "/background/main.js"
-    ],
-    "persistent": true
+    "service_worker": "/background/events.js"
   },
 
   "content_scripts": [
@@ -37,7 +31,7 @@
     }
   ],
 
-  "browser_action": {
+  "action": {
     "default_popup": "/options/main.html",
     "default_title": "Remove Youtube Suggestions",
     "default_icon": {
@@ -53,7 +47,9 @@
     "open_in_tab": true
   },
   "permissions": [
-    "storage",
+    "storage"
+  ],
+  "host_permissions": [
     "*://*.youtube.com/*"
   ]
 }

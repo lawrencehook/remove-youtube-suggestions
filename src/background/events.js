@@ -1,3 +1,8 @@
+
+if (typeof browser === 'undefined') {
+  browser = typeof chrome !== 'undefined' ? chrome : null;
+}
+
 // browser.runtime.openOptionsPage();
 
 const uninstallUrl = "http://lawrencehook.com/rys/👋";
