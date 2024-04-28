@@ -214,7 +214,7 @@ const SECTIONS = [
         name: "Skip and close ads",
         tags: "Basic",
         id: "auto_skip_ads",
-        defaultValue: true
+        defaultValue: false
       },
       {
         name: "Disable autoplay",
