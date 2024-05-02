@@ -72,6 +72,7 @@ html[global_enable="true"][remove_vid_description="true"] ytd-watch-metadata #de
 html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
 html[global_enable="true"][remove_menu_buttons="true"] #actions,
 html[global_enable="true"][remove_video_likes="true"] like-button-view-model .yt-spec-button-shape-next__button-text-content,
+html[global_enable="true"][remove_channel_subscribers="true"] #owner-sub-count,
 html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-overlay,
 html[global_enable="true"][remove_overlay_suggestions="true"] .ytp-cards-teaser,
 html[global_enable="true"][remove_overlay_suggestions="true"] button.ytp-button.ytp-cards-button,
