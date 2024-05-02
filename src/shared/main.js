@@ -558,6 +558,11 @@ const SECTIONS = [
         id: "menu_timer",
         defaultValue: false,
       },
+      {
+        name: "Enable grayscale mode",
+        id: "grayscale_mode",
+        defaultValue: false,
+      },
     ]
   },
 ];
@@ -670,6 +675,7 @@ const idToShortId = {
   "disable_fullscreen_scroll":         '78',
   "only_show_playlists":               '79',
   "remove_channel_subscribers":        '80',
+  "grayscale_mode":                    '81',
 };
 
 

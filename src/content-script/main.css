@@ -380,3 +380,7 @@ html[global_enable="true"][foo=bar]
 	display: none !important;
 
 }
+
+html[global_enable='true'][grayscale_mode='true'] ytd-app {
+	filter: grayscale(100%);
+}
