@@ -299,6 +299,11 @@ const SECTIONS = [
         }
       },
       {
+        name: "Hide channel subscribers count",
+        id: "remove_channel_subscribers",
+        defaultValue: false,
+      },
+      {
         name: "Hide the description",
         id: "remove_vid_description",
         defaultValue: false
@@ -553,6 +558,11 @@ const SECTIONS = [
         id: "menu_timer",
         defaultValue: false,
       },
+      {
+        name: "Enable grayscale mode",
+        id: "grayscale_mode",
+        defaultValue: false,
+      },
     ]
   },
 ];
@@ -664,6 +674,8 @@ const idToShortId = {
   "remove_channel_for_you":            '77',
   "disable_fullscreen_scroll":         '78',
   "only_show_playlists":               '79',
+  "remove_channel_subscribers":        '80',
+  "grayscale_mode":                    '81',
 };
 
 

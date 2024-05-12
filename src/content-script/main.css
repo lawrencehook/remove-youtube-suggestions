@@ -71,7 +71,8 @@ html[global_enable="true"][remove_info_cards="true"] .ytp-ce-element.ytp-ce-elem
 html[global_enable="true"][remove_vid_description="true"] ytd-watch-metadata #description,
 html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
 html[global_enable="true"][remove_menu_buttons="true"] #actions,
-html[global_enable="true"][remove_video_likes="true"] ytd-toggle-button-renderer > yt-button-shape > button > div.yt-spec-button-shape-next__button-text-content,
+html[global_enable="true"][remove_video_likes="true"] like-button-view-model .yt-spec-button-shape-next__button-text-content,
+html[global_enable="true"][remove_channel_subscribers="true"] #owner-sub-count,
 html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-overlay,
 html[global_enable="true"][remove_overlay_suggestions="true"] .ytp-cards-teaser,
 html[global_enable="true"][remove_overlay_suggestions="true"] button.ytp-button.ytp-cards-button,
@@ -378,4 +379,8 @@ html[global_enable="true"][foo=bar]
 
 	display: none !important;
 
+}
+
+html[global_enable='true'][grayscale_mode='true'] ytd-app {
+	filter: grayscale(100%);
 }
