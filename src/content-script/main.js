@@ -330,7 +330,9 @@ function runDynamicSettings() {
       });
 
       // Click on "Skip ad" button
-      const skipButtons = qsa('.ytp-ad-skip-button').concat(qsa('.ytp-ad-skip-button-modern'));
+      const skipButtons = qsa('.ytp-ad-skip-button').
+                   concat(qsa('.ytp-ad-skip-button-modern')).
+                   concat(qsa('.ytp-skip-ad-button'));
       const skippableAd = skipButtons?.some(button => button.offsetParent);
       if (skippableAd) {
         skipButtons?.forEach(e => {
@@ -341,10 +343,13 @@ function runDynamicSettings() {
       } else {
 
         // Speed through ads that can't be skipped (yet).
-        let adSelector = '.ytp-ad-player-overlay-instream-info';
-        let adElement = qsa(adSelector)[0];
-        const adActive = adElement && window.getComputedStyle(adElement).display !== 'none';
-        const video = document.getElementsByTagName("video")[0];
+        let adSelectors = [
+          '.ytp-ad-player-overlay-instream-info',
+          '.ytp-ad-button-icon'
+        ];
+        let adElements = adSelectors.flatMap(selector => qsa(selector));
+        const adActive = adElements.some(elt => elt && window.getComputedStyle(elt).display !== 'none');
+        const video = qs('video');
         if (adActive) {
           if (!hyper) {
             hyper = true;

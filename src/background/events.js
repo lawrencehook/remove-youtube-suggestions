@@ -37,7 +37,8 @@ browser.storage.onChanged.addListener((changes, area) => {
       if (changes[item].newValue === false) icons = inactiveIcons;
       if (changes[item].newValue === true)  icons = activeIcons;
 
-      browser.browserAction.setIcon(icons);
+      browser.browserAction?.setIcon(icons);
+      browser.action?.setIcon(icons);
     }
 
   }
