@@ -61,6 +61,34 @@ html[dark_mode='false'] #header-light { display: none }
 #power-icon {
   display: flex;
   justify-content: center;
+  position: relative;
+}
+#power-pop-up {
+  position: absolute;
+  font-size: 0.85rem;
+  width: 200px;
+  top: 115%;
+  right: -75%;
+  border-radius: var(--border-radius);
+  user-select: none;
+
+  padding: 10px;
+  background-color: var(--body-color);
+  color: var(--body-background-color);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+html[schedule='true'] #power-icon,
+html[schedule='true'] #power-icon svg {
+  cursor: default;
+}
+html[schedule='true'] #power-icon:active {
+  pointer-events: none;
+}
+html[schedule='true'] #power-icon:hover #power-pop-up {
+  opacity: 1;
+  visibility: visible;
 }
 #power-icon svg {
   cursor: pointer;

@@ -203,7 +203,7 @@ function updateTimeInfo() {
   if (!nextTimedChange) {
     const remainingTime = nextChange - Date.now();
     const { days, hours, minutes, seconds } = parseTimeRemaining(remainingTime);
-    let title = `Turning ${nextTimedValue ? 'on' : 'off'} in `;
+    let title = `Turning ${scheduleIsActive ? 'off' : 'on'} in `;
     if (days) title = title.concat(days, ' days and ');
     if (hours) title = title.concat(hours, ' hours and ');
     if (minutes) title = title.concat(minutes, ' minutes and ');
