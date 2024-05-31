@@ -294,6 +294,26 @@ html[schedule="false"] #schedule_container > *:not(#schedule_modal_header) {
   gap: 15vh;
 }
 
+/* Code Entry */
+#lock_code_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: calc(var(--footer-height) + 3px);
+  width: 100vw;
+  z-index: 100;
+  font-size: 1rem;
+
+  background-color: var(--body-background-color);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+}
+
+
 #main_container {
   display: flex;
   flex-direction: row;

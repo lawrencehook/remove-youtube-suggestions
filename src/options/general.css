@@ -39,6 +39,9 @@ html[dark_mode='false'], html:not([dark_mode]) {
 html[global_enable="false"] #timer_container,
 html[global_enable="true"][menu_timer="false"] #timer_container,
 html[global_enable="true"][menu_timer="true"]:not([menu_timer_counting_down]) #timer_container,
+html[global_enable="false"] #lock_code_container,
+html[global_enable="true"][lock_code="false"] #lock_code_container,
+html[global_enable="true"][lock_code="true"]:not([entering_lock_code]) #lock_code_container,
 html[global_enable="true"] #disabled_message_container,
 html[global_enable="false"] #main_container,
 html[global_enable="false"] #search_bar {

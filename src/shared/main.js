@@ -554,14 +554,29 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
-        name: "Enable the menu timer - 10 seconds",
-        id: "menu_timer",
-        defaultValue: false,
-      },
-      {
         name: "Enable grayscale mode",
         id: "grayscale_mode",
         defaultValue: false,
+      },
+      {
+        name: "Lock settings - 10 second timer",
+        id: "menu_timer",
+        defaultValue: false,
+        effects: {
+          true: {
+            lock_code: false,
+          }
+        }
+      },
+      {
+        name: "Lock settings - code entry",
+        id: "lock_code",
+        defaultValue: false,
+        effects: {
+          true: {
+            menu_timer: false,
+          }
+        }
       },
     ]
   },
@@ -676,6 +691,7 @@ const idToShortId = {
   "only_show_playlists":               '79',
   "remove_channel_subscribers":        '80',
   "grayscale_mode":                    '81',
+  "lock_code":                         '82',
 };
 
 

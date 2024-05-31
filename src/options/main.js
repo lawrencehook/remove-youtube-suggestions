@@ -9,6 +9,7 @@ const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_SECTION = document.getElementById('template_section');
 const TEMPLATE_OPTION = document.getElementById('template_option');
 const TIMER_CONTAINER = document.getElementById('timer_container');
+const LOCK_CODE_CONTAINER = document.getElementById('lock_code_container');
 let openedTime = Date.now();
 let currentUrl;
 
@@ -162,6 +163,20 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   if (SETTING_VALUES['menu_timer']) {
     HTML.setAttribute('menu_timer_counting_down', '');
     timerLoop();
+  }
+
+  if (SETTING_VALUES['lock_code']) {
+    HTML.setAttribute('entering_lock_code', '');
+    const code = generateRandomString(16);
+    const input = qs('input', LOCK_CODE_CONTAINER);
+    qs('div#code', LOCK_CODE_CONTAINER).innerText = code;
+    input.addEventListener('input', e => {
+      console.log(input.value);
+      console.log();
+      if (input.value === code) {
+        HTML.removeAttribute('entering_lock_code', '');
+      }
+    });
   }
 
   const openScheduleButton = document.getElementById('disabled_message_open_schedule');
@@ -348,7 +363,7 @@ function handleEnter(e) {
 
 // For the menu timer option
 function timerLoop() {
-  const timeLeft = 9 - Math.floor((Date.now() - openedTime) / 1000);
+  const timeLeft = Math.max(1, 9 - Math.floor((Date.now() - openedTime) / 1000));
   const timeLeftElt = TIMER_CONTAINER.querySelector('div:nth-child(2)');
   timeLeftElt.innerText = `${timeLeft} second${timeLeft === 1 ? '' : 's'} remaining.`;
 
