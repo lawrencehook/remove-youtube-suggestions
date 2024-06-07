@@ -363,11 +363,11 @@ function handleEnter(e) {
 
 // For the menu timer option
 function timerLoop() {
-  const timeLeft = Math.max(1, 9 - Math.floor((Date.now() - openedTime) / 1000));
+  const timeLeft = 10 - Math.floor((Date.now() - openedTime) / 1000);
   const timeLeftElt = TIMER_CONTAINER.querySelector('div:nth-child(2)');
   timeLeftElt.innerText = `${timeLeft} second${timeLeft === 1 ? '' : 's'} remaining.`;
 
-  if (timeLeft < 0) {
+  if (timeLeft < 1) {
     HTML.removeAttribute('menu_timer_counting_down');
   } else {
     setTimeout(timerLoop, 50);
