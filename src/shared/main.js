@@ -578,7 +578,12 @@ const SECTIONS = [
           }
         }
       },
-    ]
+      {
+        name: "Enable power button during schedule",
+        id: "power_btn_active_during_schedule",
+        defaultValue: false,
+      },
+    ],
   },
 ];
 

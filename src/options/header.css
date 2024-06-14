@@ -79,14 +79,14 @@ html[dark_mode='false'] #header-light { display: none }
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-html[schedule='true'] #power-icon,
-html[schedule='true'] #power-icon svg {
+html[schedule='true'][power_btn_active_during_schedule='false'] #power-icon,
+html[schedule='true'][power_btn_active_during_schedule='false'] #power-icon svg {
   cursor: default;
 }
-html[schedule='true'] #power-icon:active {
+html[schedule='true'][power_btn_active_during_schedule='false'] #power-icon:active {
   pointer-events: none;
 }
-html[schedule='true'] #power-icon:hover #power-pop-up {
+html[schedule='true'][power_btn_active_during_schedule='false'] #power-icon:hover #power-pop-up {
   opacity: 1;
   visibility: visible;
 }
