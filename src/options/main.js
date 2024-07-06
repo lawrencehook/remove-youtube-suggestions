@@ -1,6 +1,8 @@
 
 // Globals
 const cache = {};
+let strictModeEndTime = 0;
+
 const HTML = document.documentElement;
 const SIDEBAR = document.getElementById('sidebar');
 const TEMPLATE_SIDEBAR_SECTION = document.getElementById('template_sidebar_section');
@@ -14,11 +16,11 @@ let openedTime = Date.now();
 let currentUrl;
 
 const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
-const videoPageRegex   = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
-const homepageRegex    = new RegExp('.*://(www|m)\\.youtube\\.com/$',  'i');
-const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
-const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
+const videoPageRegex = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
+const homepageRegex = new RegExp('.*://(www|m)\\.youtube\\.com/$', 'i');
+const channelRegex = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
+const shortsRegex = new RegExp('.*://.*youtube\.com/shorts.*', 'i');
+const subsRegex = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 document.addEventListener("DOMContentLoaded", () => {
   recordEvent('Page View: Options');
@@ -39,6 +41,62 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", handleEnter, false);
 });
 
+function showStrictModeConfirmation() {
+  return new Promise((resolve) => {
+    const confirmed = confirm('Are you sure you want to enable Strict Mode? This will prevent you from changing any settings until disabled or the set time expires.');
+    resolve(confirmed);
+  });
+}
+
+function promptStrictModeDuration() {
+  return new Promise((resolve) => {
+    let durationMinutes;
+    do {
+      const input = prompt('Enter the number of minutes for Strict Mode (max 360 minutes / 6 hours):', '60');
+      if (input === null) {
+        resolve(null); // User cancelled
+        return;
+      }
+      durationMinutes = parseInt(input, 10);
+    } while (isNaN(durationMinutes) || durationMinutes <= 0 || durationMinutes > 360);
+    resolve(durationMinutes);
+  });
+}
+
+function updateStrictModeTimer() {
+  const timeLeft = strictModeEndTime - Date.now();
+  if (timeLeft <= 0) {
+    updateSetting('strict_mode', false, { manual: false });
+    updateSetting('strict_mode_end_time', null, { manual: false });
+    blockEdit(false);
+    return;
+  }
+
+  const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+  const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+  const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+
+  const timerElement = document.getElementById('strict_mode_timer') || createTimerElement();
+  timerElement.textContent = `Strict Mode: ${hours}h ${minutes}m ${seconds}s remaining`;
+
+  setTimeout(updateStrictModeTimer, 1000);
+}
+
+function createTimerElement() {
+  const timerElement = document.createElement('div');
+  timerElement.id = 'strict_mode_timer';
+  timerElement.style.position = 'fixed';
+  timerElement.style.bottom = '10px';
+  timerElement.style.right = '10px';
+  timerElement.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+  timerElement.style.color = 'white';
+  timerElement.style.padding = '5px 10px';
+  timerElement.style.borderRadius = '5px';
+  document.body.appendChild(timerElement);
+  return timerElement;
+}
+
+
 // Respond to changes in settings
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
@@ -50,6 +108,19 @@ function logStorageChange(changes, area) {
 }
 browser.storage.onChanged.addListener(logStorageChange);
 
+
+function blockEdit(strictMode) {
+  const options = document.querySelectorAll('.option:not(.strict_mode)');
+  options.forEach(option => {
+    if (strictMode) {
+      option.style.pointerEvents = 'none';
+      option.style.opacity = '0.5';
+    } else {
+      option.style.pointerEvents = 'auto';
+      option.style.opacity = '1';
+    }
+  });
+}
 
 function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
@@ -124,7 +195,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   });
 
   if (headerSettings) {
-    Object.entries(headerSettings).forEach(([ id, value ]) => {
+    Object.entries(headerSettings).forEach(([id, value]) => {
       HTML.setAttribute(id, value);
       cache[id] = value;
 
@@ -184,7 +255,61 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Begin time loop -- checks for timedChanges, scheduling
   timeLoop();
+
+  // Add Strict Mode toggle
+  const strictModeToggle = TEMPLATE_OPTION.cloneNode(true);
+  strictModeToggle.classList.remove('removed');
+  strictModeToggle.id = 'strict_mode';
+  strictModeToggle.setAttribute('name', 'Strict Mode');
+  strictModeToggle.setAttribute('tags', 'Basic');
+  strictModeToggle.classList.add('strict_mode');
+  const strictModeLabel = strictModeToggle.querySelector('.option_label');
+  strictModeLabel.innerText = 'Strict Mode';
+
+  const strictModeSvg = strictModeToggle.querySelector('svg');
+  const strictModeValue = SETTING_VALUES['strict_mode'] || false;
+  HTML.setAttribute('strict_mode', strictModeValue);
+  cache['strict_mode'] = strictModeValue;
+  strictModeSvg.toggleAttribute('active', strictModeValue);
+
+  strictModeToggle.addEventListener('click', async (e) => {
+    if (!cache['strict_mode']) {
+      const confirmed = await showStrictModeConfirmation();
+      if (confirmed) {
+        const durationMinutes = await promptStrictModeDuration();
+        if (durationMinutes) {
+          const endTime = Date.now() + durationMinutes * 60 * 1000;
+          await updateSetting('strict_mode', true, { manual: true });
+          await updateSetting('strict_mode_end_time', endTime, { manual: true });
+          strictModeEndTime = endTime;
+          blockEdit(true);
+          updateStrictModeTimer();
+        }
+      }
+    }
+    // Remove the else block that allowed turning off strict mode
+  });
+
+  OPTIONS_LIST.querySelector('#Basic').append(strictModeToggle);
+
   HTML.setAttribute('loaded', true);
+
+  // Load strict mode state
+  if (SETTING_VALUES['strict_mode'] && SETTING_VALUES['strict_mode_end_time']) {
+    strictModeEndTime = SETTING_VALUES['strict_mode_end_time'];
+    if (Date.now() < strictModeEndTime) {
+      blockEdit(true);
+      updateStrictModeTimer();
+    } else {
+      // Strict mode has expired
+      updateSetting('strict_mode', false, { manual: false });
+      updateSetting('strict_mode_end_time', null, { manual: false });
+    }
+  } else {
+    // Ensure strict mode is off by default
+    updateSetting('strict_mode', false, { manual: false });
+    updateSetting('strict_mode_end_time', null, { manual: false });
+  }
 }
 
 
@@ -235,7 +360,12 @@ function updateTimeInfo() {
 }
 
 
-function updateSetting(id, value, { write=true, manual=false }={}) {
+async function updateSetting(id, value, { write = true, manual = false } = {}) {
+  if (id === 'strict_mode' && cache['strict_mode'] && Date.now() < cache['strict_mode_end_time']) {
+    console.log('Strict Mode cannot be disabled until the set time expires');
+    return;
+  }
+
 
   if (manual) recordEvent('Setting changed', { id, value });
 
@@ -246,7 +376,7 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   svg?.toggleAttribute('active', value);
 
   // Update local storage.
-  if (write) browser.storage.local.set({ [id]: value });
+  if (write) await browser.storage.local.set({ [id]: value });
 
 
   // Special cases
@@ -293,7 +423,7 @@ function onSearchInput(e) {
     options.forEach(option => {
       const optionMatch = searchTerms.find(term => {
         return option.id.toLowerCase().includes(term) ||
-               option.getAttribute('name').toLowerCase().includes(term);
+          option.getAttribute('name').toLowerCase().includes(term);
       });
       if (optionMatch) {
         optionFound = true;
@@ -381,6 +511,20 @@ function timeLoop() {
     schedule, scheduleTimes, scheduleDays,
     nextTimedChange, nextTimedValue
   } = cache;
+
+  if (cache['strict_mode'] && cache['strict_mode_end_time']) {
+    if (Date.now() > cache['strict_mode_end_time']) {
+      updateSetting('strict_mode', false, { manual: false });
+      updateSetting('strict_mode_end_time', null, { manual: false });
+      blockEdit(false);
+      const timerElement = document.getElementById('strict_mode_timer');
+      if (timerElement) {
+        timerElement.remove();
+      }
+    }
+  }
+
+
 
   if (nextTimedChange) {
     if (Date.now() > Number(nextTimedChange)) {
