@@ -147,7 +147,9 @@ html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy[flexy][is-
 html[foobar] {
 	--ytd-watch-flexy-max-player-width: calc(var(--ytd-watch-flexy-chat-max-height)*var(--ytd-watch-flexy-width-ratio)/var(--ytd-watch-flexy-height-ratio)) !important;
 }
-
+html[global_enable="true"][remove_entire_sidebar="true"] #columns {
+	justify-content: center;
+}
 
 /* Reverse channel videos list */
 html[global_enable="true"][reverse_channel_video_list="true"] ytd-browse[page-subtype="channels"] #contents.ytd-rich-grid-renderer {
