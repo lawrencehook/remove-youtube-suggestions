@@ -369,6 +369,7 @@ html[global_enable="true"][remove_menu_buttons="true"] ytm-slim-video-action-bar
 
 /* Search Results Page */
 html[global_enable="true"][remove_search_suggestions="true"] .searchbox-dropdown,
+html[global_enable="true"][remove_search_suggestions="true"] .ytSearchboxComponentSuggestionsContainer,
 html[global_enable="true"][remove_shorts_results="true"] ytm-search ytd-video-renderer[is_short="true"],
 html[global_enable="true"][remove_shorts_results="true"] ytm-search ytm-video-with-context-renderer[is_short="true"],
 html[global_enable="true"][remove_shorts_results="true"] ytm-search ytm-reel-shelf-renderer,
