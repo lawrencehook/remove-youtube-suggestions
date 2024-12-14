@@ -28,6 +28,12 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Shrink video thumbnails",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "shrink_video_thumbnails",
+        defaultValue: false,
+      },
+      {
         name: "Disable play on hover",
         id: "disable_play_on_hover",
         defaultValue: false
@@ -688,6 +694,7 @@ const idToShortId = {
   "grayscale_mode":                    '81',
   "lock_code":                         '82',
   "remove_clip_button":                '83',
+  "shrink_video_thumbnails":           '84',
 };
 
 

@@ -166,6 +166,15 @@ html[global_enable="true"][blur_video_thumbnails="true"] .video-thumbnail-img {
 }
 
 
+/* Shrink thumbnails */
+html[global_enable="true"][shrink_video_thumbnails="true"] ytd-thumbnail,
+html[global_enable="true"][shrink_video_thumbnails="true"] ytd-playlist-thumbnail,
+html[global_enable="true"][shrink_video_thumbnails="true"] ytd-channel-renderer #avatar-section,
+html[global_enable="true"][shrink_video_thumbnails="true"] ytd-movie-renderer .thumbnail-container {
+	max-width: 0 !important;
+}
+
+
 /* Subs page */
 html[global_enable="true"] ytd-rich-grid-row[empty="false"],
 html[global_enable="true"] ytd-rich-grid-row[empty="false"] #contents {
