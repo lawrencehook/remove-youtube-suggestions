@@ -333,7 +333,8 @@ function runDynamicSettings() {
       // Click on "Skip ad" button
       const skipButtons = qsa('.ytp-ad-skip-button').
                    concat(qsa('.ytp-ad-skip-button-modern')).
-                   concat(qsa('.ytp-skip-ad-button'));
+                   concat(qsa('.ytp-skip-ad-button')).
+                   concat(qsa('#skip-button:2'));
       const skippableAd = skipButtons?.some(button => button.offsetParent);
       if (skippableAd) {
         skipButtons?.forEach(e => {
