@@ -281,22 +281,17 @@ const SECTIONS = [
       {
         name: "Hide the menu buttons - Like, Share, etc.",
         id: "remove_menu_buttons",
-        defaultValue: false,
-        effects: {
-          true: {
-            remove_video_likes: true
-          }
-        }
+        defaultValue: false
+      },
+      {
+        name: "Hide the clip button",
+        id: "remove_clip_button",
+        defaultValue: false
       },
       {
         name: "Hide the likes",
         id: "remove_video_likes",
-        defaultValue: false,
-        effects: {
-          false: {
-            remove_menu_buttons: false
-          }
-        }
+        defaultValue: false
       },
       {
         name: "Hide channel subscribers count",
@@ -692,6 +687,7 @@ const idToShortId = {
   "remove_channel_subscribers":        '80',
   "grayscale_mode":                    '81',
   "lock_code":                         '82',
+  "remove_clip_button":                '83',
 };
 
 

@@ -334,7 +334,8 @@ function runDynamicSettings() {
       const skipButtons = qsa('.ytp-ad-skip-button').
                    concat(qsa('.ytp-ad-skip-button-modern')).
                    concat(qsa('.ytp-skip-ad-button')).
-                   concat(qsa('#skip-button:2'));
+                   concat(qsa(CSS.escape("button#skip-button:2")));
+
       const skippableAd = skipButtons?.some(button => button.offsetParent);
       if (skippableAd) {
         skipButtons?.forEach(e => {
@@ -531,6 +532,12 @@ function runDynamicSettings() {
         showMoreButton.click();
       }
     }
+
+    // Video Player: hide the 'clip' button.
+    //   The path[d=...] selector selects scissor SVGs.
+    qsa('path[d^="M8 7c0 .55-.45 1-1 1s-1-.45-1-1"]').
+      map(path => path.closest('#menu button')).
+      forEach(b => b.setAttribute('scissor_button', ''));
 
   } catch (error) {
     console.log(error);
