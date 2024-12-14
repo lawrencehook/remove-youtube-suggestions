@@ -304,6 +304,9 @@ html[schedule="false"] #schedule_container > *:not(#schedule_modal_header) {
   z-index: 100;
   font-size: 1rem;
 
+  /* Disable text selection */
+  user-select: none;
+
   background-color: var(--body-background-color);
 
   display: flex;
