@@ -72,12 +72,24 @@ sendGetDonorsRequest().then(x => {
 			// Sort in descending order, by timestamp
 			donors.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
 
-			donors.forEach(donor => {
+			const appendDonorNode = name => {
 				const donorNode = templateDonor.cloneNode(true);
 				const pNode = donorNode.querySelector('p');
-				pNode.innerText = donor.showName ? (donor.name || 'anonymous') : 'anonymous';
+				pNode.innerText = name;
 				donorList.appendChild(donorNode);
-			});
+			}
+
+			const anonCondition = d => !d.showName || !d.name.trim().length > 0
+			const namedDonors = donors.filter(d => !anonCondition(d));
+			namedDonors.forEach(d => appendDonorNode(d.name));
+			const anonDonors = donors.filter(anonCondition);
+			const anonCount = anonDonors.length;
+			if (anonCount > 0) {
+				const useAnd = anonCount != donors.length;
+				const plural = anonCount > 1;
+				const message = (useAnd ? 'and ' : '') + `${anonCount} anonymous donor` + (plural ? 's' : '') + '.';
+				appendDonorNode(message);
+			}
 		});
 
 	} catch (error) {
