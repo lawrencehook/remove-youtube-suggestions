@@ -79,7 +79,7 @@ sendGetDonorsRequest().then(x => {
 				donorList.appendChild(donorNode);
 			}
 
-			const anonCondition = d => !d.showName || !d.name.trim().length > 0
+			const anonCondition = d => !d.showName || !d.name.trim().length > 0;
 			const namedDonors = donors.filter(d => !anonCondition(d));
 			namedDonors.forEach(d => appendDonorNode(d.name));
 			const anonDonors = donors.filter(anonCondition);
