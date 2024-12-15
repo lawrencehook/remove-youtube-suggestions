@@ -57,7 +57,7 @@ html[foo="bar"] {
   margin-right: auto;
   padding: 5px 20px;
 
-  z-index: 11;
+  z-index: 110;
 
   color: var(--body-background-color);
   background-color: var(--body-color);
@@ -275,6 +275,121 @@ html[schedule="false"] #schedule_container > *:not(#schedule_modal_header) {
   cursor: pointer;
 }
 
+
+/* Password lock screen */
+html:not([password='true']) #password_lock_container,
+html[passwordentered='true'] #password_lock_container,
+html[foo=bar] {
+  display: none;
+}
+#password_lock_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: calc(var(--footer-height) + 3px);
+  width: 100vw;
+  z-index: 100;
+  font-size: 1rem;
+
+  background-color: var(--body-background-color);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+#password_lock_container button {
+  color: black;
+}
+
+/* Password Modal */
+#password_container_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+}
+
+#password_container_background button {
+  color: black;
+}
+
+#enable_password_container, #enable_password_container * {
+  color: var(--body-color);
+}
+
+#enable_password_container, #disable_password_container {
+  position: relative;
+
+  height: fit-content;
+  width: min(90vw, 450px);
+  margin-top: calc(1.2 * var(--header-height));
+  margin-right: auto;
+  margin-left: auto;
+  padding: 20px 10px;
+
+  text-align: center;
+
+  background-color: var(--body-background-color);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
+  box-sizing: border-box;
+
+  border: 1px solid var(--box-shadow-color);
+  border-radius: 2px;
+
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#password_modal_header {
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#password_modal_header div:first-child {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+#enable-password {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#password-entries {
+  font-size: 0.85rem;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 10px;
+}
+
+#password-entries > * {
+  justify-self: start;
+}
+
+#password-button button {
+  color: var(--body-background-color);
+}
+
+#disable_password_container a:first-child {
+  font-weight: bold;
+}
+
+
 /* Menu Timer */
 #timer_container {
   position: fixed;
@@ -285,7 +400,7 @@ html[schedule="false"] #schedule_container > *:not(#schedule_modal_header) {
   z-index: 100;
   font-size: 1rem;
 
-  background-color: rgba(255, 255, 255, 0.97);
+  background-color: var(--body-background-color);
 
   display: flex;
   flex-direction: column;

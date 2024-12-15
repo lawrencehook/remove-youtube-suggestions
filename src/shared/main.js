@@ -594,12 +594,18 @@ const SCHEDULE_SETTINGS = {
   scheduleDays: 'mo,tu,we,th,fr',
 };
 
+const PASSWORD_SETTINGS = {
+  "password": false,
+  "hashed_password": '',
+}
+
 const OTHER_SETTINGS = {
   global_enable: true,
   dark_mode: false,
   log_enabled: true,
   ...TIMED_SETTINGS,
   ...SCHEDULE_SETTINGS,
+  ...PASSWORD_SETTINGS,
 };
 
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
@@ -695,6 +701,8 @@ const idToShortId = {
   "lock_code":                         '82',
   "remove_clip_button":                '83',
   "shrink_video_thumbnails":           '84',
+  "password":                          '85',
+  "hashed_password":                   '86',
 };
 
 

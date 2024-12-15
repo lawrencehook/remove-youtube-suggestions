@@ -118,8 +118,8 @@ function parseTimeRemaining(ms) {
 function hydrateDropdown(
 	root,
 	dropdown,
-	show = d => d.removeAttribute('hidden'),
-	hide = d => d.setAttribute('hidden', '')
+	show = d => d.toggleAttribute('hidden', false),
+	hide = d => d.toggleAttribute('hidden', true)
 ) {
 
 	function clickListener(e) {
