@@ -180,7 +180,7 @@ function runDynamicSettings() {
       const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]';
       const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
       const addBadgeTextToVideo = badge => {
-        const badgeText = badge.innerText.trim().toLowerCase();
+        const badgeText = badge.innerText.trim().split(' ')[0].trim().toLowerCase();
         if (badgeText) {
           const gridVideo = badge.closest('ytd-grid-video-renderer');
           const updatedGridVideo = badge.closest('ytd-rich-item-renderer');
@@ -292,7 +292,7 @@ function runDynamicSettings() {
 
       const menuItems = qsa('.ytp-settings-menu .ytp-panel .ytp-panel-menu > div');
       const checkBoxes = menuItems.filter(n => n.getAttribute('aria-checked'));
-      const [ ambientToggle, annotationsToggle ] = checkBoxes;
+      const [ stableVolumeToggle, ambientToggle, annotationsToggle ] = checkBoxes;
 
       // Disable ambient mode
       if (cache['disable_ambient_mode'] === true) {
@@ -302,6 +302,7 @@ function runDynamicSettings() {
       }
 
       // Disable annotations
+      //    Note: I don't see a toggle for "annotations" anymore
       if (cache['disable_annotations'] === true) {
         if (annotationsToggle?.getAttribute('aria-checked') === 'true') {
           qs('.ytp-menuitem-toggle-checkbox', annotationsToggle)?.click();
@@ -332,7 +333,9 @@ function runDynamicSettings() {
       // Click on "Skip ad" button
       const skipButtons = qsa('.ytp-ad-skip-button').
                    concat(qsa('.ytp-ad-skip-button-modern')).
-                   concat(qsa('.ytp-skip-ad-button'));
+                   concat(qsa('.ytp-skip-ad-button')).
+                   concat(qsa(CSS.escape("button#skip-button:2")));
+
       const skippableAd = skipButtons?.some(button => button.offsetParent);
       if (skippableAd) {
         skipButtons?.forEach(e => {
@@ -529,6 +532,12 @@ function runDynamicSettings() {
         showMoreButton.click();
       }
     }
+
+    // Video Player: hide the 'clip' button.
+    //   The path[d=...] selector selects scissor SVGs.
+    qsa('path[d^="M8 7c0 .55-.45 1-1 1s-1-.45-1-1"]').
+      map(path => path.closest('#menu button')).
+      forEach(b => b.setAttribute('scissor_button', ''));
 
   } catch (error) {
     console.log(error);

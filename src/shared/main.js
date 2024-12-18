@@ -28,6 +28,12 @@ const SECTIONS = [
         defaultValue: false,
       },
       {
+        name: "Shrink video thumbnails",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "shrink_video_thumbnails",
+        defaultValue: false,
+      },
+      {
         name: "Disable play on hover",
         id: "disable_play_on_hover",
         defaultValue: false
@@ -281,22 +287,17 @@ const SECTIONS = [
       {
         name: "Hide the menu buttons - Like, Share, etc.",
         id: "remove_menu_buttons",
-        defaultValue: false,
-        effects: {
-          true: {
-            remove_video_likes: true
-          }
-        }
+        defaultValue: false
+      },
+      {
+        name: "Hide the clip button",
+        id: "remove_clip_button",
+        defaultValue: false
       },
       {
         name: "Hide the likes",
         id: "remove_video_likes",
-        defaultValue: false,
-        effects: {
-          false: {
-            remove_menu_buttons: false
-          }
-        }
+        defaultValue: false
       },
       {
         name: "Hide channel subscribers count",
@@ -593,12 +594,18 @@ const SCHEDULE_SETTINGS = {
   scheduleDays: 'mo,tu,we,th,fr',
 };
 
+const PASSWORD_SETTINGS = {
+  "password": false,
+  "hashed_password": '',
+}
+
 const OTHER_SETTINGS = {
   global_enable: true,
   dark_mode: false,
   log_enabled: true,
   ...TIMED_SETTINGS,
   ...SCHEDULE_SETTINGS,
+  ...PASSWORD_SETTINGS,
 };
 
 const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
@@ -692,6 +699,10 @@ const idToShortId = {
   "remove_channel_subscribers":        '80',
   "grayscale_mode":                    '81',
   "lock_code":                         '82',
+  "remove_clip_button":                '83',
+  "shrink_video_thumbnails":           '84',
+  "password":                          '85',
+  "hashed_password":                   '86',
 };
 
 

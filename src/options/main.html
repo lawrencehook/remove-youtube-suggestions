@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="/options/body.css">
     <link rel="stylesheet" type="text/css" href="/options/footer.css">
 
+    <script defer src="/shared/md5.js"></script>
     <script defer src="/shared/main.js"></script>
     <script defer src="/shared/https.js"></script>
     <script defer src="/shared/analytics.js"></script>
@@ -93,6 +94,32 @@
       </div>
     </div>
 
+    <div id="password_container_background" hidden>
+
+      <div id="enable_password_container" hidden>
+        <div id='password_modal_header'>
+          <div>Lock RYS settings with a password.</div>
+        </div>
+
+        <div id='password-entries'>
+          <a>Enter Password</a>
+          <input id="password-input-1" type='password'>
+          <a>Re-enter Password</a>
+          <input id="password-input-2" type='password'>
+        </div>
+
+        <div id='password-button'><button disabled>Confirm</button></div>
+      </div>
+
+      <div id='disable_password_container' hidden>
+        <a>Password protection is enabled.</a>
+        <a>To disable, re-enter below.</a>
+        <input id='disable-password-input' type='password'>
+        <button id='disable-password-button'>Remove Password</button>
+      </div>
+
+    </div>
+
     <div id="timer_container">
       <div>Menu Timer</div>
       <div></div>
@@ -105,6 +132,7 @@
     </div>
 
     <div id='settings-menu' class='hidden'>
+      <div id='settings-password'>Password</div>
       <div id='settings-schedule'>Schedule</div>
       <hr>
       <div id='import-settings'>Import settings</div>
@@ -194,6 +222,12 @@
         <p>Will be re-enabled on <span></span>.</p>
       </div>
       <div id="disabled_message_open_schedule">Edit schedule</div>
+    </div>
+
+    <div id="password_lock_container">
+      <a>Enter Password.</a>
+      <input id='unlock-password-input' type="password">
+      <button id='unlock-password-button'>Confirm</button>
     </div>
 
     <div id="main_container">

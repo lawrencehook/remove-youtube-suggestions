@@ -35,17 +35,17 @@ POWER_OPTIONS.forEach(o => {
 /**************
  * Scheduling *
  **************/
-const scheduleModalContainer = document.getElementById('schedule_container_background');
-const SCHEDULING_OPTION = document.getElementById('settings-schedule');
-const OPEN_SCHEDULE_OPTION = qs('#open-schedule');
-const RESUME_SCHEDULE_OPTION = qs('#resume-schedule');
-const scheduleToggleContainer = document.getElementById('enable-schedule');
-const scheduleToggle = scheduleToggleContainer.querySelector('svg');
-const SCHEDULE_TIMES = document.getElementById('schedule-times');
-const SCHEDULE_DAYS = document.getElementById('schedule-days');
-const SCHEDULE_DAYS_OPTIONS = qsa('div', SCHEDULE_DAYS);
-const TIME_PRESETS = qsa('#times-container .predefined-options a');
-const DAY_PRESETS = qsa('#days-container .predefined-options a');
+const scheduleModalContainer  = qs('#schedule_container_background');
+const SCHEDULING_OPTION       = qs('#settings-schedule');
+const OPEN_SCHEDULE_OPTION    = qs('#open-schedule');
+const RESUME_SCHEDULE_OPTION  = qs('#resume-schedule');
+const scheduleToggleContainer = qs('#enable-schedule');
+const scheduleToggle          = qs('svg', scheduleToggleContainer);
+const SCHEDULE_TIMES          = qs('#schedule-times');
+const SCHEDULE_DAYS           = qs('#schedule-days');
+const SCHEDULE_DAYS_OPTIONS   = qsa('div', SCHEDULE_DAYS);
+const TIME_PRESETS            = qsa('#times-container .predefined-options a');
+const DAY_PRESETS             = qsa('#days-container .predefined-options a');
 
 function updateTimes(times) {
   SCHEDULE_TIMES.value = times;
@@ -146,6 +146,107 @@ DAY_PRESETS.forEach(node => {
     updateDays(days);
   });
 });
+
+
+/************
+ * Password *
+ ************/
+const passwordModalContainer     = qs('#password_container_background');
+const ENABLE_PASSWORD_CONTAINER  = qs('#enable_password_container');
+const PASSWORD_OPTION            = qs('#settings-password');
+const PASSWORD_INPUT1            = qs('#password-input-1');
+const PASSWORD_INPUT2            = qs('#password-input-2');
+const PASSWORD_BUTTON            = qs('#password-button button');
+const UNLOCK_PASSWORD_INPUT      = qs('#unlock-password-input');
+const UNLOCK_PASSWORD_BUTTON     = qs('#unlock-password-button');
+const DISABLE_PASSWORD_CONTAINER = qs('#disable_password_container');
+const DISABLE_PASSWORD_INPUT     = qs('#disable-password-input');
+const DISABLE_PASSWORD_BUTTON    = qs('#disable-password-button');
+
+function closePasswordModal() {
+  passwordModalContainer.toggleAttribute('hidden', true);
+}
+passwordModalContainer.addEventListener('click', e => {
+  if (e.target !== passwordModalContainer) return;
+  closePasswordModal();
+});
+
+function openPasswordModal() {
+  passwordModalContainer.toggleAttribute('hidden', false);
+
+  PASSWORD_INPUT1.value = '';
+  PASSWORD_INPUT2.value = '';
+
+  // Get local data.
+  browser.storage.local.get(PASSWORD_SETTINGS, settings => {
+    const { password, hashed_password } = settings;
+    ENABLE_PASSWORD_CONTAINER.toggleAttribute('hidden', password);
+    DISABLE_PASSWORD_CONTAINER.toggleAttribute('hidden', !password);
+  });
+}
+PASSWORD_OPTION.addEventListener('click', e => {
+  openPasswordModal();
+});
+
+function lockWithPassword() {
+  HTML.removeAttribute('passwordEntered');
+}
+function unlockWithPassword() {
+  HTML.setAttribute('passwordEntered', 'true');
+}
+
+PASSWORD_INPUT2.addEventListener('input', e => {
+  const password = PASSWORD_INPUT1.value;
+  const reentry = PASSWORD_INPUT2.value;
+  const matching = password !== '' && password === reentry;
+  PASSWORD_BUTTON.toggleAttribute('disabled', !matching);
+});
+
+PASSWORD_BUTTON.addEventListener('click', e => {
+  const password = PASSWORD_INPUT1.value;
+  const reentry = PASSWORD_INPUT2.value;
+  const matching = password !== '' && password === reentry;
+  if (!matching) return;
+
+  // Set password.
+  const hashed = md5(password);
+  updateSetting('password', true, { manual: true });
+  updateSetting('hashed_password', hashed, { manual: true });
+  lockWithPassword();
+  closePasswordModal();
+});
+
+UNLOCK_PASSWORD_BUTTON.addEventListener('click', e => {
+  const hashedInput = md5(UNLOCK_PASSWORD_INPUT.value);
+  const hashedPassword = HTML.getAttribute('hashed_password');
+  const matching = hashedInput === hashedPassword;
+
+  if (!matching) {
+    displayStatus('Wrong password');
+  } else {
+    displayStatus('Unlocked');
+    unlockWithPassword();
+  }
+});
+
+DISABLE_PASSWORD_BUTTON.addEventListener('click', e => {
+  const password = DISABLE_PASSWORD_INPUT.value;
+  const hashedInput = md5(password);
+  const hashedPassword = HTML.getAttribute('hashed_password');
+  const matching = hashedInput === hashedPassword;
+
+  if (!matching) {
+    displayStatus('Wrong password');
+    return;
+  }
+
+  // Disable password settings.
+  updateSetting('password', false, { manual: true });
+  updateSetting('hashed_password', '', { manual: true });
+  closePasswordModal();
+  displayStatus('Password disabled');
+});
+
 
 // Logging toggle
 const LOG_ENABLE = document.getElementById('log-enable');
