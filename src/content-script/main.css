@@ -20,6 +20,7 @@ html[global_enable="true"][remove_homepage="true"] ytd-browse[page-subtype="home
 html[global_enable="true"][remove_sidebar="true"] #secondary > div.circle,
 html[global_enable="true"][remove_sidebar="true"] #related,
 html[global_enable="true"][remove_end_of_video="true"] .html5-endscreen,
+html[global_enable="true"][remove_end_of_video="true"] .ytp-fullscreen-grid-stills-container,
 
 /* Left Bar Navigation */
 html[global_enable="true"][remove_left_nav_bar="true"] tp-yt-app-drawer#guide,
