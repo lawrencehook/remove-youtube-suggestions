@@ -175,16 +175,16 @@ const SECTIONS = [
     tags: "Left Navbar",
     options: [
       {
-        name: "Hide section - You/Library",
-        id: "remove_quick_links_section",
-        defaultValue: false,
-        effects: { true: { only_show_playlists: false }}
-      },
-      {
         name: "Hide section - Subscriptions",
         id: "remove_sub_section",
         defaultValue: false,
         effects: { false: { only_show_playlists: false }}
+      },
+      {
+        name: "Hide section - You/Library",
+        id: "remove_quick_links_section",
+        defaultValue: false,
+        effects: { true: { only_show_playlists: false }}
       },
       {
         name: "Hide section - Explore",
