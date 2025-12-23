@@ -43,12 +43,12 @@ html[global_enable="true"][remove_shorts_link="true"] ytd-mini-guide-entry-rende
 html[global_enable="true"][remove_subscriptions_link="true"] a[href="/feed/subscriptions"],
 
 /* Left Bar Navigation Sections */
-html[global_enable="true"][remove_sub_section="true"]      		ytd-guide-section-renderer.style-scope:nth-of-type(2),
-html[global_enable="true"][remove_quick_links_section="true"] 	ytd-guide-section-renderer.style-scope:nth-of-type(3),
-html[global_enable="true"][remove_explore_section="true"]  		ytd-guide-section-renderer.style-scope:nth-of-type(4),
-html[global_enable="true"][remove_more_section="true"]     		ytd-guide-section-renderer.style-scope:nth-of-type(5),
-html[global_enable="true"][remove_settings_section="true"] 		ytd-guide-section-renderer.style-scope:nth-of-type(6),
-html[global_enable="true"][remove_footer_section="true"]   		#guide-renderer > div#footer,
+html[global_enable="true"][remove_sub_section="true"]         ytd-guide-section-renderer.style-scope:nth-of-type(2),
+html[global_enable="true"][remove_quick_links_section="true"] ytd-guide-section-renderer.style-scope:nth-of-type(3),
+html[global_enable="true"][remove_explore_section="true"]     ytd-guide-section-renderer.style-scope:nth-of-type(4),
+html[global_enable="true"][remove_more_section="true"]        ytd-guide-section-renderer.style-scope:nth-of-type(5),
+html[global_enable="true"][remove_settings_section="true"]    ytd-guide-section-renderer.style-scope:nth-of-type(6),
+html[global_enable="true"][remove_footer_section="true"]      #guide-renderer > div#footer,
 
 
 /* Homepage */
