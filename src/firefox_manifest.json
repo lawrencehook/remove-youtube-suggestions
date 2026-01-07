@@ -29,7 +29,9 @@
       ],
       "css": ["/content-script/main.css"],
       "all_frames": true,
-      "matches": ["*://*.youtube.com/*"],
+      "matches": [
+        "*://www.youtube.com/*",
+        "*://m.youtube.com/*"],
       "run_at": "document_start"
     }
   ],
@@ -51,6 +53,7 @@
   },
   "permissions": [
     "storage",
-    "*://*.youtube.com/*"
+    "*://www.youtube.com/*",
+    "*://m.youtube.com/*"
   ]
 }
