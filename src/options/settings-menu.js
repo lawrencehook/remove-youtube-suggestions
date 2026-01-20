@@ -414,6 +414,26 @@ const upgradeCancelButton = qs('#upgrade-cancel-button');
 
 let currentPollAbortController = null;
 let selectedPlan = 'yearly'; // Default to yearly
+let awaitingUpgrade = false;
+
+async function refreshLicense(force = false) {
+  const signedIn = await Auth.isSignedIn();
+  if (!signedIn) return;
+
+  const licenseData = await License.checkLicense(force);
+  updatePremiumUI(licenseData);
+  if (licenseData.isPremium) {
+    awaitingUpgrade = false;
+  }
+}
+
+function handleVisibilityRefresh() {
+  if (!awaitingUpgrade || document.hidden) return;
+  refreshLicense(true);
+}
+
+document.addEventListener('visibilitychange', handleVisibilityRefresh);
+window.addEventListener('focus', handleVisibilityRefresh);
 
 // Initialize account state on load
 async function initAccountState() {
@@ -421,7 +441,7 @@ async function initAccountState() {
   if (signedIn) {
     ACCOUNT_OPTION.textContent = 'Account';
     // Check license in background
-    License.checkLicense().then(updatePremiumUI);
+    refreshLicense(false);
   } else {
     ACCOUNT_OPTION.textContent = 'Sign In';
   }
@@ -550,7 +570,7 @@ signinRetryButton.addEventListener('click', () => {
 // Account modal
 async function openAccountModal() {
   const email = await Auth.getUserEmail();
-  const licenseData = await License.checkLicense();
+  const licenseData = await License.checkLicense(awaitingUpgrade);
   if (licenseData.signedOut) {
     updatePremiumUI(licenseData);
     closeAccountModal();
@@ -652,6 +672,7 @@ upgradeCheckoutButton.addEventListener('click', async () => {
     window.open(checkoutUrl, '_blank');
     closeUpgradeModal();
     recordEvent('Checkout Started', { plan: selectedPlan });
+    awaitingUpgrade = true;
   } catch (err) {
     displayStatus(err.message);
   } finally {
