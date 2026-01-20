@@ -480,3 +480,223 @@ html[foo=bar] {
   flex-direction: column;
   gap: 3px;
 }
+
+
+/* Sign-in Modal */
+#signin_container_background,
+#account_container_background,
+#upgrade_container_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+}
+
+#signin_container,
+#account_container,
+#upgrade_container {
+  height: fit-content;
+  width: min(90vw, 400px);
+  margin-top: calc(1.2 * var(--header-height));
+  margin-right: auto;
+  margin-left: auto;
+  padding: 25px;
+
+  text-align: center;
+
+  background-color: var(--body-background-color);
+  color: var(--body-color);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
+  box-sizing: border-box;
+
+  border: 1px solid var(--box-shadow-color);
+  border-radius: 8px;
+
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#signin_header,
+#account_header,
+#upgrade_header {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#signin_email_form,
+#signin_waiting,
+#signin_error {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+#signin-email-input {
+  width: 100%;
+  max-width: 280px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--box-shadow-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#signin_container button,
+#account_container button,
+#upgrade_container button {
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--blue-color);
+  color: white;
+}
+
+#signin_container button:hover,
+#account_container button:hover,
+#upgrade_container button:hover {
+  opacity: 0.9;
+}
+
+#signin-cancel-button,
+#upgrade-cancel-button {
+  background-color: transparent !important;
+  color: var(--body-color) !important;
+  border: 1px solid var(--box-shadow-color) !important;
+}
+
+#account-signout-button {
+  background-color: transparent !important;
+  color: var(--body-color) !important;
+  border: 1px solid var(--box-shadow-color) !important;
+}
+
+#signin-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--box-shadow-color);
+  border-top-color: var(--blue-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#signin-waiting-email {
+  font-weight: bold;
+  word-break: break-all;
+}
+
+#signin-error-message {
+  color: var(--red-color);
+}
+
+/* Account Modal */
+#account_info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#account-email {
+  font-weight: bold;
+  word-break: break-all;
+}
+
+#account_premium_status {
+  padding: 10px 15px;
+  border-radius: 4px;
+  background-color: var(--light-blue);
+}
+
+#account_actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+#account_actions button {
+  width: 100%;
+}
+
+/* Upgrade Modal */
+#upgrade_plans {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+}
+
+.upgrade-plan {
+  flex: 1;
+  padding: 15px;
+  border: 2px solid var(--box-shadow-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.upgrade-plan:hover,
+.upgrade-plan[selected] {
+  border-color: var(--blue-color);
+}
+
+.upgrade-plan[selected] {
+  background-color: var(--light-blue);
+}
+
+.plan-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.plan-price {
+  font-size: 1.1rem;
+}
+
+.plan-savings {
+  font-size: 0.85rem;
+  color: var(--green-color, #4CAF50);
+  margin-top: 5px;
+}
+
+#upgrade-checkout-button {
+  width: 100%;
+}
+
+/* Premium lock icon for options */
+html:not([is_premium='true']) .option[data-premium='true'] {
+  opacity: 0.6;
+  position: relative;
+}
+
+html:not([is_premium='true']) .option[data-premium='true']::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Premium options unlocked */
+html[is_premium='true'] .option[data-premium='true'] {
+  opacity: 1;
+}

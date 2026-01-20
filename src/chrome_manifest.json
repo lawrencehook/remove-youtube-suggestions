@@ -50,6 +50,7 @@
     "storage"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "https://rys.lawrencehook.com/*"
   ]
 }

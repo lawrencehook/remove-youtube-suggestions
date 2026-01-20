@@ -74,7 +74,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     label.setAttribute('href', sectionNameToUrl(name));
 
     options.forEach(option => {
-      const { id, name, tags, defaultValue, effects, display } = option;
+      const { id, name, tags, defaultValue, effects, display, premium } = option;
       if (display === false) return;
 
       const optionNode = TEMPLATE_OPTION.cloneNode(true);
@@ -86,6 +86,11 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       const optionLabel = optionNode.querySelector('.option_label');
       optionLabel.innerText = name;
 
+      // Mark premium options
+      if (premium) {
+        optionNode.setAttribute('data-premium', 'true');
+      }
+
       const svg = optionNode.querySelector('svg');
       const value = id in SETTING_VALUES ? SETTING_VALUES[id] : defaultValue;
       HTML.setAttribute(id, value);
@@ -93,6 +98,17 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       svg.toggleAttribute('active', value);
 
       optionNode.addEventListener('click', e => {
+        // Check if premium-locked
+        if (premium && HTML.getAttribute('is_premium') !== 'true') {
+          // Open upgrade modal if available
+          if (typeof openUpgradeModal === 'function') {
+            openUpgradeModal();
+          } else {
+            displayStatus('Premium feature - Sign in to upgrade');
+          }
+          return;
+        }
+
         const value = svg.toggleAttribute('active');
         updateSetting(id, value, { manual: true });
 

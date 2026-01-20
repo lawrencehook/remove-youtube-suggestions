@@ -376,3 +376,285 @@ function settingsStrToObj(settingsStr) {
 
   return obj;
 }
+
+
+/***************
+ * Account/Premium
+ ***************/
+const ACCOUNT_OPTION = qs('#settings-account');
+const DONATE_LINK = qs('#settings-donate');
+const DONATE_URL = 'https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=';
+
+// Sign-in modal elements
+const signinModalContainer = qs('#signin_container_background');
+const signinEmailForm = qs('#signin_email_form');
+const signinEmailInput = qs('#signin-email-input');
+const signinSendButton = qs('#signin-send-button');
+const signinWaiting = qs('#signin_waiting');
+const signinWaitingEmail = qs('#signin-waiting-email');
+const signinStatus = qs('#signin-status');
+const signinCancelButton = qs('#signin-cancel-button');
+const signinError = qs('#signin_error');
+const signinErrorMessage = qs('#signin-error-message');
+const signinRetryButton = qs('#signin-retry-button');
+
+// Account modal elements
+const accountModalContainer = qs('#account_container_background');
+const accountEmail = qs('#account-email');
+const accountPremiumLabel = qs('#account-premium-label');
+const accountUpgradeButton = qs('#account-upgrade-button');
+const accountBillingButton = qs('#account-billing-button');
+const accountSignoutButton = qs('#account-signout-button');
+
+// Upgrade modal elements
+const upgradeModalContainer = qs('#upgrade_container_background');
+const upgradePlans = qsa('.upgrade-plan');
+const upgradeCheckoutButton = qs('#upgrade-checkout-button');
+const upgradeCancelButton = qs('#upgrade-cancel-button');
+
+let currentPollAbortController = null;
+let selectedPlan = 'yearly'; // Default to yearly
+
+// Initialize account state on load
+async function initAccountState() {
+  const signedIn = await Auth.isSignedIn();
+  if (signedIn) {
+    ACCOUNT_OPTION.textContent = 'Account';
+    // Check license in background
+    License.checkLicense().then(updatePremiumUI);
+  } else {
+    ACCOUNT_OPTION.textContent = 'Sign In';
+  }
+}
+initAccountState();
+
+function updatePremiumUI(licenseData) {
+  if (licenseData && licenseData.signedOut) {
+    ACCOUNT_OPTION.textContent = 'Sign In';
+    HTML.setAttribute('is_premium', 'false');
+    if (DONATE_LINK) {
+      DONATE_LINK.textContent = 'Donate';
+      DONATE_LINK.setAttribute('href', DONATE_URL);
+      DONATE_LINK.style.cursor = '';
+    }
+    return;
+  }
+
+  if (licenseData && licenseData.isPremium) {
+    HTML.setAttribute('is_premium', 'true');
+    if (DONATE_LINK) {
+      DONATE_LINK.textContent = 'Premium';
+      DONATE_LINK.removeAttribute('href');
+      DONATE_LINK.style.cursor = 'default';
+    }
+  } else {
+    HTML.setAttribute('is_premium', 'false');
+    if (DONATE_LINK) {
+      DONATE_LINK.textContent = 'Donate';
+      DONATE_LINK.setAttribute('href', DONATE_URL);
+      DONATE_LINK.style.cursor = '';
+    }
+  }
+}
+
+// Account option click handler
+ACCOUNT_OPTION.addEventListener('click', async () => {
+  const signedIn = await Auth.isSignedIn();
+  if (signedIn) {
+    openAccountModal();
+  } else {
+    openSigninModal();
+  }
+});
+
+// Sign-in modal
+function openSigninModal() {
+  signinModalContainer.removeAttribute('hidden');
+  signinEmailForm.removeAttribute('hidden');
+  signinWaiting.setAttribute('hidden', '');
+  signinError.setAttribute('hidden', '');
+  signinEmailInput.value = '';
+  signinEmailInput.focus();
+}
+
+function closeSigninModal() {
+  signinModalContainer.setAttribute('hidden', '');
+  if (currentPollAbortController) {
+    currentPollAbortController.abort();
+    currentPollAbortController = null;
+  }
+}
+
+signinModalContainer.addEventListener('click', e => {
+  if (e.target === signinModalContainer) closeSigninModal();
+});
+
+signinSendButton.addEventListener('click', async () => {
+  const email = signinEmailInput.value.trim();
+  if (!email || !email.includes('@')) {
+    displayStatus('Please enter a valid email');
+    return;
+  }
+
+  signinSendButton.disabled = true;
+  try {
+    const requestId = await Auth.sendMagicLink(email);
+
+    // Show waiting state
+    signinEmailForm.setAttribute('hidden', '');
+    signinWaiting.removeAttribute('hidden');
+    signinWaitingEmail.textContent = email;
+
+    // Start polling
+    currentPollAbortController = new AbortController();
+    const result = await Auth.pollForVerification(requestId, ({ elapsed }) => {
+      const totalSeconds = Math.floor(PREMIUM_CONFIG.POLL_TIMEOUT_MS / 1000);
+      const remaining = Math.max(0, totalSeconds - elapsed);
+      const mins = Math.floor(remaining / 60);
+      const secs = remaining % 60;
+      signinStatus.textContent = `Waiting for verification... ${mins}:${secs.toString().padStart(2, '0')}`;
+    }, { signal: currentPollAbortController.signal });
+
+    if (result && result.canceled) {
+      return;
+    }
+
+    // Success
+    displayStatus('Signed in successfully');
+    closeSigninModal();
+    ACCOUNT_OPTION.textContent = 'Account';
+
+    // Check license
+    const licenseData = await License.checkLicense(true);
+    updatePremiumUI(licenseData);
+
+    recordEvent('Sign In Success');
+  } catch (err) {
+    signinWaiting.setAttribute('hidden', '');
+    signinError.removeAttribute('hidden');
+    signinErrorMessage.textContent = err.message;
+    recordEvent('Sign In Error', { error: err.message });
+  } finally {
+    signinSendButton.disabled = false;
+  }
+});
+
+signinCancelButton.addEventListener('click', closeSigninModal);
+
+signinRetryButton.addEventListener('click', () => {
+  signinError.setAttribute('hidden', '');
+  signinEmailForm.removeAttribute('hidden');
+  signinEmailInput.focus();
+});
+
+// Account modal
+async function openAccountModal() {
+  const email = await Auth.getUserEmail();
+  const licenseData = await License.checkLicense();
+  if (licenseData.signedOut) {
+    updatePremiumUI(licenseData);
+    closeAccountModal();
+    openSigninModal();
+    displayStatus('Session expired. Please sign in again.');
+    return;
+  }
+
+  accountEmail.textContent = email || 'Unknown';
+
+  if (licenseData.isPremium) {
+    if (licenseData.source === 'grandfathered') {
+      accountPremiumLabel.textContent = 'Premium (Lifetime - Thank you for your donation!)';
+    } else {
+      accountPremiumLabel.textContent = 'Premium Active';
+    }
+    accountUpgradeButton.setAttribute('hidden', '');
+    accountBillingButton.removeAttribute('hidden');
+  } else {
+    accountPremiumLabel.textContent = 'Free';
+    accountUpgradeButton.removeAttribute('hidden');
+    accountBillingButton.setAttribute('hidden', '');
+  }
+
+  accountModalContainer.removeAttribute('hidden');
+}
+
+function closeAccountModal() {
+  accountModalContainer.setAttribute('hidden', '');
+}
+
+accountModalContainer.addEventListener('click', e => {
+  if (e.target === accountModalContainer) closeAccountModal();
+});
+
+accountSignoutButton.addEventListener('click', async () => {
+  await Auth.signOut();
+  ACCOUNT_OPTION.textContent = 'Sign In';
+  HTML.setAttribute('is_premium', 'false');
+  if (DONATE_LINK) {
+    DONATE_LINK.textContent = 'Donate';
+    DONATE_LINK.setAttribute('href', DONATE_URL);
+    DONATE_LINK.style.cursor = '';
+  }
+  closeAccountModal();
+  displayStatus('Signed out');
+  recordEvent('Sign Out');
+});
+
+accountUpgradeButton.addEventListener('click', () => {
+  closeAccountModal();
+  openUpgradeModal();
+});
+
+accountBillingButton.addEventListener('click', async () => {
+  try {
+    accountBillingButton.disabled = true;
+    const portalUrl = await License.createBillingPortalSession();
+    window.open(portalUrl, '_blank');
+    closeAccountModal();
+  } catch (err) {
+    displayStatus(err.message);
+  } finally {
+    accountBillingButton.disabled = false;
+  }
+});
+
+// Upgrade modal
+function openUpgradeModal() {
+  upgradeModalContainer.removeAttribute('hidden');
+  selectPlan('yearly');
+}
+
+function closeUpgradeModal() {
+  upgradeModalContainer.setAttribute('hidden', '');
+}
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  upgradePlans.forEach(el => {
+    el.toggleAttribute('selected', el.dataset.plan === plan);
+  });
+}
+
+upgradeModalContainer.addEventListener('click', e => {
+  if (e.target === upgradeModalContainer) closeUpgradeModal();
+});
+
+upgradePlans.forEach(el => {
+  el.addEventListener('click', () => selectPlan(el.dataset.plan));
+});
+
+upgradeCancelButton.addEventListener('click', closeUpgradeModal);
+
+upgradeCheckoutButton.addEventListener('click', async () => {
+  try {
+    upgradeCheckoutButton.disabled = true;
+    const checkoutUrl = await License.createCheckoutSession(selectedPlan);
+    window.open(checkoutUrl, '_blank');
+    closeUpgradeModal();
+    recordEvent('Checkout Started', { plan: selectedPlan });
+  } catch (err) {
+    displayStatus(err.message);
+  } finally {
+    upgradeCheckoutButton.disabled = false;
+  }
+});

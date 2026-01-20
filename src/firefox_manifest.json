@@ -51,6 +51,7 @@
   },
   "permissions": [
     "storage",
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "https://rys.lawrencehook.com/*"
   ]
 }
