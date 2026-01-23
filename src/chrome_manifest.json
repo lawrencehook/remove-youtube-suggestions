@@ -51,6 +51,6 @@
   ],
   "host_permissions": [
     "*://*.youtube.com/*",
-    "https://rys.lawrencehook.com/*"
+    "https://server.lawrencehook.com/*"
   ]
 }

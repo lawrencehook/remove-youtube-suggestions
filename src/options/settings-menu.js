@@ -320,7 +320,7 @@ function closeImportModal() {
 
 function updateSettings(settings) {
   Object.entries(settings).forEach(([ id, value ]) => {
-    updateSetting(id, value, false);
+    updateSetting(id, value, { write: false });
   });
 }
 
