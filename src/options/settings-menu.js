@@ -444,6 +444,11 @@ async function initAccountState() {
     refreshLicense(false);
   } else {
     ACCOUNT_OPTION.textContent = 'Sign In';
+    // Auto-open sign-in modal if ?signin=1 param is present
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('signin') === '1') {
+      openSigninModal();
+    }
   }
 }
 initAccountState();
@@ -483,7 +488,15 @@ ACCOUNT_OPTION.addEventListener('click', async () => {
   if (signedIn) {
     openAccountModal();
   } else {
-    openSigninModal();
+    // Always open in new tab for sign-in
+    // (prevents popup closing and killing the polling loop)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('signin') === '1') {
+      // Already in the sign-in tab, just open modal
+      openSigninModal();
+    } else {
+      browser.tabs.create({ url: browser.runtime.getURL('/options/main.html?signin=1') });
+    }
   }
 });
 
