@@ -1,7 +1,7 @@
 // Premium server configuration
 const PREMIUM_CONFIG = {
   // Server URL - update for production
-  SERVER_URL: 'https://rys.lawrencehook.com',
+  SERVER_URL: 'https://server.lawrencehook.com/rys',
 
   // Polling configuration
   POLL_INTERVAL_MS: 2000,
