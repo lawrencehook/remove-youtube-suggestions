@@ -15,6 +15,7 @@ router.post('/create', requireAuth, async (req, res) => {
 
     const session = await createCheckoutSession(req.userEmail, plan);
 
+    console.log(`[checkout] Session created for ${req.userEmail}, plan: ${plan}`);
     res.json({ checkout_url: session.url });
   } catch (err) {
     console.error('Error creating checkout session:', err);

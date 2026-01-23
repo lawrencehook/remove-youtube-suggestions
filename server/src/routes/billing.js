@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/portal', requireAuth, async (req, res) => {
   try {
     const session = await createBillingPortalSession(req.userEmail);
+    console.log(`[billing] Portal session created for ${req.userEmail}`);
     res.json({ url: session.url });
   } catch (err) {
     console.error('Error creating billing portal session:', err);

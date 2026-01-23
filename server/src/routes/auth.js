@@ -46,6 +46,7 @@ router.post('/send-magic-link', async (req, res) => {
       throw err;
     }
 
+    console.log(`[auth] Magic link sent to ${email}`);
     res.json({ request_id: requestId });
   } catch (err) {
     console.error('Error sending magic link:', err);
@@ -80,6 +81,7 @@ router.get('/verify', async (req, res) => {
       status: 'verified',
       session_token: sessionToken,
     });
+    console.log(`[auth] Email verified: ${authRequest.email}`);
   }
 
   res.send(renderSuccessPage());

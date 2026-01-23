@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const config = require('./config');
 const storage = require('./storage');
 
@@ -50,6 +51,9 @@ app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
 
 // JSON parsing for all other routes
 app.use(express.json());
+
+// Request logging
+app.use(morgan(':method :url :status :response-time ms'));
 
 // Health check
 app.get('/health', (req, res) => {

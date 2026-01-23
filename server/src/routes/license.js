@@ -12,6 +12,7 @@ router.get('/check', requireAuth, async (req, res) => {
 
     // First check if user is grandfathered (past donor)
     if (storage.isGrandfathered(email)) {
+      console.log(`[license] ${email} -> premium (grandfathered)`);
       return res.json({
         premium: true,
         expires_at: null, // Lifetime access
@@ -22,6 +23,7 @@ router.get('/check', requireAuth, async (req, res) => {
     // Check Stripe for active subscription
     const status = await checkPremiumStatus(email);
 
+    console.log(`[license] ${email} -> ${status.premium ? 'premium' : 'free'}`);
     res.json({
       premium: status.premium,
       expires_at: status.expiresAt,
