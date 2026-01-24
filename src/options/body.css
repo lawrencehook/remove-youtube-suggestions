@@ -482,7 +482,11 @@ html[foo=bar] {
 }
 
 
-/* Sign-in Modal */
+/*************************************
+ * SIGN-IN / ACCOUNT / UPGRADE MODALS
+ * (Premium/Monetization Feature)
+ *************************************/
+
 #signin_container_background,
 #account_container_background,
 #upgrade_container_background {
@@ -493,42 +497,72 @@ html[foo=bar] {
   height: 100vh;
   z-index: 100;
 
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 
   display: flex;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 #signin_container,
 #account_container,
 #upgrade_container {
   height: fit-content;
-  width: min(90vw, 400px);
-  margin-top: calc(1.2 * var(--header-height));
-  margin-right: auto;
-  margin-left: auto;
-  padding: 25px;
+  max-height: calc(100vh - 20px);
+  width: min(90vw, 380px);
+  margin: 10px auto;
+  padding: 28px 32px;
+  overflow-y: auto;
 
   text-align: center;
 
   background-color: var(--body-background-color);
   color: var(--body-color);
-  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 
   border: 1px solid var(--box-shadow-color);
-  border-radius: 8px;
+  border-radius: 12px;
 
   display: flex;
-  gap: 20px;
+  gap: 24px;
   flex-direction: column;
   align-items: center;
+
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Modal Logo/Icon */
+.modal-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: -8px;
 }
 
 #signin_header,
 #account_header,
 #upgrade_header {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--label-color);
 }
 
 #signin_email_form,
@@ -537,58 +571,113 @@ html[foo=bar] {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
   align-items: center;
+}
+
+#signin_email_form p,
+#signin_waiting p:first-child {
+  font-size: 0.9rem;
+  color: var(--body-color);
+  opacity: 0.8;
+  margin: 0;
 }
 
 #signin-email-input {
   width: 100%;
-  max-width: 280px;
-  padding: 10px 12px;
-  font-size: 1rem;
-  border: 1px solid var(--box-shadow-color);
-  border-radius: 4px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--box-shadow-color);
+  border-radius: 8px;
   box-sizing: border-box;
+  background-color: var(--body-background-color);
+  color: var(--body-color);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#signin-email-input:focus {
+  border-color: var(--blue-color);
+  box-shadow: 0 0 0 3px rgba(6, 0, 251, 0.1);
+  outline: none;
+}
+
+#signin-email-input::placeholder {
+  color: var(--body-color);
+  opacity: 0.4;
 }
 
 #signin_container button,
 #account_container button,
 #upgrade_container button {
-  padding: 10px 20px;
-  font-size: 0.95rem;
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  font-weight: 500;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   background-color: var(--blue-color);
   color: white;
+  transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
 }
 
 #signin_container button:hover,
 #account_container button:hover,
 #upgrade_container button:hover {
-  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(6, 0, 251, 0.25);
+}
+
+#signin_container button:active,
+#account_container button:active,
+#upgrade_container button:active {
+  transform: scale(0.98);
+}
+
+#signin_container button:disabled,
+#account_container button:disabled,
+#upgrade_container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#signin-send-button,
+#upgrade-checkout-button {
+  width: 100%;
 }
 
 #signin-cancel-button,
 #upgrade-cancel-button {
   background-color: transparent !important;
   color: var(--body-color) !important;
-  border: 1px solid var(--box-shadow-color) !important;
+  border: 1.5px solid var(--box-shadow-color) !important;
+  box-shadow: none !important;
+}
+
+#signin-cancel-button:hover,
+#upgrade-cancel-button:hover {
+  background-color: var(--box-shadow-color) !important;
+  box-shadow: none !important;
 }
 
 #account-signout-button {
   background-color: transparent !important;
   color: var(--body-color) !important;
-  border: 1px solid var(--box-shadow-color) !important;
+  border: 1.5px solid var(--box-shadow-color) !important;
+  box-shadow: none !important;
+}
+
+#account-signout-button:hover {
+  background-color: var(--box-shadow-color) !important;
+  box-shadow: none !important;
 }
 
 #signin-spinner {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: 3px solid var(--box-shadow-color);
   border-top-color: var(--blue-color);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -596,30 +685,99 @@ html[foo=bar] {
 }
 
 #signin-waiting-email {
-  font-weight: bold;
+  font-weight: 600;
   word-break: break-all;
+  color: var(--label-color);
+  font-size: 0.95rem;
+}
+
+#signin-status {
+  font-size: 0.85rem;
+  color: var(--body-color);
+  opacity: 0.7;
 }
 
 #signin-error-message {
   color: var(--red-color);
+  font-weight: 500;
 }
 
 /* Account Modal */
 #account_info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
+}
+
+#account_info p:first-child {
+  font-size: 0.85rem;
+  color: var(--body-color);
+  opacity: 0.7;
+  margin: 0;
 }
 
 #account-email {
-  font-weight: bold;
+  font-weight: 600;
   word-break: break-all;
+  font-size: 1rem;
+  color: var(--label-color);
 }
 
 #account_premium_status {
-  padding: 10px 15px;
-  border-radius: 4px;
-  background-color: var(--light-blue);
+  padding: 12px 20px;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Free tier styling */
+#account_premium_status[data-status="free"] {
+  background: linear-gradient(135deg,
+    var(--box-shadow-color) 0%,
+    rgba(127, 127, 127, 0.3) 100%);
+  border: 1px solid var(--box-shadow-color);
+}
+
+/* Premium tier styling */
+#account_premium_status[data-status="premium"] {
+  background: linear-gradient(135deg,
+    var(--blue-color) 0%,
+    var(--light-blue) 100%);
+  border: 1px solid var(--blue-color);
+}
+
+#account_premium_status[data-status="premium"] #account-premium-label {
+  color: white;
+  font-weight: 600;
+}
+
+/* Grandfathered (lifetime) styling */
+#account_premium_status[data-status="grandfathered"] {
+  background: linear-gradient(135deg,
+    #FFD700 0%,
+    #FFA500 100%);
+  border: 1px solid #FFD700;
+}
+
+#account_premium_status[data-status="grandfathered"] #account-premium-label {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+#account-premium-label {
+  font-size: 0.9rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Premium badge icon */
+#account_premium_status[data-status="premium"] #account-premium-label::before,
+#account_premium_status[data-status="grandfathered"] #account-premium-label::before {
+  content: '★';
+  font-size: 1rem;
 }
 
 #account_actions {
@@ -633,47 +791,93 @@ html[foo=bar] {
   width: 100%;
 }
 
+#account-upgrade-button {
+  background: linear-gradient(135deg, var(--blue-color) 0%, var(--light-blue) 100%);
+}
+
 /* Upgrade Modal */
+#upgrade_container {
+  width: min(90vw, 420px);
+}
+
+#upgrade_description {
+  font-size: 0.9rem;
+  color: var(--body-color);
+  opacity: 0.8;
+  margin: -8px 0 0 0;
+}
+
 #upgrade_plans {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   width: 100%;
 }
 
 .upgrade-plan {
   flex: 1;
-  padding: 15px;
+  padding: 20px 16px;
   border: 2px solid var(--box-shadow-color);
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.upgrade-plan:hover,
+.upgrade-plan:hover {
+  border-color: var(--light-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 .upgrade-plan[selected] {
   border-color: var(--blue-color);
-}
-
-.upgrade-plan[selected] {
-  background-color: var(--light-blue);
+  background: linear-gradient(180deg,
+    rgba(6, 0, 251, 0.03) 0%,
+    rgba(6, 0, 251, 0.08) 100%);
+  box-shadow: 0 0 0 3px rgba(6, 0, 251, 0.1);
 }
 
 .plan-name {
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--label-color);
 }
 
 .plan-price {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--label-color);
+}
+
+.plan-price-period {
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.7;
 }
 
 .plan-savings {
-  font-size: 0.85rem;
-  color: var(--green-color, #4CAF50);
-  margin-top: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #22c55e;
+  background-color: rgba(34, 197, 94, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: 4px;
 }
 
 #upgrade-checkout-button {
+  width: 100%;
+  background: linear-gradient(135deg, var(--blue-color) 0%, var(--light-blue) 100%);
+}
+
+#upgrade_buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
 }
 
@@ -700,3 +904,28 @@ html:not([is_premium='true']) .option[data-premium='true']::after {
 html[is_premium='true'] .option[data-premium='true'] {
   opacity: 1;
 }
+
+/* Modal icon color support for dark mode */
+html[dark_mode='true'] .modal-icon circle,
+html[dark_mode='true'] .modal-icon path {
+  stroke: var(--light-blue);
+  fill: var(--light-blue);
+}
+
+html[dark_mode='true'] .modal-icon circle[fill="none"] {
+  fill: none;
+}
+
+/* Adjust gradients for dark mode */
+html[dark_mode='true'] #account_premium_status[data-status="premium"] {
+  background: linear-gradient(135deg,
+    var(--light-blue) 0%,
+    var(--blue-color) 100%);
+}
+
+html[dark_mode='true'] .upgrade-plan[selected] {
+  background: linear-gradient(180deg,
+    rgba(117, 102, 204, 0.15) 0%,
+    rgba(117, 102, 204, 0.25) 100%);
+}
+

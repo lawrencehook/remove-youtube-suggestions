@@ -11,12 +11,12 @@ async function sendMagicLinkEmail(email, magicLinkUrl) {
     },
     Message: {
       Subject: {
-        Data: 'Sign in to Remove YouTube Suggestions',
+        Data: 'Sign in to RYS',
         Charset: 'UTF-8',
       },
       Body: {
         Text: {
-          Data: `Click the link below to sign in to Remove YouTube Suggestions:\n\n${magicLinkUrl}\n\nThis link will expire in 15 minutes.\n\nIf you didn't request this email, you can safely ignore it.`,
+          Data: `Here's your sign-in link for RYS:\n\n${magicLinkUrl}\n\nLink expires in 15 minutes. If you didn't request this, just ignore it.\n\n— Lawrence`,
           Charset: 'UTF-8',
         },
         Html: {
@@ -27,26 +27,21 @@ async function sendMagicLinkEmail(email, magicLinkUrl) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
-  <h2 style="color: #333;">Sign in to Remove YouTube Suggestions</h2>
-  <p style="color: #555; font-size: 16px; line-height: 1.5;">
-    Click the button below to sign in:
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; color: #333;">
+  <p style="font-size: 16px; line-height: 1.5; margin-bottom: 24px;">
+    Here's your sign-in link for RYS:
   </p>
-  <p style="margin: 30px 0;">
+  <p style="margin: 24px 0;">
     <a href="${magicLinkUrl}"
-       style="background-color: #ff0000; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; display: inline-block;">
+       style="background-color: #0600FB; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; display: inline-block;">
       Sign In
     </a>
   </p>
-  <p style="color: #888; font-size: 14px;">
-    This link will expire in 15 minutes.
+  <p style="color: #666; font-size: 14px;">
+    Link expires in 15 minutes. If you didn't request this, just ignore it.
   </p>
-  <p style="color: #888; font-size: 14px;">
-    If you didn't request this email, you can safely ignore it.
-  </p>
-  <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-  <p style="color: #aaa; font-size: 12px;">
-    Remove YouTube Suggestions - Take back control of your YouTube experience
+  <p style="color: #999; font-size: 13px; margin-top: 32px;">
+    — Lawrence
   </p>
 </body>
 </html>

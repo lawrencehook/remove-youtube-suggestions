@@ -496,6 +496,7 @@ ACCOUNT_OPTION.addEventListener('click', async () => {
       openSigninModal();
     } else {
       browser.tabs.create({ url: browser.runtime.getURL('/options/main.html?signin=1') });
+      window.close();
     }
   }
 });
@@ -520,6 +521,12 @@ function closeSigninModal() {
 
 signinModalContainer.addEventListener('click', e => {
   if (e.target === signinModalContainer) closeSigninModal();
+});
+
+signinEmailInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    signinSendButton.click();
+  }
 });
 
 signinSendButton.addEventListener('click', async () => {
@@ -581,6 +588,8 @@ signinRetryButton.addEventListener('click', () => {
 });
 
 // Account modal
+const accountPremiumStatus = qs('#account_premium_status');
+
 async function openAccountModal() {
   const email = await Auth.getUserEmail();
   const licenseData = await License.checkLicense(awaitingUpgrade);
@@ -596,14 +605,18 @@ async function openAccountModal() {
 
   if (licenseData.isPremium) {
     if (licenseData.source === 'grandfathered') {
-      accountPremiumLabel.textContent = 'Premium (Lifetime - Thank you for your donation!)';
+      accountPremiumLabel.textContent = 'Lifetime Premium';
+      accountPremiumStatus.setAttribute('data-status', 'grandfathered');
+      accountBillingButton.setAttribute('hidden', '');
     } else {
       accountPremiumLabel.textContent = 'Premium Active';
+      accountPremiumStatus.setAttribute('data-status', 'premium');
+      accountBillingButton.removeAttribute('hidden');
     }
     accountUpgradeButton.setAttribute('hidden', '');
-    accountBillingButton.removeAttribute('hidden');
   } else {
-    accountPremiumLabel.textContent = 'Free';
+    accountPremiumLabel.textContent = 'Free Plan';
+    accountPremiumStatus.setAttribute('data-status', 'free');
     accountUpgradeButton.removeAttribute('hidden');
     accountBillingButton.setAttribute('hidden', '');
   }
