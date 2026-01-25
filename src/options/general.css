@@ -2,9 +2,9 @@
   --header-height: 30px;
   --header-padding: 5px;
   --body-height: 400px;
-  --footer-height: 25px;
+  --footer-height: 28px;
 
-  --border-radius: 1px;
+  --border-radius: 4px;
 
   --red-color:  hsl(358 100% 49%);
   --blue-color: hsl(238 100% 49%);
@@ -70,7 +70,7 @@ body {
 }
 
 body, body * {
-  font-family: Helvetica;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
 
 .hidden {
