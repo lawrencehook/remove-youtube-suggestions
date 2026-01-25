@@ -16,16 +16,17 @@ html[dark_mode='false'] #header-light { display: none }
 
 #header {
   height: var(--header-height);
-  padding: var(--header-padding);
+  padding: var(--header-padding) 8px;
 
-  border-bottom: 1.5px solid var(--box-shadow-color);
+  border-bottom: 1px solid var(--box-shadow-color);
+  background-color: var(--body-background-color);
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
 
-  --icon-dim: 30px;
+  --icon-dim: 28px;
 }
 
 #header-logo-link {
@@ -47,15 +48,18 @@ html[dark_mode='false'] #header-light { display: none }
   margin-right: auto;
 }
 #search_bar input {
-  padding: 3px 10px;
-  font-size: 1rem;
+  padding: 4px 12px;
+  font-size: 0.9rem;
 
   background-color: var(--body-background-color);
 
   border: 1px solid var(--box-shadow-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0px 0px 0px 0px var(--box-shadow-color);
-
+  border-radius: 6px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+#search_bar input:focus {
+  border-color: var(--light-blue);
+  box-shadow: 0 0 0 2px rgba(117, 102, 204, 0.15);
 }
 
 #power-icon {
@@ -99,36 +103,39 @@ html[schedule='true'] #power-icon:hover #power-pop-up {
   max-width: var(--power-icon-dim);
 }
 #power-options {
-  font-size: 16px;
+  font-size: 14px;
 
   position: fixed;
   z-index: 10;
 
   top: calc(5px + var(--header-height) + 2 * var(--header-padding));
-  padding: 3px 1px;
+  padding: 6px;
 
   user-select: none;
   background-color: var(--body-background-color);
   color: var(--body-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0px 0px 6px 3px var(--box-shadow-color);
+  border-radius: 8px;
+  border: 1px solid var(--box-shadow-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
   display: flex;
   flex-direction: column;
 }
 #power-options hr {
-  width: 92%;
-  margin: 3px auto;
+  width: 100%;
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid var(--box-shadow-color);
 }
 #power-options > *:not(hr) {
-  border-radius: var(--border-radius);
-  margin: 1px 3px;
-  padding: 4px 6px;
+  border-radius: 6px;
+  padding: 6px 10px;
   cursor: default;
+  transition: background-color 0.15s ease;
 }
 #power-options > *:not(hr):hover,
 #power-options > *:not(hr):hover * {
-  background-color: #0600FB;
+  background-color: var(--blue-color);
   color: white !important;
 }
 #power-options a, #power-options span {
@@ -167,35 +174,38 @@ html[foo=bar]
   max-width: var(--icon-dim);
 }
 #settings-menu {
-  font-size: 16px;
+  font-size: 14px;
 
   position: fixed;
   z-index: 10;
 
   top: calc(5px + var(--header-height) + 2 * var(--header-padding));
-  padding: 3px 1px;
+  padding: 6px;
 
   user-select: none;
   background-color: var(--body-background-color);
   color: var(--body-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0px 0px 6px 3px var(--box-shadow-color);
+  border-radius: 8px;
+  border: 1px solid var(--box-shadow-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
   display: flex;
   flex-direction: column;
 }
 #settings-menu hr {
-  width: 92%;
-  margin: 3px auto;
+  width: 100%;
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid var(--box-shadow-color);
 }
 #settings-menu > *:not(hr) {
-  border-radius: var(--border-radius);
-  margin: 1px 3px;
-  padding: 4px 6px;
+  border-radius: 6px;
+  padding: 6px 10px;
   cursor: default;
+  transition: background-color 0.15s ease;
 }
 #settings-menu > *:not(hr):hover {
-  background-color: #0600FB;
+  background-color: var(--blue-color);
   color: white;
 }
 #settings-menu a {

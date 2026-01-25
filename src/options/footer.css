@@ -12,29 +12,33 @@ html[dark_mode='true'] #donate_button .footer-path  {
   position: relative;
   text-align: center;
   height: var(--footer-height);
+  padding: 0 8px;
 
-  border-top: 1.5px solid var(--box-shadow-color);
-  /*border: 1px groove gray;*/
+  border-top: 1px solid var(--box-shadow-color);
+  background-color: var(--body-background-color);
 
   display: flex;
   align-items: center;
-  /*justify-content: center;*/
+  gap: 4px;
 }
 
 #footer svg {
   width: 20px;
-  /*height: 90%;*/
   cursor: pointer;
 }
 
 #footer a {
   flex: 1;
-  flex-shrink: 1;
-  flex-grow: 1;
+  padding: 4px 8px;
+  border-radius: var(--border-radius);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
 }
 
 #footer a:hover {
- cursor: pointer;
+  cursor: pointer;
+  background-color: var(--box-shadow-color);
 }
 
 #donate_button:hover > svg > .footer-path {
