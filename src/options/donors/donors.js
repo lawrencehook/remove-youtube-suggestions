@@ -74,8 +74,8 @@ sendGetDonorsRequest().then(x => {
 
 			const appendDonorNode = name => {
 				const donorNode = templateDonor.cloneNode(true);
-				const pNode = donorNode.querySelector('p');
-				pNode.innerText = name;
+				const nameNode = donorNode.querySelector('.donor-name') || donorNode.querySelector('p');
+				nameNode.innerText = name;
 				donorList.appendChild(donorNode);
 			}
 
