@@ -99,3 +99,46 @@ input:focus {
 ::-webkit-scrollbar-thumb {
   background: var(--body-color);
 }
+
+/* Announcement Banner */
+#announcement_banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin: 8px;
+  background: var(--blue-color);
+  border-radius: var(--border-radius);
+  font-size: 13px;
+}
+
+#announcement_banner * {
+  color: #fff;
+}
+
+#announcement_banner span {
+  flex: 1;
+}
+
+#announcement_banner a {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+#announcement_banner a:hover {
+  opacity: 1;
+}
+
+#announcement_banner button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.7;
+  line-height: 1;
+}
+
+#announcement_banner button:hover {
+  opacity: 1;
+}
