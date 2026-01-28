@@ -412,7 +412,8 @@ const ANNOUNCEMENT_KEY = 'announcement_dismissed_premium_coming';
 function initAnnouncementBanner() {
   const banner = document.getElementById('announcement_banner');
   const dismissBtn = document.getElementById('dismiss_announcement');
-  if (!banner || !dismissBtn) return;
+  const closeBtn = document.getElementById('close_announcement');
+  if (!banner) return;
 
   browser.storage.local.get(ANNOUNCEMENT_KEY, result => {
     if (!result[ANNOUNCEMENT_KEY]) {
@@ -420,8 +421,12 @@ function initAnnouncementBanner() {
     }
   });
 
-  dismissBtn.addEventListener('click', () => {
+  dismissBtn?.addEventListener('click', () => {
     banner.setAttribute('hidden', '');
     browser.storage.local.set({ [ANNOUNCEMENT_KEY]: true });
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    banner.setAttribute('hidden', '');
   });
 }

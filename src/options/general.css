@@ -129,7 +129,18 @@ input:focus {
   opacity: 1;
 }
 
-#announcement_banner button {
+#dismiss_announcement {
+  cursor: pointer;
+  opacity: 0.7;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#dismiss_announcement:hover {
+  opacity: 1;
+}
+
+#close_announcement {
   background: none;
   border: none;
   font-size: 18px;
@@ -139,6 +150,6 @@ input:focus {
   line-height: 1;
 }
 
-#announcement_banner button:hover {
+#close_announcement:hover {
   opacity: 1;
 }
