@@ -20,6 +20,7 @@
     <script defer src="/shared/https.js"></script>
     <script defer src="/shared/analytics.js"></script>
     <script defer src="/shared/utils.js"></script>
+    <script defer src="/shared/banners.js"></script>
     <script defer src="/options/reload.js"></script>
     <script defer src="/options/main.js"></script>
     <script defer src="/options/settings-menu.js"></script>
@@ -230,12 +231,7 @@
       <button id='unlock-password-button'>Confirm</button>
     </div>
 
-    <div id="announcement_banner" hidden>
-      <span>Premium features coming soon.</span>
-      <a href="https://lawrencehook.com/rys/premium" target="_blank">Learn more</a>
-      <a id="dismiss_announcement">Don't show again</a>
-      <button id="close_announcement" aria-label="Close">&times;</button>
-    </div>
+    <div id="banner_container"></div>
 
     <div id="main_container">
 

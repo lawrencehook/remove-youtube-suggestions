@@ -191,61 +191,139 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 }
 
 
-/* Reveal suggestions button */
-.rys_reveal_button_container {
-	width: auto;
-	height: auto;
+/* Reveal suggestions box */
+.rys_reveal_box {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 14px 18px;
 	margin: auto;
+	margin-top: 15%;
+	background: var(--rys-primary);
+	border-radius: 12px;
+	font-size: 14px;
+	font-family: var(--rys-font);
+	z-index: 1000000;
+	position: relative;
+	width: fit-content;
+	box-shadow: 0 4px 16px var(--rys-shadow);
+}
+
+.rys_reveal_box * {
+	color: var(--rys-text);
+}
+
+.rys_reveal_header {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
+	width: 100%;
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--rys-separator);
 }
 
-.rys_reveal_button {
-	position: relative;
-	margin-top: 20%;
-	font-size: 20px;
-	padding: var(--yt-button-padding);
-
-	cursor: default;
-	z-index: 1000000;
-
-	color: var(--yt-spec-text-primary);
-	background-color: var(--yt-spec-base-background);
-	border: 3px solid var(--yt-spec-raised-background);
-	border-radius: var(--yt-button-border-radius);
+.rys_reveal_branding {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	opacity: 0.8;
 }
-.rys_reveal_button:hover {
-	background-color: var(--yt-spec-raised-background);
-}
-#close_reveal_button {
-	position: absolute;
-	top: 0;
-	right: 3px;
 
+.rys_reveal_logo {
+	width: 14px;
+	height: 14px;
+}
+
+.rys_reveal_brand {
+	font-weight: 600;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.rys_reveal_actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.rys_reveal_content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	gap: 24px;
+	white-space: nowrap;
+}
+
+.rys_reveal_message {
+	font-weight: 500;
+}
+
+.rys_reveal_show {
+	background: var(--rys-text);
+	color: var(--rys-primary) !important;
+	padding: 6px 16px;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 600;
 	cursor: pointer;
-	z-index: 1000001;
-	color: var(--yt-spec-text-primary);
-	font-size: 12px;
-}
-#close_reveal_button:hover {
+	text-decoration: none;
+	box-shadow: 0 2px 6px var(--rys-shadow);
 }
 
-html:not([global_enable="true"]) #rys_homepage_reveal_button,
-html:not([add_reveal_button="true"]) #rys_homepage_reveal_button,
-html:not([remove_homepage="true"]) #rys_homepage_reveal_button,
-html:not([on_homepage="true"]) #rys_homepage_reveal_button,
+.rys_reveal_show:hover {
+	background: #f5f5f5;
+}
 
-html:not([global_enable="true"]) #rys_sidebar_reveal_button,
-html:not([add_reveal_button="true"]) #rys_sidebar_reveal_button,
-html:not([remove_sidebar="true"]) #rys_sidebar_reveal_button,
-html:not([on_video="true"]) #rys_sidebar_reveal_button,
+.rys_reveal_dismiss {
+	cursor: pointer;
+	font-size: 11px;
+	white-space: nowrap;
+	opacity: 0.75;
+	text-decoration: none;
+	transition: opacity 0.15s ease;
+}
 
-html:not([global_enable="true"]) #rys_end_of_video_reveal_button,
-html:not([add_reveal_button="true"]) #rys_end_of_video_reveal_button,
-html:not([remove_end_of_video="true"]) #rys_end_of_video_reveal_button,
-html:not([on_video="true"]) #rys_end_of_video_reveal_button,
-#movie_player:not(.ended-mode) #rys_end_of_video_reveal_button,
+.rys_reveal_dismiss:hover {
+	opacity: 1;
+	text-decoration: underline;
+}
+
+.rys_reveal_close {
+	background: none;
+	border: none;
+	font-size: 11px;
+	cursor: pointer;
+	padding: 0;
+	opacity: 0.6;
+	line-height: 1;
+	color: var(--rys-text);
+	transition: opacity 0.15s ease;
+	display: flex;
+	align-items: center;
+}
+
+.rys_reveal_close:hover {
+	opacity: 1;
+}
+
+html:not([global_enable="true"]) #rys_homepage_reveal_box,
+html:not([add_reveal_homepage="true"]) #rys_homepage_reveal_box,
+html:not([remove_homepage="true"]) #rys_homepage_reveal_box,
+html:not([on_homepage="true"]) #rys_homepage_reveal_box,
+
+html:not([global_enable="true"]) #rys_sidebar_reveal_box,
+html:not([add_reveal_sidebar="true"]) #rys_sidebar_reveal_box,
+html:not([remove_sidebar="true"]) #rys_sidebar_reveal_box,
+html:not([on_video="true"]) #rys_sidebar_reveal_box,
+
+html:not([global_enable="true"]) #rys_end_of_video_reveal_box,
+html:not([add_reveal_end_of_video="true"]) #rys_end_of_video_reveal_box,
+html:not([remove_end_of_video="true"]) #rys_end_of_video_reveal_box,
+html:not([on_video="true"]) #rys_end_of_video_reveal_box,
+#movie_player:not(.ended-mode) #rys_end_of_video_reveal_box,
 
 html[foo="bar"] {
 	display: none;
@@ -399,4 +477,102 @@ html[global_enable="true"][foo=bar]
 
 html[global_enable='true'][grayscale_mode='true'] ytd-app {
 	filter: grayscale(100%);
+}
+
+/* RYS UI Variables */
+:root {
+  --rys-primary: #065fd4;
+  --rys-text: #fff;
+  --rys-separator: rgba(255, 255, 255, 0.15);
+  --rys-shadow: rgba(0, 0, 0, 0.15);
+  --rys-font: "Roboto", "Arial", sans-serif;
+  --rys-banner-height: 40px;
+}
+
+/* Announcement Banner on YouTube */
+.rys_announcement_banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--rys-primary);
+  font-size: 13px;
+  font-family: var(--rys-font);
+  z-index: 2350;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Push down YouTube's fixed header and content when banner is visible */
+html[rys-banner-visible="true"] #masthead-container,
+html[rys-banner-visible="true"] ytd-masthead {
+  top: var(--rys-banner-height) !important;
+}
+
+html[rys-banner-visible="true"] ytd-app {
+  margin-top: var(--rys-banner-height);
+}
+
+html[rys-banner-visible="true"] tp-yt-app-drawer #contentContainer,
+html[rys-banner-visible="true"] ytd-mini-guide-renderer {
+  margin-top: var(--rys-banner-height);
+}
+
+.rys_announcement_banner * {
+  color: var(--rys-text);
+}
+
+.rys_banner_logo {
+  width: 20px;
+  height: 20px;
+}
+
+.rys_banner_brand {
+  font-weight: 600;
+  margin-right: 8px;
+  padding-right: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.rys_banner_message {
+  flex: 1;
+}
+
+.rys_banner_link {
+  text-decoration: underline;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.rys_banner_link:hover {
+  opacity: 1;
+}
+
+.rys_banner_dismiss {
+  text-decoration: underline;
+  cursor: pointer;
+  opacity: 0.7;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.rys_banner_dismiss:hover {
+  opacity: 1;
+}
+
+.rys_banner_close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.7;
+  line-height: 1;
+  color: var(--rys-text);
+}
+
+.rys_banner_close:hover {
+  opacity: 1;
 }
