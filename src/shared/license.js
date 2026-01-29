@@ -27,6 +27,9 @@ const License = {
     const cacheValid = lastCheck && (now - lastCheck < LICENSE_CHECK_INTERVAL_MS);
 
     if (!forceRefresh && cacheValid) {
+      if (typeof recordEvent === 'function') {
+        recordEvent('License Check', { isPremium: cachedPremium || false, cached: true });
+      }
       return {
         isPremium: cachedPremium || false,
         source: cached[STORAGE_KEYS.PREMIUM_SOURCE] || null,
@@ -42,6 +45,9 @@ const License = {
 
       if (response.status === 401) {
         // Token expired or invalid, clear auth
+        if (typeof recordEvent === 'function') {
+          recordEvent('License Check', { error: 'token_expired' });
+        }
         await Auth.signOut();
         return { isPremium: false, source: null, signedOut: true };
       }
@@ -61,6 +67,10 @@ const License = {
         [STORAGE_KEYS.LAST_LICENSE_CHECK]: now,
       });
 
+      if (typeof recordEvent === 'function') {
+        recordEvent('License Check', { isPremium, source, cached: false });
+      }
+
       return {
         isPremium,
         source,
@@ -71,6 +81,9 @@ const License = {
 
       // Offline grace period: use cached value if within grace period
       if (lastCheck && (now - lastCheck < OFFLINE_GRACE_PERIOD_MS)) {
+        if (typeof recordEvent === 'function') {
+          recordEvent('License Check', { error: 'offline', offline: true, isPremium: cachedPremium || false });
+        }
         return {
           isPremium: cachedPremium || false,
           source: cached[STORAGE_KEYS.PREMIUM_SOURCE] || null,
@@ -79,6 +92,9 @@ const License = {
       }
 
       // Grace period expired, assume not premium
+      if (typeof recordEvent === 'function') {
+        recordEvent('License Check', { error: 'offline_grace_expired' });
+      }
       return { isPremium: false, source: null, error: true };
     }
   },

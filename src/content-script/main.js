@@ -65,12 +65,27 @@ let lastRedirect;
 const redirectInterval = 1_000; // 1 second
 
 
+// Get list of premium feature IDs
+const PREMIUM_FEATURE_IDS = SECTIONS.flatMap(section =>
+  section.options.filter(opt => opt.premium).map(opt => opt.id)
+);
+
 // Respond to changes in settings
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
 
+  // Update premium status in cache if it changed
+  if ('is_premium' in changes) {
+    cache['is_premium'] = changes['is_premium'].newValue;
+  }
+
   Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
     if (oldValue === newValue) return;
+
+    // Enforce premium features are false for non-premium users
+    if (PREMIUM_FEATURE_IDS.includes(id) && cache['is_premium'] !== true) {
+      newValue = false;
+    }
 
     HTML.setAttribute(id, newValue);
     cache[id] = newValue;
@@ -82,7 +97,6 @@ function logStorageChange(changes, area) {
 }
 browser.storage.onChanged.addListener(logStorageChange);
 
-
 // Get settings
 browser.storage.local.get(settings => {
   if (!settings) return;
@@ -90,6 +104,14 @@ browser.storage.local.get(settings => {
   const revealUpdates = migrateRevealSettings(settings);
   if (Object.keys(revealUpdates).length) {
     browser.storage.local.set(revealUpdates);
+  }
+
+  // Enforce premium features are false for non-premium users
+  const isPremium = settings['is_premium'] === true;
+  if (!isPremium) {
+    PREMIUM_FEATURE_IDS.forEach(id => {
+      settings[id] = false;
+    });
   }
 
   Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {

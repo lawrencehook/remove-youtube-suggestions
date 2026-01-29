@@ -103,14 +103,23 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       cache[id] = value;
       svg.toggleAttribute('active', value);
 
-      optionNode.addEventListener('click', e => {
+      optionNode.addEventListener('click', async e => {
         // Check if premium-locked
         if (premium && HTML.getAttribute('is_premium') !== 'true') {
-          // Open upgrade modal if available
-          if (typeof openUpgradeModal === 'function') {
+          // Check if signed in first
+          const signedIn = await Auth.isSignedIn();
+          if (!signedIn) {
+            // Not signed in - show premium required modal
+            if (typeof openPremiumRequiredModal === 'function') {
+              openPremiumRequiredModal();
+            } else {
+              displayStatus('Premium feature - sign in to upgrade');
+            }
+          } else if (typeof openUpgradeModal === 'function') {
+            // Signed in but not premium - open upgrade modal
             openUpgradeModal();
           } else {
-            displayStatus('Premium feature - Sign in to upgrade');
+            displayStatus('Premium feature - upgrade to access');
           }
           return;
         }

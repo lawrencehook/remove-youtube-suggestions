@@ -82,10 +82,18 @@ function openScheduleModal() {
     updateDays(scheduleDays);
   });
 }
-SCHEDULING_OPTION.addEventListener('click', e => {
+SCHEDULING_OPTION.addEventListener('click', async e => {
+  if (HTML.getAttribute('is_premium') !== 'true') {
+    await handlePremiumFeatureClick();
+    return;
+  }
   openScheduleModal();
 });
-OPEN_SCHEDULE_OPTION.addEventListener('click', e => {
+OPEN_SCHEDULE_OPTION.addEventListener('click', async e => {
+  if (HTML.getAttribute('is_premium') !== 'true') {
+    await handlePremiumFeatureClick();
+    return;
+  }
   openScheduleModal();
 });
 RESUME_SCHEDULE_OPTION.addEventListener('click', e => {
@@ -184,7 +192,11 @@ function openPasswordModal() {
     DISABLE_PASSWORD_CONTAINER.toggleAttribute('hidden', !password);
   });
 }
-PASSWORD_OPTION.addEventListener('click', e => {
+PASSWORD_OPTION.addEventListener('click', async e => {
+  if (HTML.getAttribute('is_premium') !== 'true') {
+    await handlePremiumFeatureClick();
+    return;
+  }
   openPasswordModal();
 });
 
@@ -412,6 +424,11 @@ const upgradePlans = qsa('.upgrade-plan');
 const upgradeCheckoutButton = qs('#upgrade-checkout-button');
 const upgradeCancelButton = qs('#upgrade-cancel-button');
 
+// Premium required modal elements
+const premiumRequiredModalContainer = qs('#premium_required_container_background');
+const premiumRequiredSigninButton = qs('#premium-required-signin-button');
+const premiumRequiredCancelButton = qs('#premium-required-cancel-button');
+
 let currentPollAbortController = null;
 let selectedPlan = 'yearly'; // Default to yearly
 let awaitingUpgrade = false;
@@ -422,7 +439,8 @@ async function refreshLicense(force = false) {
 
   const licenseData = await License.checkLicense(force);
   updatePremiumUI(licenseData);
-  if (licenseData.isPremium) {
+  if (licenseData.isPremium && awaitingUpgrade) {
+    recordEvent('Checkout Completed', { source: licenseData.source });
     awaitingUpgrade = false;
   }
 }
@@ -537,8 +555,10 @@ signinSendButton.addEventListener('click', async () => {
   }
 
   signinSendButton.disabled = true;
+  recordEvent('Sign In Started');
   try {
     const requestId = await Auth.sendMagicLink(email);
+    recordEvent('Magic Link Sent');
 
     // Show waiting state
     signinEmailForm.setAttribute('hidden', '');
@@ -556,6 +576,7 @@ signinSendButton.addEventListener('click', async () => {
     }, { signal: currentPollAbortController.signal });
 
     if (result && result.canceled) {
+      recordEvent('Sign In Canceled');
       return;
     }
 
@@ -594,12 +615,14 @@ async function openAccountModal() {
   const email = await Auth.getUserEmail();
   const licenseData = await License.checkLicense(awaitingUpgrade);
   if (licenseData.signedOut) {
+    recordEvent('Session Expired');
     updatePremiumUI(licenseData);
     closeAccountModal();
     openSigninModal();
     displayStatus('Session expired. Please sign in again.');
     return;
   }
+  recordEvent('Account Modal Opened', { isPremium: licenseData.isPremium, source: licenseData.source });
 
   accountEmail.textContent = email || 'Unknown';
 
@@ -657,8 +680,10 @@ accountBillingButton.addEventListener('click', async () => {
     const portalUrl = await License.createBillingPortalSession();
     window.open(portalUrl, '_blank');
     closeAccountModal();
+    recordEvent('Billing Portal Opened');
   } catch (err) {
     displayStatus(err.message);
+    recordEvent('Billing Portal Error', { error: err.message });
   } finally {
     accountBillingButton.disabled = false;
   }
@@ -666,9 +691,50 @@ accountBillingButton.addEventListener('click', async () => {
 
 // Upgrade modal
 function openUpgradeModal() {
+  recordEvent('Upgrade Modal Opened');
   upgradeModalContainer.removeAttribute('hidden');
   selectPlan('yearly');
 }
+
+// Premium feature click handler - checks sign-in first
+async function handlePremiumFeatureClick() {
+  const signedIn = await Auth.isSignedIn();
+  if (!signedIn) {
+    // Not signed in - show premium required modal
+    recordEvent('Premium Feature Click', { signedIn: false });
+    openPremiumRequiredModal();
+    return;
+  }
+  // Signed in but not premium - open upgrade modal
+  recordEvent('Premium Feature Click', { signedIn: true });
+  openUpgradeModal();
+}
+
+// Premium required modal (for non-signed-in users)
+function openPremiumRequiredModal() {
+  premiumRequiredModalContainer.removeAttribute('hidden');
+}
+
+function closePremiumRequiredModal() {
+  premiumRequiredModalContainer.setAttribute('hidden', '');
+}
+
+premiumRequiredModalContainer.addEventListener('click', e => {
+  if (e.target === premiumRequiredModalContainer) closePremiumRequiredModal();
+});
+
+premiumRequiredCancelButton.addEventListener('click', closePremiumRequiredModal);
+
+premiumRequiredSigninButton.addEventListener('click', () => {
+  closePremiumRequiredModal();
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('signin') === '1') {
+    openSigninModal();
+  } else {
+    browser.tabs.create({ url: browser.runtime.getURL('/options/main.html?signin=1') });
+    window.close();
+  }
+});
 
 function closeUpgradeModal() {
   upgradeModalContainer.setAttribute('hidden', '');
@@ -701,6 +767,7 @@ upgradeCheckoutButton.addEventListener('click', async () => {
     awaitingUpgrade = true;
   } catch (err) {
     displayStatus(err.message);
+    recordEvent('Checkout Error', { plan: selectedPlan, error: err.message });
   } finally {
     upgradeCheckoutButton.disabled = false;
   }

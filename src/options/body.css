@@ -439,7 +439,7 @@ html[foo=bar] {
 
 #sidebar {
   height: calc(6px + var(--body-height));
-  width: 140px;
+  width: 155px;
   padding: 8px 6px;
   overflow: hidden;
 
@@ -490,7 +490,8 @@ html[foo=bar] {
 
 #signin_container_background,
 #account_container_background,
-#upgrade_container_background {
+#upgrade_container_background,
+#premium_required_container_background {
   position: fixed;
   top: 0;
   left: 0;
@@ -524,7 +525,8 @@ html[foo=bar] {
 
 #signin_container,
 #account_container,
-#upgrade_container {
+#upgrade_container,
+#premium_required_container {
   height: fit-content;
   max-height: calc(100vh - 20px);
   width: min(90vw, 380px);
@@ -559,7 +561,8 @@ html[foo=bar] {
 
 #signin_header,
 #account_header,
-#upgrade_header {
+#upgrade_header,
+#premium_required_header {
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -609,7 +612,8 @@ html[foo=bar] {
 
 #signin_container button,
 #account_container button,
-#upgrade_container button {
+#upgrade_container button,
+#premium_required_container button {
   padding: 12px 24px;
   font-size: 0.9rem;
   font-weight: 500;
@@ -623,31 +627,36 @@ html[foo=bar] {
 
 #signin_container button:hover,
 #account_container button:hover,
-#upgrade_container button:hover {
+#upgrade_container button:hover,
+#premium_required_container button:hover {
   box-shadow: 0 4px 12px rgba(6, 0, 251, 0.25);
 }
 
 #signin_container button:active,
 #account_container button:active,
-#upgrade_container button:active {
+#upgrade_container button:active,
+#premium_required_container button:active {
   transform: scale(0.98);
 }
 
 #signin_container button:disabled,
 #account_container button:disabled,
-#upgrade_container button:disabled {
+#upgrade_container button:disabled,
+#premium_required_container button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 #signin-send-button,
-#upgrade-checkout-button {
+#upgrade-checkout-button,
+#premium-required-signin-button {
   width: 100%;
 }
 
 #signin-cancel-button,
-#upgrade-cancel-button {
+#upgrade-cancel-button,
+#premium-required-cancel-button {
   background-color: transparent !important;
   color: var(--body-color) !important;
   border: 1.5px solid var(--box-shadow-color) !important;
@@ -801,7 +810,8 @@ html[foo=bar] {
   width: min(90vw, 420px);
 }
 
-#upgrade_description {
+#upgrade_description,
+#premium_required_description {
   font-size: 0.9rem;
   color: var(--body-color);
   opacity: 0.8;
@@ -875,7 +885,8 @@ html[foo=bar] {
   background: linear-gradient(135deg, var(--blue-color) 0%, var(--light-blue) 100%);
 }
 
-#upgrade_buttons {
+#upgrade_buttons,
+#premium_required_buttons {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -903,6 +914,32 @@ html:not([is_premium='true']) .option[data-premium='true']::after {
 
 /* Premium options unlocked */
 html[is_premium='true'] .option[data-premium='true'] {
+  opacity: 1;
+}
+
+/* Premium lock icon for settings menu items */
+html:not([is_premium='true']) #settings-menu div[data-premium='true'],
+html:not([is_premium='true']) #power-options div[data-premium='true'] {
+  opacity: 0.6;
+  position: relative;
+}
+
+html:not([is_premium='true']) #settings-menu div[data-premium='true']::after,
+html:not([is_premium='true']) #power-options div[data-premium='true']::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+html[is_premium='true'] #settings-menu div[data-premium='true'],
+html[is_premium='true'] #power-options div[data-premium='true'] {
   opacity: 1;
 }
 
