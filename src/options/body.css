@@ -300,7 +300,7 @@ html[foo=bar] {
   gap: 15px;
 }
 #password_lock_container button {
-  color: black;
+  color: var(--body-color);
 }
 
 /* Password Modal */
@@ -318,7 +318,7 @@ html[foo=bar] {
 }
 
 #password_container_background button {
-  color: black;
+  color: var(--body-color);
 }
 
 #enable_password_container, #enable_password_container * {
@@ -382,7 +382,7 @@ html[foo=bar] {
 }
 
 #password-button button {
-  color: var(--body-background-color);
+  color: var(--body-color);
 }
 
 #disable_password_container a:first-child {

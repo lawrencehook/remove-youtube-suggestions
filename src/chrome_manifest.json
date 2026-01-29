@@ -22,6 +22,7 @@
         "/shared/main.js",
         "/shared/https.js",
         "/shared/utils.js",
+        "/shared/banners.js",
         "/content-script/main.js"
       ],
       "css": ["/content-script/main.css"],
@@ -52,5 +53,9 @@
   "host_permissions": [
     "*://*.youtube.com/*",
     "https://server.lawrencehook.com/*"
-  ]
+  ],
+  "web_accessible_resources": [{
+    "resources": ["/images/rys.svg"],
+    "matches": ["*://*.youtube.com/*"]
+  }]
 }
