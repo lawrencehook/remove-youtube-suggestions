@@ -19,6 +19,31 @@ const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
+const closedRevealBoxes = new Set();
+const rysLogoUrl = browser.runtime.getURL('images/rys.svg');
+const REVEAL_BOX_CONFIGS = [
+  {
+    containerSelector: 'ytd-page-manager',
+    boxId: 'rys_homepage_reveal_box',
+    message: 'Homepage suggestions are hidden.',
+    showAction: () => HTML.setAttribute('remove_homepage', false),
+    revealSetting: 'add_reveal_homepage',
+  },
+  {
+    containerSelector: '#secondary-inner',
+    boxId: 'rys_sidebar_reveal_box',
+    message: 'Sidebar suggestions are hidden.',
+    showAction: () => HTML.setAttribute('remove_sidebar', false),
+    revealSetting: 'add_reveal_sidebar',
+  },
+  {
+    containerSelector: '#movie_player',
+    boxId: 'rys_end_of_video_reveal_box',
+    message: 'End-of-video suggestions are hidden.',
+    showAction: () => HTML.setAttribute('remove_end_of_video', false),
+    revealSetting: 'add_reveal_end_of_video',
+  },
+];
 let url = location.href;
 let theaterClicked = false, hyper = false;
 let onResultsPage = resultsPageRegex.test(url);
@@ -61,6 +86,11 @@ browser.storage.onChanged.addListener(logStorageChange);
 // Get settings
 browser.storage.local.get(settings => {
   if (!settings) return;
+
+  const revealUpdates = migrateRevealSettings(settings);
+  if (Object.keys(revealUpdates).length) {
+    browser.storage.local.set(revealUpdates);
+  }
 
   Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {
     HTML.setAttribute(id, value);
@@ -478,51 +508,47 @@ function runDynamicSettings() {
       });
     }
 
-    // Reveal suggestions button
-    const revealButtons = [
-      {
-        containerSelector: 'ytd-page-manager', buttonId: 'rys_homepage_reveal_button',
-        innerText: 'Show homepage suggestions',
-        clickListener: e => HTML.setAttribute('remove_homepage', false),
-      },
-      {
-        containerSelector: '#secondary-inner', buttonId: 'rys_sidebar_reveal_button',
-        innerText: 'Show sidebar suggestions',
-        clickListener: e => HTML.setAttribute('remove_sidebar', false),
-      },
-      {
-        containerSelector: '#movie_player', buttonId: 'rys_end_of_video_reveal_button',
-        innerText: 'Show end-of-video suggestions',
-        clickListener: e => HTML.setAttribute('remove_end_of_video', false),
-      },
-    ];
-    revealButtons.forEach(obj => {
-      const { containerSelector, buttonId, innerText, clickListener } = obj;
+    // Reveal suggestions boxes
+    REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, message, showAction, revealSetting }) => {
 
-      const existingButton = qs(`#${buttonId}`);
-      if (existingButton) return;
+      if (closedRevealBoxes.has(boxId)) return;
+      if (qs(`#${boxId}`)) return;
 
       const container = qs(containerSelector);
-      const buttonContainer = document.createElement('div');
-      buttonContainer.classList.add('rys_reveal_button_container');
+      if (!container) return;
 
-      const newButton = document.createElement('button');
-      newButton.setAttribute('id', buttonId);
-      newButton.classList.add('rys_reveal_button');
-      newButton.innerText = innerText;
-      newButton.addEventListener('click', clickListener);
+      const box = document.createElement('div');
+      box.id = boxId;
+      box.className = 'rys_reveal_box';
+      box.innerHTML = `
+        <div class="rys_reveal_header">
+          <div class="rys_reveal_branding">
+            <img src="${rysLogoUrl}" alt="RYS" class="rys_reveal_logo">
+            <span class="rys_reveal_brand">RYS</span>
+          </div>
+          <div class="rys_reveal_actions">
+            <a class="rys_reveal_dismiss">Don't show again</a>
+            <button class="rys_reveal_close" aria-label="Close">&times;</button>
+          </div>
+        </div>
+        <div class="rys_reveal_content">
+          <span class="rys_reveal_message">${message}</span>
+          <a class="rys_reveal_show">Reveal</a>
+        </div>
+      `;
 
-      const closeButton = document.createElement('div');
-      closeButton.setAttribute('id', 'close_reveal_button');
-      closeButton.innerHTML = "&#10006;";
-      closeButton.addEventListener('click', e => {
-        e.stopPropagation();
-        updateSetting('add_reveal_button', false);
+      box.querySelector('.rys_reveal_show')?.addEventListener('click', showAction);
+      box.querySelector('.rys_reveal_dismiss')?.addEventListener('click', () => {
+        if (revealSetting) {
+          updateSetting(revealSetting, false);
+        }
       });
-      newButton.appendChild(closeButton);
+      box.querySelector('.rys_reveal_close')?.addEventListener('click', () => {
+        closedRevealBoxes.add(boxId);
+        box.remove();
+      });
 
-      buttonContainer.appendChild(newButton);
-      container?.appendChild(buttonContainer);
+      container.appendChild(box);
     });
 
     // Expand the "You" section in the left sidebar
@@ -556,6 +582,21 @@ function requestRunDynamicSettings() {
   setTimeout(() => runDynamicSettings(), Math.min(100, 50 + 10 * dynamicIters));
 }
 
+
+function injectAnnouncementBanners() {
+  if (!onHomepage) return;
+  if (!document.body) return;
+
+  const logoUrl = browser.runtime.getURL('images/rys.svg');
+  const banners = getActiveBanners('youtube_homepage');
+
+  banners.forEach(banner => {
+    initBanner(banner, logoUrl, () => ({
+      element: document.body,
+      insertMethod: 'prepend'
+    }));
+  });
+}
 
 function injectScripts() {
   const on = cache['global_enable'] === true;
@@ -651,6 +692,7 @@ function handleNewPage() {
   }
 
   injectScripts();
+  injectAnnouncementBanners();
   requestRunDynamicSettings();
 }
 

@@ -25,6 +25,7 @@
         "/shared/main.js",
         "/shared/https.js",
         "/shared/utils.js",
+        "/shared/banners.js",
         "/content-script/main.js"
       ],
       "css": ["/content-script/main.css"],
@@ -52,5 +53,8 @@
   "permissions": [
     "storage",
     "*://*.youtube.com/*"
+  ],
+  "web_accessible_resources": [
+    "/images/rys.svg"
   ]
 }

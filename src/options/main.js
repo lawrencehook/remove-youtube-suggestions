@@ -24,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
   recordEvent('Page View: Options');
   initAnnouncementBanner();
   browser.storage.local.get(localSettings => {
+    const revealUpdates = migrateRevealSettings(localSettings);
+    if (Object.keys(revealUpdates).length) {
+      browser.storage.local.set(revealUpdates);
+    }
+
     const settings = { ...DEFAULT_SETTINGS, ...localSettings };
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
       acc[id] = id in localSettings ? localSettings[id] : value;
@@ -155,6 +160,19 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
+  const searchInput = searchBar.querySelector('input');
+  const focusSearchInput = () => {
+    if (!searchInput) return;
+    if (document.activeElement === searchInput) return;
+    searchInput.focus();
+  };
+  focusSearchInput();
+  setTimeout(focusSearchInput, 0);
+  setTimeout(focusSearchInput, 50);
+  window.addEventListener('focus', focusSearchInput);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') focusSearchInput();
+  });
 
   const turnBackOn = document.getElementById('turn_back_on');
   turnBackOn.addEventListener('click', e => {
@@ -406,27 +424,18 @@ function timeLoop() {
 }
 
 
-// Announcement banner
-const ANNOUNCEMENT_KEY = 'announcement_dismissed_premium_coming';
-
+// Announcement banners
 function initAnnouncementBanner() {
-  const banner = document.getElementById('announcement_banner');
-  const dismissBtn = document.getElementById('dismiss_announcement');
-  const closeBtn = document.getElementById('close_announcement');
-  if (!banner) return;
+  const container = document.getElementById('banner_container');
+  if (!container) return;
 
-  browser.storage.local.get(ANNOUNCEMENT_KEY, result => {
-    if (!result[ANNOUNCEMENT_KEY]) {
-      banner.removeAttribute('hidden');
-    }
-  });
+  const logoUrl = browser.runtime.getURL('images/rys.svg');
+  const banners = getActiveBanners('options');
 
-  dismissBtn?.addEventListener('click', () => {
-    banner.setAttribute('hidden', '');
-    browser.storage.local.set({ [ANNOUNCEMENT_KEY]: true });
-  });
-
-  closeBtn?.addEventListener('click', () => {
-    banner.setAttribute('hidden', '');
+  banners.forEach(banner => {
+    initBanner(banner, logoUrl, () => ({
+      element: container,
+      insertMethod: 'append'
+    }));
   });
 }
