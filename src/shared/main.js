@@ -257,11 +257,11 @@ const SECTIONS = [
         id: "normalize_shorts",
         defaultValue: false
       },
-      // {
-      //   name: "Enable theater mode",
-      //   id: "enable_theater",
-      //   defaultValue: true
-      // },
+      {
+        name: "Enable theater mode",
+        id: "enable_theater",
+        defaultValue: true
+      },
     ]
   },
   {
