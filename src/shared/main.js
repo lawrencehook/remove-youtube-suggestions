@@ -252,11 +252,11 @@ const SECTIONS = [
         id: "normalize_shorts",
         defaultValue: false
       },
-      // {
-      //   name: "Enable theater mode",
-      //   id: "enable_theater",
-      //   defaultValue: true
-      // },
+      {
+        name: "Enable theater mode",
+        id: "enable_theater",
+        defaultValue: false
+      },
     ]
   },
   {
@@ -740,6 +740,7 @@ const idToShortId = {
   "remove_sidebar_infinite_scroll":    '91',
   "log_prompt_answered":               '92',
   "remove_results_description":        '93',
+  "enable_theater":                    '94',
 };
 
 
