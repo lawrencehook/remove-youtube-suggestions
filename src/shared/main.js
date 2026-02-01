@@ -222,6 +222,12 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Enable Theater Mode",
+        tags: "Basic",
+        id: "theater_mode_enable",
+        defaultValue: false
+      },
+      {
         name: "Disable autoplay",
         id: "disable_autoplay",
         defaultValue: false

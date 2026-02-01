@@ -409,6 +409,15 @@ function runDynamicSettings() {
       }
     }
 
+    // Theater Mode
+    if (cache['theater_mode_enable']){
+            const flexy = document.querySelector("ytd-watch-flexy");
+            const btn = document.querySelector(".ytp-size-button");
+            if (flexy && btn && !flexy.hasAttribute("theater")) {
+                btn.click();
+            }
+    }
+
     // if (cache['change_playback_speed']) {
     //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
     // }
