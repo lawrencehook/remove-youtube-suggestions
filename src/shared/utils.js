@@ -3,6 +3,27 @@ function uniq(array) { return Array.from(new Set(array)) }
 function qs(query, root=document) { return root.querySelector(query) }
 function qsa(query, root=document) { return Array.from(root.querySelectorAll(query)) }
 
+/* Browser Detection */
+const BrowserDetect = {
+  get isSafari() {
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
+           (typeof safari !== 'undefined');
+  },
+  get isFirefox() {
+    return typeof InstallTrigger !== 'undefined' ||
+           navigator.userAgent.includes('Firefox');
+  },
+  get isChrome() {
+    return !!window.chrome && !this.isSafari;
+  },
+  get browserName() {
+    if (this.isSafari) return 'safari';
+    if (this.isFirefox) return 'firefox';
+    if (this.isChrome) return 'chrome';
+    return 'unknown';
+  }
+};
+
 
 /* Scheduling */
 function timeIsValid(times) {

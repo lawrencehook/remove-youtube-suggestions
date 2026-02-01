@@ -12,6 +12,7 @@ This extension aims to make YouTube less engaging and more configurable. It prov
 Leave a review!
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
+- Safari (coming soon to the Mac App Store)
 - [Google Form](https://docs.google.com/forms/d/1AzQQxTWgG6M5N87jinvXKQkGS6Mehzg19XV4mjteTK0/edit)
 
 Completely free. Donations welcome — [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url)  
@@ -26,6 +27,7 @@ The YouTube recommendation algorithm optimizes for the most _engaging_ videos, r
 Available for download at the links below:
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
+- Safari (coming soon to the Mac App Store)
 
 ---
 
@@ -40,5 +42,16 @@ The following commands will set up a Firefox dev environment.
 git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
 cd remove-youtube-suggestions/src
 npm install --global web-ext
+cp firefox_manifest.json manifest.json
 web-ext run
 ```
+
+For Safari development (requires macOS with Xcode):
+
+```bash
+git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
+cd remove-youtube-suggestions
+./make_safari.sh
+```
+
+See [SAFARI.md](SAFARI.md) for detailed Safari build and distribution instructions.
