@@ -183,6 +183,7 @@ html[global_enable="true"][shrink_video_thumbnails="true"] ytd-playlist-thumbnai
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-channel-renderer #avatar-section,
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-movie-renderer .thumbnail-container {
 	max-width: 0 !important;
+    min-width: 240px;
 }
 
 
