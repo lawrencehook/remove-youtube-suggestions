@@ -340,15 +340,14 @@ function runDynamicSettings() {
       }
     }
 
-    // // Enable theater mode
-    // if (cache['enable_theater'] === true && !theaterClicked) {
-    //   const theaterButton = qsa('button[title="Theater mode (t)"]')?.[0];
-    //   if (theaterButton && theaterButton.display !== 'none') {
-    //     console.log('theaterButton.click();')
-    //     theaterButton.click();
-    //     theaterClicked = true;
-    //   }
-    // }
+      // Enable theater mode
+      if (cache['enable_theater']){
+          const flexy = document.querySelector("ytd-watch-flexy");
+          const btn = document.querySelector(".ytp-size-button");
+          if (flexy && btn && !flexy.hasAttribute("theater")) {
+              btn.click();
+          }
+      }
 
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
