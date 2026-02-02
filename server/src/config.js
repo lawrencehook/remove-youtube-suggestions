@@ -10,6 +10,8 @@ module.exports = {
   // JWT
   get JWT_SECRET() { return process.env.JWT_SECRET; },
   SESSION_TOKEN_LIFETIME_DAYS: 30,
+  LICENSE_TOKEN_LIFETIME_DAYS: 3,
+  GRANDFATHERED_TOKEN_LIFETIME_DAYS: 730, // 2 years
 
   // Timing
   MAGIC_LINK_EXPIRY_MS: 15 * 60 * 1000,        // 15 minutes

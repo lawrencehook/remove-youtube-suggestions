@@ -1,50 +1,61 @@
 // License checking module for RYS Premium
 
 const License = {
-  // Check premium status from server
-  async checkLicense(forceRefresh = false) {
-    const { STORAGE_KEYS, LICENSE_CHECK_INTERVAL_MS, OFFLINE_GRACE_PERIOD_MS } = PREMIUM_CONFIG;
+  // Decode JWT payload (no signature verification - we trust our server)
+  _decodeToken(token) {
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1];
+      // Handle base64url encoding
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    } catch {
+      return null;
+    }
+  },
 
-    // Get cached data
+  // Check premium status from license token (fetches new token if needed)
+  async checkLicense(forceRefresh = false) {
+    const { STORAGE_KEYS, LICENSE_REFRESH_THRESHOLD_MS } = PREMIUM_CONFIG;
+
     const cached = await browser.storage.local.get([
       STORAGE_KEYS.SESSION_TOKEN,
-      STORAGE_KEYS.IS_PREMIUM,
-      STORAGE_KEYS.PREMIUM_SOURCE,
-      STORAGE_KEYS.LAST_LICENSE_CHECK,
+      STORAGE_KEYS.LICENSE_TOKEN,
     ]);
 
-    const token = cached[STORAGE_KEYS.SESSION_TOKEN];
-    const lastCheck = cached[STORAGE_KEYS.LAST_LICENSE_CHECK];
-    const cachedPremium = cached[STORAGE_KEYS.IS_PREMIUM];
-
-    // Not signed in
-    if (!token) {
+    const sessionToken = cached[STORAGE_KEYS.SESSION_TOKEN];
+    if (!sessionToken) {
       return { isPremium: false, source: null };
     }
 
-    // Check if we need to refresh (skip cache check if forcing)
-    const now = Date.now();
-    const cacheValid = lastCheck && (now - lastCheck < LICENSE_CHECK_INTERVAL_MS);
+    const licenseToken = cached[STORAGE_KEYS.LICENSE_TOKEN];
+    const decoded = this._decodeToken(licenseToken);
+    const now = Math.floor(Date.now() / 1000);
 
-    if (!forceRefresh && cacheValid) {
+    // Check if license token is valid and not expiring soon
+    const isValid = decoded && decoded.exp > now;
+    const expiresWithinThreshold = decoded && decoded.exp &&
+      (decoded.exp - now) < (LICENSE_REFRESH_THRESHOLD_MS / 1000);
+
+    if (!forceRefresh && isValid && !expiresWithinThreshold) {
+      // Token valid and not expiring soon - use cached value
       if (typeof recordEvent === 'function') {
-        recordEvent('License Check', { isPremium: cachedPremium || false, cached: true });
+        recordEvent('License Check', { isPremium: decoded.premium, cached: true });
       }
       return {
-        isPremium: cachedPremium || false,
-        source: cached[STORAGE_KEYS.PREMIUM_SOURCE] || null,
+        isPremium: decoded.premium,
+        source: decoded.grandfathered ? 'grandfathered' : null,
         cached: true,
       };
     }
 
-    // Fetch from server
+    // Fetch fresh license token from server
     try {
       const response = await fetch(`${PREMIUM_CONFIG.SERVER_URL}/license/check`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { 'Authorization': `Bearer ${sessionToken}` },
       });
 
       if (response.status === 401) {
-        // Token expired or invalid, clear auth
         if (typeof recordEvent === 'function') {
           recordEvent('License Check', { error: 'token_expired' });
         }
@@ -57,52 +68,47 @@ const License = {
       }
 
       const data = await response.json();
-      const isPremium = !!data.premium;
-      const source = data.grandfathered ? 'grandfathered' : null;
-
-      // Cache the result
       await browser.storage.local.set({
-        [STORAGE_KEYS.IS_PREMIUM]: isPremium,
-        [STORAGE_KEYS.PREMIUM_SOURCE]: source,
-        [STORAGE_KEYS.LAST_LICENSE_CHECK]: now,
+        [STORAGE_KEYS.LICENSE_TOKEN]: data.license_token,
       });
+
+      const newDecoded = this._decodeToken(data.license_token);
+      const isPremium = newDecoded?.premium || false;
+      const source = newDecoded?.grandfathered ? 'grandfathered' : null;
 
       if (typeof recordEvent === 'function') {
         recordEvent('License Check', { isPremium, source, cached: false });
       }
 
-      return {
-        isPremium,
-        source,
-        subscription: data.subscription,
-      };
+      return { isPremium, source };
     } catch (err) {
       console.error('License check error:', err);
 
-      // Offline grace period: use cached value if within grace period
-      if (lastCheck && (now - lastCheck < OFFLINE_GRACE_PERIOD_MS)) {
+      // Network error - use existing token if still valid (not expired)
+      if (isValid) {
         if (typeof recordEvent === 'function') {
-          recordEvent('License Check', { error: 'offline', offline: true, isPremium: cachedPremium || false });
+          recordEvent('License Check', { error: 'offline', offline: true, isPremium: decoded.premium });
         }
         return {
-          isPremium: cachedPremium || false,
-          source: cached[STORAGE_KEYS.PREMIUM_SOURCE] || null,
+          isPremium: decoded.premium,
+          source: decoded.grandfathered ? 'grandfathered' : null,
           offline: true,
         };
       }
 
-      // Grace period expired, assume not premium
       if (typeof recordEvent === 'function') {
-        recordEvent('License Check', { error: 'offline_grace_expired' });
+        recordEvent('License Check', { error: 'offline_token_expired' });
       }
       return { isPremium: false, source: null, error: true };
     }
   },
 
-  // Quick check for premium status (uses cache only)
+  // Quick check for premium status (uses license token only, no network)
   async isPremium() {
-    const cached = await browser.storage.local.get(PREMIUM_CONFIG.STORAGE_KEYS.IS_PREMIUM);
-    return cached[PREMIUM_CONFIG.STORAGE_KEYS.IS_PREMIUM] || false;
+    const cached = await browser.storage.local.get(PREMIUM_CONFIG.STORAGE_KEYS.LICENSE_TOKEN);
+    const decoded = this._decodeToken(cached[PREMIUM_CONFIG.STORAGE_KEYS.LICENSE_TOKEN]);
+    const now = Math.floor(Date.now() / 1000);
+    return decoded?.premium && decoded.exp > now;
   },
 
   // Create checkout session for subscription

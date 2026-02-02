@@ -70,20 +70,39 @@ const PREMIUM_FEATURE_IDS = SECTIONS.flatMap(section =>
   section.options.filter(opt => opt.premium).map(opt => opt.id)
 );
 
+// Decode license token to check premium status (no signature verification - we trust our server)
+function decodeLicenseToken(token) {
+  if (!token) return null;
+  try {
+    const payload = token.split('.')[1];
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+  } catch {
+    return null;
+  }
+}
+
+function isPremiumFromToken(token) {
+  const decoded = decodeLicenseToken(token);
+  if (!decoded) return false;
+  const now = Math.floor(Date.now() / 1000);
+  return decoded.premium === true && decoded.exp > now;
+}
+
 // Respond to changes in settings
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
 
-  // Update premium status in cache if it changed
-  if ('is_premium' in changes) {
-    cache['is_premium'] = changes['is_premium'].newValue;
+  // Update premium status in cache if license token changed
+  if ('license_token' in changes) {
+    cache['_isPremium'] = isPremiumFromToken(changes['license_token'].newValue);
   }
 
   Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
     if (oldValue === newValue) return;
 
     // Enforce premium features are false for non-premium users
-    if (PREMIUM_FEATURE_IDS.includes(id) && cache['is_premium'] !== true) {
+    if (PREMIUM_FEATURE_IDS.includes(id) && cache['_isPremium'] !== true) {
       newValue = false;
     }
 
@@ -107,7 +126,8 @@ browser.storage.local.get(settings => {
   }
 
   // Enforce premium features are false for non-premium users
-  const isPremium = settings['is_premium'] === true;
+  const isPremium = isPremiumFromToken(settings['license_token']);
+  cache['_isPremium'] = isPremium;
   if (!isPremium) {
     PREMIUM_FEATURE_IDS.forEach(id => {
       settings[id] = false;

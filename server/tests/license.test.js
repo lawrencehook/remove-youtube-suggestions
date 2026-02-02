@@ -20,6 +20,14 @@ const { app } = require('../src/index');
 const storage = require('../src/storage');
 const config = require('../src/config');
 const { generateSessionToken } = require('../src/services/jwt');
+const jwt = require('jsonwebtoken');
+
+// Helper to decode license token from response
+function decodeLicenseToken(response) {
+  const token = response.body.license_token;
+  if (!token) return null;
+  return jwt.verify(token, config.JWT_SECRET);
+}
 
 describe('License Routes', () => {
   beforeEach(() => {
@@ -47,7 +55,7 @@ describe('License Routes', () => {
       assert.strictEqual(res.status, 401);
     });
 
-    it('should return non-premium for user without subscription', async () => {
+    it('should return license token with non-premium for user without subscription', async () => {
       const token = generateSessionToken('free@example.com');
 
       const res = await request(app)
@@ -55,11 +63,15 @@ describe('License Routes', () => {
         .set('Authorization', `Bearer ${token}`);
 
       assert.strictEqual(res.status, 200);
-      assert.strictEqual(res.body.premium, false);
-      assert.strictEqual(res.body.expires_at, null);
+      assert.ok(res.body.license_token);
+
+      const decoded = decodeLicenseToken(res);
+      assert.strictEqual(decoded.premium, false);
+      assert.strictEqual(decoded.grandfathered, false);
+      assert.strictEqual(decoded.email, 'free@example.com');
     });
 
-    it('should return premium for user with active subscription', async () => {
+    it('should return license token with premium for user with active subscription', async () => {
       mockPremiumStatus = {
         premium: true,
         expiresAt: '2025-12-31T00:00:00Z',
@@ -72,11 +84,15 @@ describe('License Routes', () => {
         .set('Authorization', `Bearer ${token}`);
 
       assert.strictEqual(res.status, 200);
-      assert.strictEqual(res.body.premium, true);
-      assert.strictEqual(res.body.expires_at, '2025-12-31T00:00:00Z');
+      assert.ok(res.body.license_token);
+
+      const decoded = decodeLicenseToken(res);
+      assert.strictEqual(decoded.premium, true);
+      assert.strictEqual(decoded.grandfathered, false);
+      assert.strictEqual(decoded.email, 'premium@example.com');
     });
 
-    it('should return premium for grandfathered user', async () => {
+    it('should return license token with premium and grandfathered for grandfathered user', async () => {
       // Set up grandfathered file
       const grandfatheredFile = path.join(testDataDir, config.GRANDFATHERED_FILE);
       fs.writeFileSync(grandfatheredFile, JSON.stringify(['donor@example.com']));
@@ -89,9 +105,12 @@ describe('License Routes', () => {
         .set('Authorization', `Bearer ${token}`);
 
       assert.strictEqual(res.status, 200);
-      assert.strictEqual(res.body.premium, true);
-      assert.strictEqual(res.body.grandfathered, true);
-      assert.strictEqual(res.body.expires_at, null); // Lifetime
+      assert.ok(res.body.license_token);
+
+      const decoded = decodeLicenseToken(res);
+      assert.strictEqual(decoded.premium, true);
+      assert.strictEqual(decoded.grandfathered, true);
+      assert.strictEqual(decoded.email, 'donor@example.com');
     });
 
     it('should handle grandfathered check case-insensitively', async () => {
@@ -106,8 +125,9 @@ describe('License Routes', () => {
         .get('/license/check')
         .set('Authorization', `Bearer ${token}`);
 
-      assert.strictEqual(res.body.premium, true);
-      assert.strictEqual(res.body.grandfathered, true);
+      const decoded = decodeLicenseToken(res);
+      assert.strictEqual(decoded.premium, true);
+      assert.strictEqual(decoded.grandfathered, true);
     });
   });
 });

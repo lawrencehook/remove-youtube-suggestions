@@ -13,6 +13,20 @@ function generateSessionToken(email) {
   return jwt.sign(payload, config.JWT_SECRET, options);
 }
 
+function generateLicenseToken(email, premium, grandfathered = false) {
+  const payload = {
+    email: email.toLowerCase(),
+    premium: !!premium,
+    grandfathered: !!grandfathered,
+  };
+
+  const lifetimeDays = grandfathered
+    ? config.GRANDFATHERED_TOKEN_LIFETIME_DAYS
+    : config.LICENSE_TOKEN_LIFETIME_DAYS;
+
+  return jwt.sign(payload, config.JWT_SECRET, { expiresIn: `${lifetimeDays}d` });
+}
+
 function verifySessionToken(token) {
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
@@ -43,6 +57,7 @@ function requireAuth(req, res, next) {
 
 module.exports = {
   generateSessionToken,
+  generateLicenseToken,
   verifySessionToken,
   requireAuth,
 };
