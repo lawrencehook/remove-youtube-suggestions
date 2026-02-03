@@ -107,8 +107,9 @@ const License = {
   async isPremium() {
     const cached = await browser.storage.local.get(PREMIUM_CONFIG.STORAGE_KEYS.LICENSE_TOKEN);
     const decoded = this._decodeToken(cached[PREMIUM_CONFIG.STORAGE_KEYS.LICENSE_TOKEN]);
+    if (!decoded) return false;
     const now = Math.floor(Date.now() / 1000);
-    return decoded?.premium && decoded.exp > now;
+    return decoded.premium === true && decoded.exp > now;
   },
 
   // Create checkout session for subscription

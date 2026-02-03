@@ -3,3 +3,4 @@ web-ext-artifacts/
 extension.zip
 manifest.json
 _scratch/
+node_modules/
