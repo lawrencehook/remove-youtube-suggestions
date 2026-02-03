@@ -409,6 +409,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Hide result description",
+        id: "remove_results_description",
+        defaultValue: false
+      },
+      {
         name: "Hide results - For You, Trending, etc.",
         id: "remove_extra_results",
         defaultValue: false
