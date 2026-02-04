@@ -1,16 +1,6 @@
 // Shared banner configuration and utilities
 
-const BANNERS = [
-  {
-    id: 'premium_coming',
-    storageKey: 'announcement_dismissed_premium_coming',
-    message: 'Premium features coming soon.',
-    linkText: 'Learn more',
-    linkUrl: 'https://lawrencehook.com/rys/premium',
-    dismissText: "Don't show again",
-    showOn: ['options', 'youtube_homepage'],
-  },
-];
+const BANNERS = [];
 
 function createBannerHTML(banner, logoUrl) {
   const container = document.createElement('div');

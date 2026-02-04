@@ -39,9 +39,16 @@ html[dark_mode='false'] #header-light { display: none }
   max-width: var(--icon-dim);
 }
 #header-text {
-  margin-right: auto;
   font-size: 1.3rem;
   color: var(--label-color);
+}
+
+#header-premium-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--blue-color, #4a6cf7);
+  margin-right: auto;
+  letter-spacing: 0.02em;
 }
 
 #search_bar {

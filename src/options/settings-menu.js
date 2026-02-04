@@ -396,6 +396,7 @@ function settingsStrToObj(settingsStr) {
 const ACCOUNT_OPTION = qs('#settings-account');
 const DONATE_LINK = qs('#settings-donate');
 const DONATE_URL = 'https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=';
+const HEADER_PREMIUM_BADGE = qs('#header-premium-badge');
 
 // Sign-in modal elements
 const signinModalContainer = qs('#signin_container_background');
@@ -480,6 +481,7 @@ function updatePremiumUI(licenseData) {
       DONATE_LINK.setAttribute('href', DONATE_URL);
       DONATE_LINK.style.cursor = '';
     }
+    if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
     return;
   }
 
@@ -490,6 +492,7 @@ function updatePremiumUI(licenseData) {
       DONATE_LINK.removeAttribute('href');
       DONATE_LINK.style.cursor = 'default';
     }
+    if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
     HTML.setAttribute('is_premium', 'false');
     if (DONATE_LINK) {
@@ -497,6 +500,7 @@ function updatePremiumUI(licenseData) {
       DONATE_LINK.setAttribute('href', DONATE_URL);
       DONATE_LINK.style.cursor = '';
     }
+    if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
   }
 }
 
@@ -664,6 +668,7 @@ accountSignoutButton.addEventListener('click', async () => {
     DONATE_LINK.setAttribute('href', DONATE_URL);
     DONATE_LINK.style.cursor = '';
   }
+  if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
   closeAccountModal();
   displayStatus('Signed out');
   recordEvent('Sign Out');

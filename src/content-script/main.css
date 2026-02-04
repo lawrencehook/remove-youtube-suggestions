@@ -242,6 +242,13 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 	letter-spacing: 0.5px;
 }
 
+.rys_reveal_premium {
+	font-size: 10px;
+	font-weight: 500;
+	opacity: 0.85;
+	letter-spacing: 0.3px;
+}
+
 .rys_reveal_actions {
 	display: flex;
 	align-items: center;

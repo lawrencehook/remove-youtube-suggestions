@@ -567,6 +567,7 @@ function runDynamicSettings() {
           <div class="rys_reveal_branding">
             <img src="${rysLogoUrl}" alt="RYS" class="rys_reveal_logo">
             <span class="rys_reveal_brand">RYS</span>
+            ${cache['_isPremium'] ? '<span class="rys_reveal_premium">Premium</span>' : ''}
           </div>
           <div class="rys_reveal_actions">
             <a class="rys_reveal_dismiss">Don't show again</a>

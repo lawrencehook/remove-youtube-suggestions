@@ -4,6 +4,7 @@ const config = require('../config');
 const storage = require('../storage');
 const { sendMagicLinkEmail } = require('../services/email');
 const { generateSessionToken } = require('../services/jwt');
+const { renderPage } = require('../templates');
 
 const router = express.Router();
 
@@ -136,137 +137,22 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, char => map[char]);
 }
 
-// HTML templates
 function renderSuccessPage() {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signed In - Remove YouTube Suggestions</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background: #f5f5f5;
-    }
-    .container {
-      text-align: center;
-      padding: 40px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 400px;
-    }
-    .checkmark {
-      width: 64px;
-      height: 64px;
-      background: #4CAF50;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto 20px;
-    }
-    .checkmark svg {
-      width: 32px;
-      height: 32px;
-      fill: white;
-    }
-    h1 {
-      color: #333;
-      margin: 0 0 10px;
-      font-size: 24px;
-    }
-    p {
-      color: #666;
-      margin: 0;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="checkmark">
-      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-    </div>
-    <h1>You're signed in!</h1>
-    <p>You can close this tab and return to the extension.</p>
-  </div>
-</body>
-</html>
-  `.trim();
+  return renderPage({
+    title: 'Signed In',
+    heading: "You're signed in!",
+    message: 'You can close this tab and return to the extension.',
+    icon: 'check',
+  });
 }
 
 function renderErrorPage(message) {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Error - Remove YouTube Suggestions</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background: #f5f5f5;
-    }
-    .container {
-      text-align: center;
-      padding: 40px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 400px;
-    }
-    .error-icon {
-      width: 64px;
-      height: 64px;
-      background: #f44336;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto 20px;
-    }
-    .error-icon svg {
-      width: 32px;
-      height: 32px;
-      fill: white;
-    }
-    h1 {
-      color: #333;
-      margin: 0 0 10px;
-      font-size: 24px;
-    }
-    p {
-      color: #666;
-      margin: 0;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="error-icon">
-      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-    </div>
-    <h1>Something went wrong</h1>
-    <p>${escapeHtml(message)}</p>
-  </div>
-</body>
-</html>
-  `.trim();
+  return renderPage({
+    title: 'Error',
+    heading: 'Something went wrong',
+    message: escapeHtml(message),
+    icon: 'error',
+  });
 }
 
 module.exports = router;
