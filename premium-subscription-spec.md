@@ -24,10 +24,14 @@ All timing values should be defined in a central config file for easy adjustment
 |----------|---------------|-------------|
 | `MAGIC_LINK_EXPIRY` | 15 minutes | How long a magic link remains valid |
 | `REQUEST_ID_EXPIRY` | 20 minutes | How long the server holds a pending auth request |
-| `POLL_INTERVAL` | 3 seconds | How often extension polls during auth |
-| `POLL_TIMEOUT` | 10 minutes | How long extension polls before giving up |
+| `POLL_INTERVAL` | 2 seconds | How often extension polls during auth |
+| `POLL_TIMEOUT` | 16 minutes | How long extension polls before giving up |
 | `SESSION_TOKEN_LIFETIME` | 30 days | How long a session token remains valid |
-| `LICENSE_CACHE_TTL` | 1 hour | How long extension caches premium status |
+| `LICENSE_TOKEN_LIFETIME` | 3 days | How long a license token remains valid |
+| `GRANDFATHERED_TOKEN_LIFETIME` | 730 days | How long a grandfathered license token remains valid |
+| `LICENSE_REFRESH_THRESHOLD` | 24 hours | Refresh license token if expiring within this window |
+| `RATE_LIMIT_WINDOW` | 1 hour | Rate limit window for magic link requests |
+| `RATE_LIMIT_MAX_REQUESTS` | 5 | Max magic link requests per email per window |
 
 ---
 
@@ -61,21 +65,30 @@ Issued after successful magic link verification. Contains:
 
 Signed with a server-side secret (`JWT_SECRET` environment variable).
 
+### License Token (JWT)
+
+Issued by the server during license checks. Embedded premium status avoids extra network calls. Contains:
+
+```
+{
+  email: string,           // User's email address
+  premium: boolean,        // Whether user has premium access
+  grandfathered: boolean,  // Whether user is a past donor
+  exp: number              // Expiration timestamp
+}
+```
+
+Lifetime is 3 days for regular users, 730 days for grandfathered users. The extension refreshes the token when it's within 24 hours of expiry.
+
 ### Extension Local Storage
 
 Stored via `chrome.storage.local` (works in both Chrome and Firefox):
 
 ```
 {
-  auth: {
-    sessionToken: string | null,
-    email: string | null
-  },
-  license: {
-    isPremium: boolean,
-    expiresAt: string | null,      // Subscription end date (ISO 8601)
-    checkedAt: number              // Timestamp of last server check
-  }
+  session_token: string | null,    // JWT from auth flow
+  license_token: string | null,    // JWT with embedded premium status
+  user_email: string | null        // User's email for display
 }
 ```
 
@@ -104,9 +117,11 @@ STRIPE_PRICE_YEARLY=<stripe-price-id>
 STRIPE_WEBHOOK_SECRET=<stripe-webhook-signing-secret>
 EMAIL_FROM=<sender-email-address>
 BASE_URL=<https://yourserver.com>
+AWS_REGION=<aws-region>              # defaults to us-east-1
+DATA_DIR=<data-directory-path>       # defaults to ./data
 ```
 
-Plus any email provider credentials (e.g., SendGrid, Resend, AWS SES).
+Email is sent via AWS SES. AWS credentials are expected via standard environment or IAM role.
 
 ### Endpoints
 
@@ -139,6 +154,7 @@ Initiates the authentication flow.
 
 **Errors:**
 - `400` — Invalid email format
+- `429` — Rate limited (5 requests per email per hour). Response includes `Retry-After` header.
 
 ---
 
@@ -197,7 +213,7 @@ Extension polls this to check if magic link has been clicked.
 
 #### `GET /license/check`
 
-Returns the user's premium subscription status.
+Returns a signed license token containing the user's premium status.
 
 **Headers:**
 ```
@@ -205,31 +221,25 @@ Authorization: Bearer <session_token>
 ```
 
 **Server behavior:**
-1. Validate and decode JWT
+1. Validate and decode JWT session token
 2. Extract email from token
-3. Query Stripe for customer by email
-4. If no customer found → not premium
-5. Query Stripe for active subscriptions for that customer
-6. Return premium status and subscription end date if applicable
+3. Check if email is in the grandfathered list (case-insensitive)
+4. If grandfathered → return license token with `premium: true, grandfathered: true` (730-day lifetime)
+5. Otherwise, query Stripe for customer by email
+6. Check for active subscription
+7. Return license token with `premium: true/false, grandfathered: false` (3-day lifetime)
 
-**Response (premium):**
+**Response:**
 ```json
 {
-  "premium": true,
-  "expires_at": "2025-12-15T00:00:00Z"
+  "license_token": "eyJhbGc..."
 }
 ```
 
-**Response (not premium):**
-```json
-{
-  "premium": false,
-  "expires_at": null
-}
-```
+The license token is a JWT containing `{ email, premium, grandfathered, exp }`.
 
 **Errors:**
-- `401` — Missing, invalid, or expired token
+- `401` — Missing, invalid, or expired session token
 
 ---
 
@@ -315,6 +325,42 @@ Simple HTML page shown if user cancels checkout.
 
 ---
 
+#### `POST /billing/portal`
+
+Creates a Stripe billing portal session for managing an existing subscription.
+
+**Headers:**
+```
+Authorization: Bearer <session_token>
+```
+
+**Server behavior:**
+1. Validate and decode JWT
+2. Look up Stripe customer by email
+3. Create billing portal session
+4. Return portal URL
+
+**Response:**
+```json
+{
+  "url": "https://billing.stripe.com/..."
+}
+```
+
+**Errors:**
+- `401` — Missing, invalid, or expired token
+- `404` — No Stripe customer found for this email
+
+---
+
+#### `GET /billing/return`
+
+Simple HTML page shown after returning from the Stripe billing portal.
+
+**Content:** "Billing updated. You can close this tab and return to the extension."
+
+---
+
 ### Stripe API Usage
 
 **Find customer by email:**
@@ -357,12 +403,12 @@ stripe.checkout.sessions.create({
     "storage"
   ],
   "host_permissions": [
-    "https://yourserver.com/*"
+    "*://*.youtube.com/*"
   ]
 }
 ```
 
-No special permissions beyond storage and server communication.
+No special permissions beyond storage and YouTube host access. The premium server is accessed via `fetch()` which does not require additional host permissions in MV3.
 
 ---
 
@@ -370,51 +416,70 @@ No special permissions beyond storage and server communication.
 
 Handles sign-in and session management.
 
-#### `signIn(email: string): Promise<void>`
+#### `sendMagicLink(email: string): Promise<string>`
 
 1. Call `POST /auth/send-magic-link` with email
-2. Store `request_id` in memory
-3. Begin polling loop
+2. Handle 429 (rate limit) with user-friendly error
+3. Return `request_id`
 
-#### `pollForVerification(requestId: string): Promise<SessionData>`
+#### `pollForVerification(requestId, onStatusUpdate, options): Promise<Result>`
 
-1. Call `GET /auth/poll?request_id={requestId}`
-2. If status is "pending", wait `POLL_INTERVAL` and retry
-3. If status is "verified", return session data
-4. Timeout after `POLL_TIMEOUT` with error
-5. On success, store session in `chrome.storage.local`
+1. Call `GET /auth/poll?request_id={requestId}` every 2 seconds
+2. If status is "pending", call `onStatusUpdate` with elapsed time, continue polling
+3. If status is "verified", store session token and email in `chrome.storage.local`, return `{ success: true }`
+4. Timeout after 16 minutes with error
+5. Supports `AbortController` signal via `options.signal` for cancellation
+6. If aborted, return `{ canceled: true }`
+7. Network errors during polling are silently retried; fatal errors (404, non-OK) throw
+
+#### `isSignedIn(): Promise<boolean>`
+
+Returns true if a session token exists in storage.
+
+#### `getUserEmail(): Promise<string | null>`
+
+Returns the stored user email.
+
+#### `getSessionToken(): Promise<string | null>`
+
+Returns the stored session token.
 
 #### `signOut(): Promise<void>`
 
-1. Clear auth and license data from `chrome.storage.local`
-
-#### `getSession(): Promise<SessionData | null>`
-
-1. Read auth data from `chrome.storage.local`
-2. Return null if no session token
-3. Optionally validate token expiry client-side
+Clears session token, license token, and email from `chrome.storage.local`.
 
 ---
 
 ### License Module
 
-Handles premium status checking and caching.
+Handles premium status checking and caching via license tokens (JWTs with embedded premium status).
 
-#### `checkPremiumStatus(forceRefresh?: boolean): Promise<LicenseStatus>`
+#### `checkLicense(forceRefresh?: boolean): Promise<LicenseResult>`
 
-1. Read cached license from `chrome.storage.local`
-2. If cache exists and not expired and not forcing refresh:
-   - Return cached status
-3. Otherwise:
-   - Get session token from auth module
-   - If not signed in, return `{ premium: false }`
-   - Call `GET /license/check` with auth header
-   - Store result in `chrome.storage.local` with current timestamp
-   - Return result
+1. Read cached session token and license token from `chrome.storage.local`
+2. If no session token, return `{ isPremium: false }`
+3. Decode license token JWT (no signature verification — we trust our server)
+4. If not forcing refresh, token is valid, and not expiring within 24 hours:
+   - Return cached status from token payload
+5. Otherwise, call `GET /license/check` with session token
+6. If 401 response: auto sign-out, return `{ isPremium: false, signedOut: true }`
+7. Store new license token in `chrome.storage.local`
+8. Return status from new token
+9. On network error: fall back to cached token if still valid (not expired)
+
+Returns `{ isPremium, source, cached?, offline?, signedOut?, error? }` where `source` is `'grandfathered'` or `null`.
 
 #### `isPremium(): Promise<boolean>`
 
-Convenience wrapper around `checkPremiumStatus()`.
+Quick synchronous-style check. Reads cached license token, decodes JWT, returns `true` only if `premium === true` and token not expired. No network call.
+
+#### `createCheckoutSession(plan): Promise<string>`
+
+Calls `POST /checkout/create` with plan, returns checkout URL. Auto signs out on 401.
+
+#### `createBillingPortalSession(): Promise<string>`
+
+Calls `POST /billing/portal`, returns portal URL. Auto signs out on 401.
 
 ---
 
@@ -433,42 +498,51 @@ Handles upgrade flow.
 
 ### Feature Gating
 
-Use the license module to gate premium features:
+Features are marked with `premium: true` in `src/shared/main.js`. When a user clicks a premium-gated option:
 
-```javascript
-async function somePremiumFeature() {
-  const premium = await isPremium();
-  if (!premium) {
-    showUpgradePrompt();
-    return;
-  }
-  // ... premium feature logic
-}
-```
+1. Check `HTML.getAttribute('is_premium')`
+2. If not premium:
+   - Check if signed in via `Auth.isSignedIn()`
+   - If not signed in → show Premium Required Modal (then sign-in flow)
+   - If signed in but not premium → show Upgrade Modal
+3. The `is_premium` attribute is set on page load via `License.checkLicense()` and updated after sign-in, checkout, and tab focus events
+
+Schedule and Password settings menus are also gated with the same `handlePremiumFeatureClick()` handler.
 
 ---
 
-### UI Components Required
+### UI Components
 
-1. **Sign-in prompt**
-   - Email input field
+1. **Premium Required Modal** (for non-signed-in users)
+   - Shown when a non-signed-in user clicks a premium feature
+   - "Sign In" button → opens sign-in flow
+   - "Cancel" button → closes modal
+
+2. **Sign-In Modal**
+   - Email input field with Enter key support
    - "Send magic link" button
-   - "Check your email" state with polling indicator
-   - Success state
+   - "Check your email" waiting state with countdown timer (16 min)
+   - Cancel button to abort polling (uses AbortController)
+   - Error state with retry button
+   - **Important**: When triggered from popup, opens a new tab (`main.html?signin=1`) because popup closing would kill the polling loop
 
-2. **Account status**
-   - Show signed-in email
-   - Show premium status (if premium: expiry date)
-   - Sign-out button
+3. **Account Modal**
+   - Shows signed-in email
+   - Premium status display:
+     - "Lifetime Premium" (for grandfathered users, no billing button)
+     - "Premium Active" (for subscribers, with billing button)
+     - "Free Plan" (with upgrade button)
+   - Billing button → opens Stripe customer portal in new tab
+   - Sign-out button → clears all auth data
 
-3. **Upgrade prompt**
-   - Shown when non-premium user tries to access premium feature
-   - Display pricing for monthly and yearly
-   - "Subscribe" buttons for each plan
+4. **Upgrade Modal**
+   - Plan selection: Monthly / Yearly (defaults to yearly)
+   - "Subscribe" button → creates Stripe checkout session, opens in new tab
+   - Sets `awaitingUpgrade` flag; on tab refocus, auto-refreshes license
 
-4. **Settings/account page**
-   - Manage subscription link (Stripe customer portal)
-   - Sign-out option
+5. **Header UI changes**
+   - "Sign In" text when not signed in → "Account" when signed in
+   - "Donate" link → changes to "Premium" (no link) when premium is active
 
 ---
 
@@ -543,12 +617,14 @@ User            Extension              Server                Stripe
 
 ## Security Considerations
 
-1. **JWT secret**: Use a strong, random secret. Rotate periodically.
+1. **JWT secret**: Use a strong, random secret (>32 characters). Rotate periodically.
 2. **HTTPS only**: All server endpoints must be HTTPS.
 3. **Webhook verification**: Always verify Stripe webhook signatures.
-4. **Rate limiting**: Apply rate limits to `/auth/send-magic-link` to prevent email spam (e.g., 5 requests per email per hour).
-5. **Request ID entropy**: Use UUIDv4 or similar for request IDs (128 bits of entropy).
-6. **Token in memory during polling**: Don't persist `request_id` to storage; keep in memory only.
+4. **Rate limiting**: 5 requests per email per hour on `/auth/send-magic-link`. Returns 429 with `Retry-After` header.
+5. **Request ID entropy**: UUIDv4 (128 bits of entropy).
+6. **Token in memory during polling**: `request_id` kept in memory only, not persisted to storage.
+7. **CORS**: Only chrome-extension:// and moz-extension:// origins allowed.
+8. **License token decoding**: Extension decodes JWT payload without signature verification (trusts the server). This is acceptable given the bypass-tolerant design.
 
 ---
 
@@ -569,44 +645,38 @@ User            Extension              Server                Stripe
 
 ---
 
-## Testing Checklist
+## Testing
 
-### Auth flow
-- [ ] Magic link email is received
-- [ ] Clicking link shows success page
-- [ ] Extension detects verification and stores token
-- [ ] Sign-out clears stored data
-- [ ] Expired magic link shows appropriate error
-- [ ] Poll timeout is handled gracefully
-
-### License check
-- [ ] Non-signed-in user shows as not premium
-- [ ] Signed-in user with no subscription shows as not premium
-- [ ] Signed-in user with active subscription shows as premium
-- [ ] Cached status is used within TTL
-- [ ] Expired cache triggers fresh check
-
-### Purchase flow
-- [ ] Checkout redirects to Stripe
-- [ ] Successful payment results in premium status
-- [ ] Canceled checkout returns user gracefully
-- [ ] Both monthly and yearly plans work
-
-### Edge cases
-- [ ] User signs in on one device, checks status on another
-- [ ] Subscription expires while extension is open
-- [ ] Network failure during license check
-- [ ] Multiple rapid sign-in attempts
+See `TESTING.md` for detailed manual testing instructions covering all user paths.
 
 ---
+
+## Grandfathered Users
+
+Past donors are stored in `data/grandfathered.json` (array of email strings). During license checks:
+
+1. Email is matched case-insensitively
+2. Grandfathered users receive a license token with `premium: true, grandfathered: true` and a 730-day lifetime
+3. The UI displays "Lifetime Premium" and hides the billing portal button
+4. No Stripe query is made for grandfathered users
+
+## Analytics
+
+Events are tracked via Mixpanel. Key events:
+
+- `License Check` — with `isPremium`, `source`, `cached`, `offline`, `error` properties
+- `Premium Feature Click` — with `signedIn` flag
+- `Sign In Started`, `Magic Link Sent`, `Sign In Success`, `Sign In Error`, `Sign In Canceled`
+- `Checkout Started`, `Checkout Completed`, `Checkout Error` — with `plan` and `source`
+- `Upgrade Modal Opened`, `Account Modal Opened`
+- `Billing Portal Opened`, `Billing Portal Error`
+- `Session Expired`, `Sign Out`
 
 ## Future Considerations (Out of Scope)
 
 These are not part of the initial implementation but may be relevant later:
 
-- **Customer portal**: Link to Stripe's hosted portal for subscription management
 - **Lifetime plans**: One-time purchase option via Stripe
 - **Team/family plans**: Multiple users under one subscription
 - **Promo codes**: Stripe coupon integration
 - **Trial periods**: Free trial before requiring payment
-- **Offline grace period**: How long to honor cached premium status if server is unreachable
