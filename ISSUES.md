@@ -4,3 +4,4 @@
 2. **"Premium features coming soon" banner** — Remove entirely since premium is now deployed. ✅ Fixed
 3. **Settings menu icon** — Consider changing from three dots to a gear icon. (Cosmetic, not a blocker.)
 4. **Browser action icon** — Update the toolbar icon with a premium indicator when user has premium. (Deferred.)
+5. **Static site branding** — Add "Premium" branding to the premium page and checkout/billing pages on lawrencehook.com/rys. (Deferred.)
