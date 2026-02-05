@@ -66,12 +66,12 @@ function nextScheduleChange(times, days) {
 	if (!times || !days) return;
 
 	const current = checkSchedule(times, days);
-	const SEC_IN_WEEK = 10_080;
+	const MIN_IN_WEEK = 10_080;
 	let testDate = new Date();
 	testDate.setSeconds(0);
 	let next = checkSchedule(times, days, testDate);
 	let i = 0;
-	while (current === next && i < SEC_IN_WEEK) {
+	while (current === next && i < MIN_IN_WEEK) {
 		i += 1;
 		testDate = new Date(testDate.getTime() + 60_000);
 		next = checkSchedule(times, days, testDate);

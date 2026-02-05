@@ -5,7 +5,6 @@ const HTML = document.documentElement;
 const SIDEBAR = document.getElementById('sidebar');
 const TEMPLATE_SIDEBAR_SECTION = document.getElementById('template_sidebar_section');
 const OPTIONS_LIST = document.getElementById('primary_options');
-const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_SECTION = document.getElementById('template_section');
 const TEMPLATE_OPTION = document.getElementById('template_option');
 const TIMER_CONTAINER = document.getElementById('timer_container');
@@ -195,8 +194,6 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     const input = qs('input', LOCK_CODE_CONTAINER);
     qs('div#code', LOCK_CODE_CONTAINER).innerText = code;
     input.addEventListener('input', e => {
-      console.log(input.value);
-      console.log();
       if (input.value === code) {
         HTML.removeAttribute('entering_lock_code', '');
       }
