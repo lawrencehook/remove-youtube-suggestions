@@ -294,7 +294,6 @@ importSubmit.addEventListener('click', e => {
 
   try {
     const settingsObj = settingsStrToObj(settingsStr);
-    console.log(settingsObj);
 
     browser.storage.local.set(settingsObj).then(x => {
       updateSettings(settingsObj);
