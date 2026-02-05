@@ -3,11 +3,15 @@
 html[dark_mode='false'] { --svg-color: #464646 }
 html[dark_mode='true']  { --svg-color: #E9E9E9 }
 
-#header-settings circle,
 #header-toggle path,
 .dark_mode circle, .dark_mode path
 {
   fill: var(--svg-color);
+}
+
+#header-settings path,
+#header-settings circle {
+  stroke: var(--svg-color);
 }
 
 /* Dark mode styling */
@@ -169,9 +173,9 @@ html[foo=bar]
 }
 #header-settings {
   cursor: pointer;
-  height: var(--icon-dim);
-  max-height: var(--icon-dim);
-  max-width: var(--icon-dim);
+  height: calc(var(--icon-dim) - 6px);
+  max-height: calc(var(--icon-dim) - 6px);
+  max-width: calc(var(--icon-dim) - 6px);
 }
 #settings-menu {
   font-size: 14px;

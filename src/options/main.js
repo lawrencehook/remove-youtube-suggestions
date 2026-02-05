@@ -35,6 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return acc;
     }, {});
 
+    // Show logging opt-in modal if user hasn't responded yet
+    if (!localSettings.log_prompt_answered) {
+      showLogPrompt();
+    }
+
     browser.tabs.query({ currentWindow: true, active: true }, tabs => {
       if (!tabs || tabs.length === 0) return;
       const [{ url }] = tabs;
@@ -437,5 +442,30 @@ function initAnnouncementBanner() {
       element: container,
       insertMethod: 'append'
     }));
+  });
+}
+
+
+// Logging opt-in banner
+function showLogPrompt() {
+  const banner = document.getElementById('log_prompt_banner');
+  const yesBtn = document.getElementById('log_prompt_yes');
+  const noBtn = document.getElementById('log_prompt_no');
+  const dismissBtn = document.getElementById('log_prompt_dismiss');
+
+  banner.hidden = false;
+
+  yesBtn.addEventListener('click', () => {
+    browser.storage.local.set({ log_enabled: true, log_prompt_answered: true });
+    banner.hidden = true;
+  });
+
+  noBtn.addEventListener('click', () => {
+    browser.storage.local.set({ log_enabled: false, log_prompt_answered: true });
+    banner.hidden = true;
+  });
+
+  dismissBtn.addEventListener('click', () => {
+    banner.hidden = true;
   });
 }
