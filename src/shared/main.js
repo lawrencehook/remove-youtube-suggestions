@@ -681,7 +681,8 @@ const PASSWORD_SETTINGS = {
 const OTHER_SETTINGS = {
   global_enable: true,
   dark_mode: false,
-  log_enabled: true,
+  log_enabled: false,
+  log_prompt_answered: false,
   ...TIMED_SETTINGS,
   ...SCHEDULE_SETTINGS,
   ...PASSWORD_SETTINGS,
@@ -807,6 +808,7 @@ const idToShortId = {
   "add_reveal_end_of_video":           '89',
   "add_reveal_button":                 '90', // deprecated; migrated to add_reveal_* settings
   "remove_sidebar_infinite_scroll":    '91',
+  "log_prompt_answered":               '92',
 };
 
 
