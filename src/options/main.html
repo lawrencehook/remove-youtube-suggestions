@@ -20,6 +20,7 @@
     <script defer src="/shared/https.js"></script>
     <script defer src="/shared/analytics.js"></script>
     <script defer src="/shared/utils.js"></script>
+    <script defer src="/shared/banners.js"></script>
     <script defer src="/options/reload.js"></script>
     <script defer src="/options/main.js"></script>
     <script defer src="/options/settings-menu.js"></script>
@@ -120,6 +121,15 @@
 
     </div>
 
+    <div id="log_prompt_banner" hidden>
+      <div id="log_prompt_text">Help improve RYS? Share anonymous usage data to guide development.</div>
+      <div id="log_prompt_buttons">
+        <button id="log_prompt_no">No thanks</button>
+        <button id="log_prompt_yes">Sure</button>
+      </div>
+      <button id="log_prompt_dismiss" title="Ask me later">✕</button>
+    </div>
+
     <div id="timer_container">
       <div>Menu Timer</div>
       <div></div>
@@ -141,8 +151,8 @@
       <a href='https://www.youtube.com/feed/history' title="Too many cat video suggestions? Try removing cat videos from your watch history." target="_blank">Manage History</a>
       <a href='https://myactivity.google.com/product/youtube' title="Too many cat video suggestions? Try removing cat videos from your watch history." target="_blank">Manage History — Advanced</a>
       <hr>
-      <div id='log-enable' title="By default, RYS uses logging to collect statistics about usage. This data helps guide future development of new features. All data is anonymous, not shared with 3rd parties, and I am committed to users' privacy. You currently have logging disabled, if you'd like to re-enable it click here.">Re-enable logging</div>
-      <div id='log-disable' title="By default, RYS uses logging to collect statistics about usage. This data helps guide future development of new features. All data is anonymous, not shared with 3rd parties, and I am committed to users' privacy. To disable logging, click here.">Opt-out of logging</div>
+      <div id='log-enable' title="RYS can collect anonymous usage statistics to help guide future development. All data is anonymous and not shared with 3rd parties. Click here to enable logging.">Enable logging</div>
+      <div id='log-disable' title="RYS collects anonymous usage statistics to help guide future development. All data is anonymous and not shared with 3rd parties. Click here to disable logging.">Disable logging</div>
       <hr>
       <a href='https://github.com/lawrencehook/remove-youtube-suggestions' target='_blank'>View Source Code</a>
       <a href='https://docs.google.com/forms/d/1AzQQxTWgG6M5N87jinvXKQkGS6Mehzg19XV4mjteTK0' target='_blank'>Give Feedback</a>
@@ -202,10 +212,9 @@
         </a>
       </div>
 
-      <svg id='header-settings' viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="black">
-        <circle cx="12" cy="32" r="7"/>
-        <circle cx="52" cy="32" r="7"/>
-        <circle cx="32" cy="32" r="7"/>
+      <svg id='header-settings' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-width="1.5">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
       </svg>
 
     </div>
@@ -229,6 +238,8 @@
       <input id='unlock-password-input' type="password">
       <button id='unlock-password-button'>Confirm</button>
     </div>
+
+    <div id="banner_container"></div>
 
     <div id="main_container">
 

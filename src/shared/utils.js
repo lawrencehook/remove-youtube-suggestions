@@ -3,6 +3,14 @@ function uniq(array) { return Array.from(new Set(array)) }
 function qs(query, root=document) { return root.querySelector(query) }
 function qsa(query, root=document) { return Array.from(root.querySelectorAll(query)) }
 
+/* YouTube URL Regexes */
+const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
+const homepageRegex    = new RegExp('.*://(www|m)\\.youtube\\.com(/)?$', 'i');
+const shortsRegex      = new RegExp('.*://.*youtube\\.com/shorts.*', 'i');
+const videoPageRegex   = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
+const channelRegex     = new RegExp('.*://.*youtube\\.com/(@|channel)', 'i');
+const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
+
 
 /* Scheduling */
 function timeIsValid(times) {
@@ -66,18 +74,18 @@ function nextScheduleChange(times, days) {
 	if (!times || !days) return;
 
 	const current = checkSchedule(times, days);
-	const SEC_IN_WEEK = 10_080;
+	const MIN_IN_WEEK = 10_080;
 	let testDate = new Date();
 	testDate.setSeconds(0);
 	let next = checkSchedule(times, days, testDate);
 	let i = 0;
-	while (current === next && i < SEC_IN_WEEK) {
+	while (current === next && i < MIN_IN_WEEK) {
 		i += 1;
 		testDate = new Date(testDate.getTime() + 60_000);
 		next = checkSchedule(times, days, testDate);
 	}
 
-	if (i > SEC_IN_WEEK) return;
+	if (i >= MIN_IN_WEEK) return;
 
 	return testDate;
 }

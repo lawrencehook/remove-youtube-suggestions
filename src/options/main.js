@@ -5,7 +5,6 @@ const HTML = document.documentElement;
 const SIDEBAR = document.getElementById('sidebar');
 const TEMPLATE_SIDEBAR_SECTION = document.getElementById('template_sidebar_section');
 const OPTIONS_LIST = document.getElementById('primary_options');
-const TEMPLATE_FIELDSET = document.getElementById('template_fieldset');
 const TEMPLATE_SECTION = document.getElementById('template_section');
 const TEMPLATE_OPTION = document.getElementById('template_option');
 const TIMER_CONTAINER = document.getElementById('timer_container');
@@ -13,21 +12,26 @@ const LOCK_CODE_CONTAINER = document.getElementById('lock_code_container');
 let openedTime = Date.now();
 let currentUrl;
 
-const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
-const videoPageRegex   = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
-const homepageRegex    = new RegExp('.*://(www|m)\\.youtube\\.com/$',  'i');
-const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
-const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 document.addEventListener("DOMContentLoaded", () => {
   recordEvent('Page View: Options');
+  initAnnouncementBanner();
   browser.storage.local.get(localSettings => {
+    const revealUpdates = migrateRevealSettings(localSettings);
+    if (Object.keys(revealUpdates).length) {
+      browser.storage.local.set(revealUpdates);
+    }
+
     const settings = { ...DEFAULT_SETTINGS, ...localSettings };
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
       acc[id] = id in localSettings ? localSettings[id] : value;
       return acc;
     }, {});
+
+    // Show logging opt-in modal if user hasn't responded yet
+    if (!localSettings.log_prompt_answered) {
+      showLogPrompt();
+    }
 
     browser.tabs.query({ currentWindow: true, active: true }, tabs => {
       if (!tabs || tabs.length === 0) return;
@@ -154,6 +158,19 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
+  const searchInput = searchBar.querySelector('input');
+  const focusSearchInput = () => {
+    if (!searchInput) return;
+    if (document.activeElement === searchInput) return;
+    searchInput.focus();
+  };
+  focusSearchInput();
+  setTimeout(focusSearchInput, 0);
+  setTimeout(focusSearchInput, 50);
+  window.addEventListener('focus', focusSearchInput);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') focusSearchInput();
+  });
 
   const turnBackOn = document.getElementById('turn_back_on');
   turnBackOn.addEventListener('click', e => {
@@ -171,8 +188,6 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     const input = qs('input', LOCK_CODE_CONTAINER);
     qs('div#code', LOCK_CODE_CONTAINER).innerText = code;
     input.addEventListener('input', e => {
-      console.log(input.value);
-      console.log();
       if (input.value === code) {
         HTML.removeAttribute('entering_lock_code', '');
       }
@@ -376,7 +391,12 @@ function timerLoop() {
 
 
 // For timedChanged and scheduling
+let timeLoopId = null;
+
 function timeLoop() {
+  // Don't run if page is hidden
+  if (document.hidden) return;
+
   const {
     schedule, scheduleTimes, scheduleDays,
     nextTimedChange, nextTimedValue
@@ -401,5 +421,61 @@ function timeLoop() {
   }
 
   updateTimeInfo();
-  setTimeout(() => timeLoop(), 2_000);
+  timeLoopId = setTimeout(() => timeLoop(), 2_000);
+}
+
+// Pause/resume timeLoop based on visibility
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (timeLoopId) {
+      clearTimeout(timeLoopId);
+      timeLoopId = null;
+    }
+  } else {
+    if (!timeLoopId) {
+      timeLoop();
+    }
+  }
+});
+
+
+// Announcement banners
+function initAnnouncementBanner() {
+  const container = document.getElementById('banner_container');
+  if (!container) return;
+
+  const logoUrl = browser.runtime.getURL('images/rys.svg');
+  const banners = getActiveBanners('options');
+
+  banners.forEach(banner => {
+    initBanner(banner, logoUrl, () => ({
+      element: container,
+      insertMethod: 'append'
+    }));
+  });
+}
+
+
+// Logging opt-in banner
+function showLogPrompt() {
+  const banner = document.getElementById('log_prompt_banner');
+  const yesBtn = document.getElementById('log_prompt_yes');
+  const noBtn = document.getElementById('log_prompt_no');
+  const dismissBtn = document.getElementById('log_prompt_dismiss');
+
+  banner.hidden = false;
+
+  yesBtn.addEventListener('click', () => {
+    browser.storage.local.set({ log_enabled: true, log_prompt_answered: true });
+    banner.hidden = true;
+  }, { once: true });
+
+  noBtn.addEventListener('click', () => {
+    browser.storage.local.set({ log_enabled: false, log_prompt_answered: true });
+    banner.hidden = true;
+  }, { once: true });
+
+  dismissBtn.addEventListener('click', () => {
+    banner.hidden = true;
+  }, { once: true });
 }

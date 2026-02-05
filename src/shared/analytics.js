@@ -4,7 +4,7 @@ for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".
 mixpanel.init('44d2dff3b4d141679640b297d31d5093');
 
 function recordEvent(name, props={}) {
-	const logEnabled = document.documentElement.getAttribute('log_enabled') || 'true';
+	const logEnabled = document.documentElement.getAttribute('log_enabled') || 'false';
 
 	if (logEnabled !== 'true') return;
 

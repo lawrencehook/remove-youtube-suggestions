@@ -23,63 +23,89 @@
 
     <div hidden id="donate-links-container">
       <div id="donate-links">
-        <a href="https://paypal.me/lawrencehook" target="_blank">PayPal</a>
-        <a href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' target="_blank">Credit or Debit Card</a>
+        <a href="https://paypal.me/lawrencehook" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.63h6.607c2.19 0 3.873.6 5.01 1.782.453.47.79 1.01 1.003 1.605.226.631.32 1.366.278 2.183-.003.063-.007.123-.012.183a6.52 6.52 0 0 1-.07.573c-.455 2.653-2.007 4.478-4.486 5.27a8.148 8.148 0 0 1-2.458.342H9.653a.77.77 0 0 0-.758.63l-.813 5.17a.641.641 0 0 1-.633.54h-.373v-.03z"/></svg>
+          PayPal
+        </a>
+        <a href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+          Credit or Debit Card
+        </a>
       </div>
     </div>
 
+    <div class="page-container">
+      <header>
+        <a href="/options/main.html" id="back-button">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+          Back
+        </a>
 
-    <header>
-      <a href="/options/main.html" id="back-button">Back</a>
-
-      <h1>Donors</h1>
-      <p>RYS is made possible by donations from people like you.</p>
-      <p>You can also show your support by sharing it with a friend or leaving a <a id="review-link" target="_blank">review</a> :)</p>
-
-    </header>
-
-    <main>
-
-      <template id='template-donor'><p></p></template>
-
-      <article id='tier-1' class="tier" min-amount="25">
-        <h3>Tier 1 • $25</h3>
-        <div class="donors-list">
-          <p>None yet, be the first</p>
+        <div class="header-content">
+          <div class="header-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <h1>Supporters</h1>
+          <p class="subtitle">RYS is made possible by generous donations from people like you.</p>
+          <p class="subtitle secondary">You can also support by sharing with a friend or leaving a <a id="review-link" target="_blank">review</a></p>
         </div>
-      </article>
+      </header>
 
-      <article id='tier-2' class="tier" min-amount="10">
-        <h3>Tier 2 • $10</h3>
-        <div class="donors-list">
-          <p>None yet, be the first</p>
+      <main>
+        <template id='template-donor'><span class="donor-name"></span></template>
+
+        <article id='tier-1' class="tier" min-amount="25">
+          <div class="tier-header">
+            <div class="tier-badge">1</div>
+            <div class="tier-info">
+              <h3>Tier 1</h3>
+              <span class="tier-amount">$25+</span>
+            </div>
+          </div>
+          <div class="donors-list">
+            <span class="donor-placeholder">Be the first</span>
+          </div>
+        </article>
+
+        <article id='tier-2' class="tier" min-amount="10">
+          <div class="tier-header">
+            <div class="tier-badge">2</div>
+            <div class="tier-info">
+              <h3>Tier 2</h3>
+              <span class="tier-amount">$10+</span>
+            </div>
+          </div>
+          <div class="donors-list">
+            <span class="donor-placeholder">Be the first</span>
+          </div>
+        </article>
+
+        <article id='tier-3' class="tier" min-amount="5">
+          <div class="tier-header">
+            <div class="tier-badge">3</div>
+            <div class="tier-info">
+              <h3>Tier 3</h3>
+              <span class="tier-amount">$5+</span>
+            </div>
+          </div>
+          <div class="donors-list">
+            <span class="donor-placeholder">Be the first</span>
+          </div>
+        </article>
+
+      </main>
+
+      <footer>
+        <div class="footer-content">
+          <div class="footer-text">
+            <h3>Join our supporters</h3>
+          </div>
+          <button id='donate_button'>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            Donate
+          </button>
         </div>
-      </article>
-
-      <article id='tier-3' class="tier" min-amount="5">
-        <h3>Tier 3 • $5</h3>
-        <div class="donors-list">
-          <p>None yet, be the first</p>
-        </div>
-      </article>
-
-      <!-- <article id='acknowledgments'> -->
-        <!-- <h1>Special Acknowledgements</h1> -->
-        <!-- <div class="donors-list"> -->
-          <!-- <p>Sample Donor</p> -->
-        <!-- </div> -->
-      <!-- </article> -->
-
-    </main>
-
-    <footer>
-
-      <div id="button-container">
-        <h3>Join the ranks of our generous donors <a id="info">ⓘ <div id='tooltip'>Names are anonymized by default. Want to add your name to the list? Add a note to your donation or email me at lawrencehook@gmail.com.</div></a></h3>
-
-        <button id='donate_button'>Donate</button>
-      </div>
-
-    </footer>
+      </footer>
+    </div>
   </body>
 </html>

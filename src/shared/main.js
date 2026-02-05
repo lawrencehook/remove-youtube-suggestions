@@ -67,18 +67,17 @@ const SECTIONS = [
         id: "remove_end_of_video",
         defaultValue: true
       },
-      {
-        name: "Add a button to reveal suggestions",
-        tags: "Homepage, Video Player",
-        id: "add_reveal_button",
-        defaultValue: true
-      },
     ]
   },
   {
     name: "Homepage",
     tags: "Homepage",
     options: [
+      {
+        name: "Show reveal box for homepage suggestions",
+        id: "add_reveal_homepage",
+        defaultValue: true
+      },
       {
         name: "Hide the header",
         id: "remove_header",
@@ -175,16 +174,16 @@ const SECTIONS = [
     tags: "Left Navbar",
     options: [
       {
-        name: "Hide section - You/Library",
-        id: "remove_quick_links_section",
-        defaultValue: false,
-        effects: { true: { only_show_playlists: false }}
-      },
-      {
         name: "Hide section - Subscriptions",
         id: "remove_sub_section",
         defaultValue: false,
         effects: { false: { only_show_playlists: false }}
+      },
+      {
+        name: "Hide section - You/Library",
+        id: "remove_quick_links_section",
+        defaultValue: false,
+        effects: { true: { only_show_playlists: false }}
       },
       {
         name: "Hide section - Explore",
@@ -270,6 +269,11 @@ const SECTIONS = [
     tags: "Video Player",
     options: [
       {
+        name: "Show reveal box for end-of-video suggestions",
+        id: "add_reveal_end_of_video",
+        defaultValue: true
+      },
+      {
         name: "Hide info cards",
         id: "remove_info_cards",
         defaultValue: false
@@ -320,6 +324,11 @@ const SECTIONS = [
     name: "Video Player - Sidebar",
     tags: "Video Player",
     options: [
+      {
+        name: "Show reveal box for sidebar suggestions",
+        id: "add_reveal_sidebar",
+        defaultValue: true
+      },
       {
         name: "Center contents - removes the sidebar",
         id: "remove_entire_sidebar",
@@ -602,7 +611,8 @@ const PASSWORD_SETTINGS = {
 const OTHER_SETTINGS = {
   global_enable: true,
   dark_mode: false,
-  log_enabled: true,
+  log_enabled: false,
+  log_prompt_answered: false,
   ...TIMED_SETTINGS,
   ...SCHEDULE_SETTINGS,
   ...PASSWORD_SETTINGS,
@@ -612,6 +622,26 @@ const DEFAULT_SETTINGS = SECTIONS.reduce((acc, fieldset) => {
   fieldset.options.forEach(option => acc[option.id] = option.defaultValue);
   return acc;
 }, { ...OTHER_SETTINGS });
+
+// Migrate legacy add_reveal_button to per-surface settings
+function migrateRevealSettings(settings) {
+  if (!settings || !('add_reveal_button' in settings)) return {};
+  const val = settings.add_reveal_button;
+  const updates = {};
+  if (!('add_reveal_homepage' in settings)) {
+    settings.add_reveal_homepage = val;
+    updates.add_reveal_homepage = val;
+  }
+  if (!('add_reveal_sidebar' in settings)) {
+    settings.add_reveal_sidebar = val;
+    updates.add_reveal_sidebar = val;
+  }
+  if (!('add_reveal_end_of_video' in settings)) {
+    settings.add_reveal_end_of_video = val;
+    updates.add_reveal_end_of_video = val;
+  }
+  return updates;
+}
 
 
 // For import/export
@@ -703,6 +733,12 @@ const idToShortId = {
   "shrink_video_thumbnails":           '84',
   "password":                          '85',
   "hashed_password":                   '86',
+  "add_reveal_homepage":               '87',
+  "add_reveal_sidebar":                '88',
+  "add_reveal_end_of_video":           '89',
+  "add_reveal_button":                 '90', // deprecated; migrated to add_reveal_* settings
+  "remove_sidebar_infinite_scroll":    '91',
+  "log_prompt_answered":               '92',
 };
 
 
