@@ -568,28 +568,9 @@ html[foo=bar] {
   height: 100vh;
   z-index: 100;
 
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.6);
 
   display: flex;
-  animation: fadeIn 0.15s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 #signin_container,
@@ -599,43 +580,40 @@ html[foo=bar] {
   height: fit-content;
   max-height: calc(100vh - 20px);
   width: min(90vw, 380px);
-  margin: 10px auto;
-  padding: 28px 32px;
+  margin-top: calc(1.2 * var(--header-height));
+  margin-right: auto;
+  margin-left: auto;
+  padding: 20px;
   overflow-y: auto;
 
   text-align: center;
 
   background-color: var(--body-background-color);
   color: var(--body-color);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
   box-sizing: border-box;
 
   border: 1px solid var(--box-shadow-color);
-  border-radius: 12px;
+  border-radius: 2px;
 
   display: flex;
-  gap: 24px;
+  gap: 15px;
   flex-direction: column;
   align-items: center;
-
-  animation: slideIn 0.2s ease-out;
 }
 
 /* Modal Logo/Icon */
 .modal-icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: -8px;
+  width: 32px;
+  height: 32px;
 }
 
 #signin_header,
 #account_header,
 #upgrade_header,
 #premium_required_header {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--label-color);
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 #signin_email_form,
@@ -644,34 +622,23 @@ html[foo=bar] {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   align-items: center;
 }
 
 #signin_email_form p,
 #signin_waiting p:first-child {
-  font-size: 0.9rem;
-  color: var(--body-color);
-  opacity: 0.8;
+  font-size: 0.85rem;
   margin: 0;
 }
 
 #signin-email-input {
   width: 100%;
-  padding: 12px 14px;
-  font-size: 0.95rem;
-  border: 1.5px solid var(--box-shadow-color);
-  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
   box-sizing: border-box;
   background-color: var(--body-background-color);
   color: var(--body-color);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-#signin-email-input:focus {
-  border-color: var(--blue-color);
-  box-shadow: 0 0 0 3px rgba(6, 0, 251, 0.1);
-  outline: none;
 }
 
 #signin-email-input::placeholder {
@@ -683,29 +650,21 @@ html[foo=bar] {
 #account_container button,
 #upgrade_container button,
 #premium_required_container button {
-  padding: 12px 24px;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  font-size: 0.85rem;
   font-weight: 500;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   cursor: pointer;
   background-color: var(--blue-color);
   color: white;
-  transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
 }
 
 #signin_container button:hover,
 #account_container button:hover,
 #upgrade_container button:hover,
 #premium_required_container button:hover {
-  box-shadow: 0 4px 12px rgba(6, 0, 251, 0.25);
-}
-
-#signin_container button:active,
-#account_container button:active,
-#upgrade_container button:active,
-#premium_required_container button:active {
-  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 #signin_container button:disabled,
@@ -714,7 +673,6 @@ html[foo=bar] {
 #premium_required_container button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  box-shadow: none;
 }
 
 #signin-send-button,
@@ -725,35 +683,23 @@ html[foo=bar] {
 
 #signin-cancel-button,
 #upgrade-cancel-button,
-#premium-required-cancel-button {
-  background-color: transparent !important;
-  color: var(--body-color) !important;
-  border: 1.5px solid var(--box-shadow-color) !important;
-  box-shadow: none !important;
-}
-
-#signin-cancel-button:hover,
-#upgrade-cancel-button:hover {
-  background-color: var(--box-shadow-color) !important;
-  box-shadow: none !important;
-}
-
+#premium-required-cancel-button,
 #account-signout-button {
   background-color: transparent !important;
   color: var(--body-color) !important;
-  border: 1.5px solid var(--box-shadow-color) !important;
-  box-shadow: none !important;
+  border: 1px solid var(--box-shadow-color) !important;
 }
 
+#signin-cancel-button:hover,
+#upgrade-cancel-button:hover,
 #account-signout-button:hover {
   background-color: var(--box-shadow-color) !important;
-  box-shadow: none !important;
 }
 
 #signin-spinner {
-  width: 28px;
-  height: 28px;
-  border: 3px solid var(--box-shadow-color);
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--box-shadow-color);
   border-top-color: var(--blue-color);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -764,127 +710,111 @@ html[foo=bar] {
 }
 
 #signin-waiting-email {
-  font-weight: 600;
+  font-weight: bold;
   word-break: break-all;
-  color: var(--label-color);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 #signin-status {
-  font-size: 0.85rem;
-  color: var(--body-color);
+  font-size: 0.8rem;
   opacity: 0.7;
 }
 
 #signin-error-message {
   color: var(--red-color);
-  font-weight: 500;
 }
 
 /* Account Modal */
-#account_info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+#account_container {
+  width: auto;
+  padding: 16px 20px;
+  gap: 16px;
 }
 
-#account_info p:first-child {
-  font-size: 0.85rem;
-  color: var(--body-color);
-  opacity: 0.7;
-  margin: 0;
+#account_row_1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+#account-email-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+#account-email-label {
+  font-size: 0.65rem;
+  opacity: 0.6;
 }
 
 #account-email {
-  font-weight: 600;
-  word-break: break-all;
-  font-size: 1rem;
-  color: var(--label-color);
-}
-
-#account_premium_status {
-  padding: 12px 20px;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Free tier styling */
-#account_premium_status[data-status="free"] {
-  background: linear-gradient(135deg,
-    var(--box-shadow-color) 0%,
-    rgba(127, 127, 127, 0.3) 100%);
-  border: 1px solid var(--box-shadow-color);
-}
-
-/* Premium tier styling */
-#account_premium_status[data-status="premium"] {
-  background: linear-gradient(135deg,
-    var(--blue-color) 0%,
-    var(--light-blue) 100%);
-  border: 1px solid var(--blue-color);
-}
-
-#account_premium_status[data-status="premium"] #account-premium-label {
-  color: white;
-  font-weight: 600;
-}
-
-/* Grandfathered (lifetime) styling */
-#account_premium_status[data-status="grandfathered"] {
-  background: linear-gradient(135deg,
-    #FFD700 0%,
-    #FFA500 100%);
-  border: 1px solid #FFD700;
-}
-
-#account_premium_status[data-status="grandfathered"] #account-premium-label {
-  color: #1a1a1a;
-  font-weight: 600;
+  font-size: 0.85rem;
 }
 
 #account-premium-label {
-  font-size: 0.9rem;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
-/* Premium badge icon */
-#account_premium_status[data-status="premium"] #account-premium-label::before,
-#account_premium_status[data-status="grandfathered"] #account-premium-label::before {
-  content: '★';
-  font-size: 1rem;
+#account-premium-label[data-status="free"] {
+  color: var(--body-color);
+  opacity: 0.6;
 }
 
-#account_actions {
+#account-premium-label[data-status="premium"] {
+  color: var(--blue-color);
+}
+
+#account-premium-label[data-status="grandfathered"] {
+  color: #b8860b;
+}
+
+#account_row_2 {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
   width: 100%;
 }
 
-#account_actions button {
-  width: 100%;
+#account_row_2 button {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
-#account-upgrade-button {
-  background: linear-gradient(135deg, var(--blue-color) 0%, var(--light-blue) 100%);
+#account-billing-button {
+  background-color: transparent !important;
+  color: var(--blue-color) !important;
+  border: 1px solid var(--blue-color) !important;
+}
+
+#account-billing-button:hover {
+  background-color: rgba(6, 0, 251, 0.05) !important;
+}
+
+#account-signout-button {
+  background-color: transparent !important;
+  color: var(--body-color) !important;
+  border: 1px solid var(--box-shadow-color) !important;
+}
+
+#account-signout-button:hover {
+  background-color: var(--box-shadow-color) !important;
 }
 
 /* Upgrade Modal */
 #upgrade_container {
-  width: min(90vw, 420px);
+  width: min(90vw, 380px);
 }
 
 #upgrade_description,
 #premium_required_description {
-  font-size: 0.9rem;
-  color: var(--body-color);
-  opacity: 0.8;
-  margin: -8px 0 0 0;
+  font-size: 0.85rem;
+  margin: 0;
 }
 
 #upgrade_plans {
@@ -895,63 +825,48 @@ html[foo=bar] {
 
 .upgrade-plan {
   flex: 1;
-  padding: 20px 16px;
-  border: 2px solid var(--box-shadow-color);
-  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--box-shadow-color);
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .upgrade-plan:hover {
   border-color: var(--light-blue);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .upgrade-plan[selected] {
   border-color: var(--blue-color);
-  background: linear-gradient(180deg,
-    rgba(6, 0, 251, 0.03) 0%,
-    rgba(6, 0, 251, 0.08) 100%);
-  box-shadow: 0 0 0 3px rgba(6, 0, 251, 0.1);
+  background-color: rgba(6, 0, 251, 0.05);
 }
 
 .plan-name {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--label-color);
+  font-weight: bold;
+  font-size: 0.85rem;
 }
 
 .plan-price {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--label-color);
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 .plan-price-period {
-  font-size: 0.8rem;
-  font-weight: 400;
+  font-size: 0.75rem;
+  font-weight: normal;
   opacity: 0.7;
 }
 
 .plan-savings {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: #22c55e;
-  background-color: rgba(34, 197, 94, 0.1);
-  padding: 4px 10px;
-  border-radius: 12px;
-  display: inline-block;
-  margin-top: 4px;
 }
 
 #upgrade-checkout-button {
   width: 100%;
-  background: linear-gradient(135deg, var(--blue-color) 0%, var(--light-blue) 100%);
 }
 
 #upgrade_buttons,
@@ -1023,16 +938,8 @@ html[dark_mode='true'] .modal-icon circle[fill="none"] {
   fill: none;
 }
 
-/* Adjust gradients for dark mode */
-html[dark_mode='true'] #account_premium_status[data-status="premium"] {
-  background: linear-gradient(135deg,
-    var(--light-blue) 0%,
-    var(--blue-color) 100%);
-}
-
+/* Adjust for dark mode */
 html[dark_mode='true'] .upgrade-plan[selected] {
-  background: linear-gradient(180deg,
-    rgba(117, 102, 204, 0.15) 0%,
-    rgba(117, 102, 204, 0.25) 100%);
+  background-color: rgba(117, 102, 204, 0.2);
 }
 

@@ -156,24 +156,15 @@
 
     <div id="account_container_background" hidden>
       <div id="account_container">
-        <svg class="modal-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="24" r="22" fill="none" stroke="var(--blue-color)" stroke-width="2"/>
-          <circle cx="24" cy="18" r="7" fill="var(--blue-color)"/>
-          <path d="M12 40c0-8 5.5-13 12-13s12 5 12 13" fill="none" stroke="var(--blue-color)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <div id="account_header">Your Account</div>
-
-        <div id="account_info">
-          <p>Signed in as</p>
-          <p id="account-email"></p>
+        <div id="account_row_1">
+          <div id="account-email-container">
+            <span id="account-email-label">Signed in as</span>
+            <span id="account-email"></span>
+          </div>
+          <span id="account-premium-label" data-status="free"></span>
         </div>
-
-        <div id="account_premium_status" data-status="free">
-          <p id="account-premium-label"></p>
-        </div>
-
-        <div id="account_actions">
-          <button id="account-upgrade-button" hidden>Upgrade to Premium</button>
+        <div id="account_row_2">
+          <button id="account-upgrade-button" hidden>Upgrade</button>
           <button id="account-billing-button" hidden>Manage Subscription</button>
           <button id="account-signout-button">Sign Out</button>
         </div>

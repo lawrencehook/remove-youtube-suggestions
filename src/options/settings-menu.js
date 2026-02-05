@@ -612,8 +612,6 @@ signinRetryButton.addEventListener('click', () => {
 });
 
 // Account modal
-const accountPremiumStatus = qs('#account_premium_status');
-
 async function openAccountModal() {
   const email = await Auth.getUserEmail();
   const licenseData = await License.checkLicense(awaitingUpgrade);
@@ -631,18 +629,18 @@ async function openAccountModal() {
 
   if (licenseData.isPremium) {
     if (licenseData.source === 'grandfathered') {
-      accountPremiumLabel.textContent = 'Lifetime Premium';
-      accountPremiumStatus.setAttribute('data-status', 'grandfathered');
+      accountPremiumLabel.textContent = 'Lifetime';
+      accountPremiumLabel.setAttribute('data-status', 'grandfathered');
       accountBillingButton.setAttribute('hidden', '');
     } else {
-      accountPremiumLabel.textContent = 'Premium Active';
-      accountPremiumStatus.setAttribute('data-status', 'premium');
+      accountPremiumLabel.textContent = 'Premium';
+      accountPremiumLabel.setAttribute('data-status', 'premium');
       accountBillingButton.removeAttribute('hidden');
     }
     accountUpgradeButton.setAttribute('hidden', '');
   } else {
-    accountPremiumLabel.textContent = 'Free Plan';
-    accountPremiumStatus.setAttribute('data-status', 'free');
+    accountPremiumLabel.textContent = 'Free';
+    accountPremiumLabel.setAttribute('data-status', 'free');
     accountUpgradeButton.removeAttribute('hidden');
     accountBillingButton.setAttribute('hidden', '');
   }
