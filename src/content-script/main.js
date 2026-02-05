@@ -420,7 +420,7 @@ function runDynamicSettings() {
 
     // Hide notification number in title
     if(cache['remove_notif_bell']){
-      document.title = document.title.replace(/\(\d+\)/g, '');
+      document.title = document.title.replace(/^\(\d+\)/g, '');
     }
 
     // Show video length when thumbnails are hidden
