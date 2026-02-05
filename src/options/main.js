@@ -447,7 +447,6 @@ function initAnnouncementBanner() {
   const logoUrl = browser.runtime.getURL('images/rys.svg');
   const banners = getActiveBanners('options');
 
-
   banners.forEach(banner => {
     initBanner(banner, logoUrl, () => ({
       element: container,
