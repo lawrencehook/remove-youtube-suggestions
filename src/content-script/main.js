@@ -10,12 +10,6 @@ const REDIRECT_URLS = {
   "redirect_to_library": 'https://www.youtube.com/feed/library',
 };
 
-const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
-const homepageRegex    = new RegExp('.*://(www|m)\.youtube\.com(/)?$',  'i');
-const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const videoRegex       = new RegExp('.*://.*youtube\.com/watch\\?v=.*',  'i');
-const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
-const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
@@ -49,7 +43,7 @@ let theaterClicked = false, hyper = false;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
-let onVideo = videoRegex.test(url);
+let onVideo = videoPageRegex.test(url);
 let onChannel = channelRegex.test(url);
 let onSubs = subsRegex.test(url);
 let settingsInit = false
@@ -57,8 +51,6 @@ let settingsInit = false
 let dynamicIters = 0;
 let frameRequested = false;
 let isRunning = false;
-// let lastRun = Date.now();
-// let counter = 0;
 let lastScheduleCheck;
 const scheduleInterval = 2_000; // 2 seconds
 let lastRedirect;
@@ -113,8 +105,6 @@ document.addEventListener("DOMContentLoaded", e => handleNewPage());
 // Dynamic settings (i.e. js instead of css)
 function runDynamicSettings() {
   if (isRunning) return;
-  // console.log('runDynamicSettings', Date.now() - lastRun);
-  // lastRun = Date.now();
   isRunning = true;
   dynamicIters += 1;
   const on = cache['global_enable'] === true;
@@ -340,16 +330,6 @@ function runDynamicSettings() {
       }
     }
 
-    // // Enable theater mode
-    // if (cache['enable_theater'] === true && !theaterClicked) {
-    //   const theaterButton = qsa('button[title="Theater mode (t)"]')?.[0];
-    //   if (theaterButton && theaterButton.display !== 'none') {
-    //     console.log('theaterButton.click();')
-    //     theaterButton.click();
-    //     theaterClicked = true;
-    //   }
-    // }
-
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
 
@@ -409,10 +389,6 @@ function runDynamicSettings() {
       }
     }
 
-    // if (cache['change_playback_speed']) {
-    //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
-    // }
-
     // Hide all but the timestamped comments
     if (cache['remove_non_timestamp_comments']) {
       const timestamps = qsa('yt-formatted-string:not(.published-time-text).ytd-comment-renderer > a.yt-simple-endpoint[href^="/watch"]');
@@ -421,30 +397,6 @@ function runDynamicSettings() {
         comment?.setAttribute('timestamp_comment', '');
       });
     }
-
-    // // Disable play on hover
-    // if (dynamicIters % 10 === 0) {
-    //   const prefCookie = getCookie('PREF');
-    //   const prefObj = prefCookie?.split('&')?.reduce((acc, x) => {
-    //     const [ key, value ] = x.split('=');
-    //     acc[key] = value;
-    //     return acc;
-    //   }, {});
-    //   if (prefObj) {
-    //     const f7 = prefObj['f7'] || '0';
-    //     const playOnHoverEnabled = f7[f7.length-1] === '0';
-
-    //     if (cache['disable_play_on_hover'] && playOnHoverEnabled) {
-    //       prefObj['f7'] = f7.substring(0, f7.length-1) + '1';
-    //       const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
-    //       setCookie('PREF', newPref);
-    //     } else if (!cache['disable_play_on_hover'] && !playOnHoverEnabled) {
-    //       prefObj['f7'] = f7.substring(0, f7.length-1) + '0';
-    //       const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
-    //       setCookie('PREF', newPref);
-    //     }
-    //   }
-    // }
 
     // Show description
     if (cache['expand_description'] || cache['remove_comments']) {
@@ -577,10 +529,17 @@ function runDynamicSettings() {
 
 function requestRunDynamicSettings() {
   if (frameRequested || isRunning) return;
+  if (document.hidden) return; // Pause polling when tab is hidden
   frameRequested = true;
-  // setTimeout(() => runDynamicSettings(), 50);
   setTimeout(() => runDynamicSettings(), Math.min(100, 50 + 10 * dynamicIters));
 }
+
+// Resume polling when tab becomes visible
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    requestRunDynamicSettings();
+  }
+});
 
 
 function injectAnnouncementBanners() {
@@ -637,7 +596,7 @@ function handleNewPage() {
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
   onShorts = shortsRegex.test(url);
-  onVideo = videoRegex.test(url);
+  onVideo = videoPageRegex.test(url);
   onChannel = channelRegex.test(url);
   onSubs = subsRegex.test(url);
   settingsInit = false;

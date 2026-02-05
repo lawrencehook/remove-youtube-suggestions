@@ -12,12 +12,6 @@ const LOCK_CODE_CONTAINER = document.getElementById('lock_code_container');
 let openedTime = Date.now();
 let currentUrl;
 
-const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
-const videoPageRegex   = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
-const homepageRegex    = new RegExp('.*://(www|m)\\.youtube\\.com/$',  'i');
-const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
-const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 document.addEventListener("DOMContentLoaded", () => {
   recordEvent('Page View: Options');

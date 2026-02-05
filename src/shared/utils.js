@@ -3,6 +3,14 @@ function uniq(array) { return Array.from(new Set(array)) }
 function qs(query, root=document) { return root.querySelector(query) }
 function qsa(query, root=document) { return Array.from(root.querySelectorAll(query)) }
 
+/* YouTube URL Regexes */
+const resultsPageRegex = new RegExp('.*://.*youtube\\.com/results.*', 'i');
+const homepageRegex    = new RegExp('.*://(www|m)\\.youtube\\.com(/)?$', 'i');
+const shortsRegex      = new RegExp('.*://.*youtube\\.com/shorts.*', 'i');
+const videoPageRegex   = new RegExp('.*://(www|m)\\.youtube\\.com/watch\\?v=.*', 'i');
+const channelRegex     = new RegExp('.*://.*youtube\\.com/(@|channel)', 'i');
+const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
+
 
 /* Scheduling */
 function timeIsValid(times) {
@@ -77,7 +85,7 @@ function nextScheduleChange(times, days) {
 		next = checkSchedule(times, days, testDate);
 	}
 
-	if (i > SEC_IN_WEEK) return;
+	if (i >= MIN_IN_WEEK) return;
 
 	return testDate;
 }
