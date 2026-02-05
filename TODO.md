@@ -5,7 +5,6 @@
 - [ ] Auto-generate `idToShortId` map from `SECTIONS` instead of manual maintenance
 - [ ] Add storage validation/migration for schema changes between versions
 - [ ] Improve error handling beyond `console.log(error)`
-- [ ] Clean up event listeners in `options/main.js` to prevent memory leaks
 
 ## i18n / Localization
 

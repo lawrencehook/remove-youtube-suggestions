@@ -391,7 +391,12 @@ function timerLoop() {
 
 
 // For timedChanged and scheduling
+let timeLoopId = null;
+
 function timeLoop() {
+  // Don't run if page is hidden
+  if (document.hidden) return;
+
   const {
     schedule, scheduleTimes, scheduleDays,
     nextTimedChange, nextTimedValue
@@ -416,8 +421,22 @@ function timeLoop() {
   }
 
   updateTimeInfo();
-  setTimeout(() => timeLoop(), 2_000);
+  timeLoopId = setTimeout(() => timeLoop(), 2_000);
 }
+
+// Pause/resume timeLoop based on visibility
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (timeLoopId) {
+      clearTimeout(timeLoopId);
+      timeLoopId = null;
+    }
+  } else {
+    if (!timeLoopId) {
+      timeLoop();
+    }
+  }
+});
 
 
 // Announcement banners
@@ -449,14 +468,14 @@ function showLogPrompt() {
   yesBtn.addEventListener('click', () => {
     browser.storage.local.set({ log_enabled: true, log_prompt_answered: true });
     banner.hidden = true;
-  });
+  }, { once: true });
 
   noBtn.addEventListener('click', () => {
     browser.storage.local.set({ log_enabled: false, log_prompt_answered: true });
     banner.hidden = true;
-  });
+  }, { once: true });
 
   dismissBtn.addEventListener('click', () => {
     banner.hidden = true;
-  });
+  }, { once: true });
 }

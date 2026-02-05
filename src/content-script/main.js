@@ -194,8 +194,10 @@ function runDynamicSettings() {
       }
     }
 
-    // Subscriptions page options
-    if (onSubs) {
+    // Subscriptions page options (only if any sub-page settings are enabled)
+    const subsSettingsEnabled = cache['remove_sub_shorts'] || cache['remove_sub_live'] ||
+                                cache['remove_sub_upcoming'] || cache['remove_sub_premiere'] || cache['remove_sub_vods'];
+    if (onSubs && subsSettingsEnabled) {
       const badgeSelector = 'ytd-badge-supported-renderer';
       const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]';
       const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
@@ -263,13 +265,15 @@ function runDynamicSettings() {
       });
     }
 
-    // Click on "dismiss" buttons
-    const dismissButtons = qsa('#dismiss-button');
-    dismissButtons.forEach(dismissButton => {
-      if (dismissButton && dismissButton.offsetParent) {
-        dismissButton.click();
-      }
-    })
+    // Click on "dismiss" buttons (only check occasionally, not every iteration)
+    if (dynamicIters % 5 === 0) {
+      const dismissButtons = qsa('#dismiss-button');
+      dismissButtons.forEach(dismissButton => {
+        if (dismissButton && dismissButton.offsetParent) {
+          dismissButton.click();
+        }
+      });
+    }
 
     // Disable autoplay
     if (cache['disable_autoplay'] === true) {
@@ -341,10 +345,7 @@ function runDynamicSettings() {
       });
 
       // Click on "Skip ad" button
-      const skipButtons = qsa('.ytp-ad-skip-button').
-                   concat(qsa('.ytp-ad-skip-button-modern')).
-                   concat(qsa('.ytp-skip-ad-button')).
-                   concat(qsa(CSS.escape("button#skip-button:2")));
+      const skipButtons = qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button');
 
       const skippableAd = skipButtons?.some(button => button.offsetParent);
       if (skippableAd) {
@@ -460,8 +461,8 @@ function runDynamicSettings() {
       });
     }
 
-    // Reveal suggestions boxes
-    REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, message, showAction, revealSetting }) => {
+    // Reveal suggestions boxes (only check on early iterations)
+    if (dynamicIters <= 30) REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, message, showAction, revealSetting }) => {
 
       if (closedRevealBoxes.has(boxId)) return;
       if (qs(`#${boxId}`)) return;
@@ -513,9 +514,11 @@ function runDynamicSettings() {
 
     // Video Player: hide the 'clip' button.
     //   The path[d=...] selector selects scissor SVGs.
-    qsa('path[d^="M8 7c0 .55-.45 1-1 1s-1-.45-1-1"]').
-      map(path => path.closest('#menu button')).
-      forEach(b => b.setAttribute('scissor_button', ''));
+    if (cache['remove_clip_button']) {
+      qsa('path[d^="M8 7c0 .55-.45 1-1 1s-1-.45-1-1"]').
+        map(path => path.closest('#menu button')).
+        forEach(b => b?.setAttribute('scissor_button', ''));
+    }
 
   } catch (error) {
     console.log(error);
@@ -531,7 +534,9 @@ function requestRunDynamicSettings() {
   if (frameRequested || isRunning) return;
   if (document.hidden) return; // Pause polling when tab is hidden
   frameRequested = true;
-  setTimeout(() => runDynamicSettings(), Math.min(100, 50 + 10 * dynamicIters));
+  // Start fast (100ms), slow down to 500ms after page settles
+  const delay = dynamicIters < 20 ? 100 : Math.min(500, 100 + dynamicIters * 10);
+  setTimeout(() => runDynamicSettings(), delay);
 }
 
 // Resume polling when tab becomes visible
@@ -571,13 +576,16 @@ function injectScripts() {
     script.type = "text/javascript";
     script.innerText = `
 (function() {
-let pm;
+let pm, intervalId;
 function f() {
   if (!pm) pm = document.querySelector('yt-playlist-manager');
-  if (pm) pm.canAutoAdvance_ = false;
+  if (pm) {
+    pm.canAutoAdvance_ = false;
+    if (intervalId) clearInterval(intervalId);
+  }
 }
 f();
-setInterval(f, 100);
+intervalId = setInterval(f, 100);
 })()
 `;
     document.body?.appendChild(script);
