@@ -479,7 +479,12 @@ const SECTIONS = [
         name: "Hide VODs (English only)",
         id: "remove_sub_vods",
         defaultValue: false
-      }
+      },
+      {
+        name: "Hide 'Most relevant' section (English only)",
+        id: "remove_most_relevant",
+        defaultValue: false
+      },
     ]
   },
   {

@@ -116,6 +116,8 @@ html[global_enable="true"][remove_sub_upcoming="true"] ytd-rich-item-renderer[ba
 html[global_enable="true"][remove_sub_premiere="true"] ytd-rich-item-renderer[badge-text="premiere"],
 html[global_enable="true"][remove_sub_vods="true"]     ytd-rich-item-renderer[is_vod],
 
+html[global_enable="true"][remove_most_relevant="true"] ytd-rich-section-renderer[is_sub_rel],
+
 
 /* Other */
 html[global_enable="true"][remove_notif_bell="true"] ytd-notification-topbar-button-renderer,
