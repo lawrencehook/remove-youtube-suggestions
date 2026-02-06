@@ -251,7 +251,7 @@ function runDynamicSettings() {
       const mostRelSpans = qsa(mostRelSelector).filter(span => span.innerText == "Most relevant");
       mostRelSpans.forEach(span => {
           const mostRelSection = span.closest('ytd-rich-section-renderer');
-          mostRelSection?.setAttribute('is_vod', '');
+          mostRelSection?.setAttribute('is_sub_rel', '');
       });
 
       // Reduce empty space.
