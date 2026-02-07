@@ -666,7 +666,7 @@ const idToShortId = {
   "disable_autoplay":                  '22',
   "disable_ambient_mode":              '23',
   "disable_annotations":               '24',
-  "disable_playlist_autoplay":         '25',
+  "disable_playlist_autoplay":         '25', // deprecated
   "normalize_shorts":                  '26',
   "remove_entire_sidebar":             '27',
   "remove_info_cards":                 '28',
