@@ -27,7 +27,9 @@
       ],
       "css": ["/content-script/main.css"],
       "all_frames": true,
-      "matches": ["*://*.youtube.com/*"],
+      "matches": [
+        "*://www.youtube.com/*",
+        "*://m.youtube.com/*"],
       "run_at": "document_start"
     }
   ],
@@ -51,10 +53,11 @@
     "storage"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://www.youtube.com/*",
+    "*://m.youtube.com/*"
   ],
   "web_accessible_resources": [{
     "resources": ["/images/rys.svg"],
-    "matches": ["*://*.youtube.com/*"]
+    "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"]
   }]
 }
