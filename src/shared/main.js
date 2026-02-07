@@ -742,6 +742,7 @@ const idToShortId = {
   "add_reveal_end_of_video":           '89',
   "add_reveal_button":                 '90', // deprecated; migrated to add_reveal_* settings
   "remove_sidebar_infinite_scroll":    '91',
+  "remove_most_relevant":              '92',
 };
 
 
