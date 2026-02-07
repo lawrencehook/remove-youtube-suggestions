@@ -183,9 +183,9 @@ html[global_enable="true"][shrink_video_thumbnails="true"] ytd-playlist-thumbnai
 html[global_enable="true"][shrink_video_thumbnails="true"] *:has(> yt-collection-thumbnail-view-model),
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-channel-renderer #avatar-section,
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-movie-renderer .thumbnail-container {
-	max-width: 240px !important;
-    min-width: 210px !important;
-    max-height:134px;
+  max-width: 240px !important;
+  min-width: 210px !important;
+  max-height: 134px;
 }
 
 
