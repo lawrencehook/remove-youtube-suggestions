@@ -409,6 +409,11 @@ const SECTIONS = [
         defaultValue: false
       },
       {
+        name: "Hide result description",
+        id: "remove_results_description",
+        defaultValue: false
+      },
+      {
         name: "Hide results - For You, Trending, etc.",
         id: "remove_extra_results",
         defaultValue: false
@@ -734,6 +739,7 @@ const idToShortId = {
   "add_reveal_button":                 '90', // deprecated; migrated to add_reveal_* settings
   "remove_sidebar_infinite_scroll":    '91',
   "log_prompt_answered":               '92',
+  "remove_results_description":        '93',
 };
 
 
