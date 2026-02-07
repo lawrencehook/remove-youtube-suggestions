@@ -562,36 +562,6 @@ function injectAnnouncementBanners() {
   });
 }
 
-function injectScripts() {
-  const on = cache['global_enable'] === true;
-  if (!on) return;
-
-  // Disable playlist autoplay
-  if (cache['disable_playlist_autoplay']) {
-    const existingScript = document.querySelector('script[id="disable_playlist_autoplay"]')
-    if (existingScript) return;
-
-    const script = document.createElement("script");
-    script.id = 'disable_playlist_autoplay';
-    script.type = "text/javascript";
-    script.innerText = `
-(function() {
-let pm, intervalId;
-function f() {
-  if (!pm) pm = document.querySelector('yt-playlist-manager');
-  if (pm) {
-    pm.canAutoAdvance_ = false;
-    if (intervalId) clearInterval(intervalId);
-  }
-}
-f();
-intervalId = setInterval(f, 100);
-})()
-`;
-    document.body?.appendChild(script);
-  }
-
-}
 
 
 function handleNewPage() {
@@ -658,7 +628,6 @@ function handleNewPage() {
     }
   }
 
-  injectScripts();
   injectAnnouncementBanners();
   requestRunDynamicSettings();
 }

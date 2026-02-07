@@ -242,11 +242,6 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Disable autoplay for playlists",
-        id: "disable_playlist_autoplay",
-        defaultValue: false
-      },
-      {
         name: "Disable scroll in fullscreen",
         id: "disable_fullscreen_scroll",
         defaultValue: false
