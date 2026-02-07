@@ -418,6 +418,11 @@ function runDynamicSettings() {
       }
     }
 
+    // Hide notification number in title
+    if (cache['remove_notif_bell']) {
+      document.title = document.title.replace(/^\(\d+\)/g, '');
+    }
+
     // Show video length when thumbnails are hidden
     if (cache['search_engine_mode'] || cache['remove_video_thumbnails']) {
       const thumbnails = qsa('ytd-thumbnail');
