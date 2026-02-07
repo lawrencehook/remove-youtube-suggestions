@@ -61,6 +61,13 @@ function renderPage({ title, heading, message, icon }) {
       color: #1a1a1a;
     }
 
+    header .premium-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0600fb;
+      letter-spacing: 0.02em;
+    }
+
     main {
       flex: 1;
       display: flex;
@@ -137,7 +144,8 @@ function renderPage({ title, heading, message, icon }) {
     <a href="${RYS_HOME_URL}">
       <img src="${RYS_LOGO_URL}" alt="RYS">
     </a>
-    <span class="title">Remove YouTube Suggestions</span>
+    <span class="title">RYS</span>
+    <span class="premium-badge">Premium</span>
   </header>
 
   <main>
