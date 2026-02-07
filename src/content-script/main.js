@@ -238,6 +238,14 @@ function runDynamicSettings() {
         updatedGridVideo?.setAttribute('is_vod', '');
       });
 
+      // Most Relevant
+      const mostRelSelector = '#rich-shelf-header-container span';
+      const mostRelSpans = qsa(mostRelSelector).filter(span => span.innerText == "Most relevant");
+      mostRelSpans.forEach(span => {
+          const mostRelSection = span.closest('ytd-rich-section-renderer');
+          mostRelSection?.setAttribute('is_sub_rel', '');
+      });
+
       // Reduce empty space.
       const subsRows = qsa('ytd-rich-grid-row');
       subsRows.forEach(row => {
