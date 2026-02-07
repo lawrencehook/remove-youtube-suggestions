@@ -100,7 +100,7 @@ html[global_enable="true"][remove_results_description="true"] #contents .metadat
 html[global_enable="true"][remove_results_description="true"] #contents #description-text,
 html[global_enable="true"][remove_results_description="true"] #contents #description,
 html[global_enable="true"][remove_results_description="true"] #contents ytd-expandable-metadata-renderer,
-html[global_enable="true"][remove_results_description="true"]  #contents ytd-badge-supported-renderer,
+html[global_enable="true"][remove_results_description="true"] #contents ytd-badge-supported-renderer,
 
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search grid-shelf-view-model.ytGridShelfViewModelHostHasBottomButton.ytd-item-section-renderer.ytGridShelfViewModelHost,
