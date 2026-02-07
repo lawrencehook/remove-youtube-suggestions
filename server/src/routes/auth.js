@@ -8,6 +8,39 @@ const { renderPage } = require('../templates');
 
 const router = express.Router();
 
+// Simple in-memory rate limiter for poll endpoint (by IP)
+const pollRateLimits = new Map();
+const POLL_RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const POLL_RATE_LIMIT_MAX = 60; // 60 requests per minute per IP
+
+function checkPollRateLimit(ip) {
+  const now = Date.now();
+  const record = pollRateLimits.get(ip);
+
+  if (!record || now > record.resetTime) {
+    pollRateLimits.set(ip, { count: 1, resetTime: now + POLL_RATE_LIMIT_WINDOW_MS });
+    return { allowed: true };
+  }
+
+  if (record.count >= POLL_RATE_LIMIT_MAX) {
+    return { allowed: false, retryAfter: Math.ceil((record.resetTime - now) / 1000) };
+  }
+
+  record.count++;
+  return { allowed: true };
+}
+
+// Clean up old entries periodically (unref so it doesn't prevent process exit)
+const cleanupInterval = setInterval(() => {
+  const now = Date.now();
+  for (const [ip, record] of pollRateLimits) {
+    if (now > record.resetTime) {
+      pollRateLimits.delete(ip);
+    }
+  }
+}, 5 * 60 * 1000); // Every 5 minutes
+cleanupInterval.unref();
+
 // Simple email validation
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -90,6 +123,14 @@ router.get('/verify', async (req, res) => {
 
 // GET /auth/poll - Extension polls this to check verification status
 router.get('/poll', async (req, res) => {
+  // Rate limit by IP
+  const ip = req.ip || req.connection.remoteAddress;
+  const rateLimit = checkPollRateLimit(ip);
+  if (!rateLimit.allowed) {
+    res.set('Retry-After', rateLimit.retryAfter);
+    return res.status(429).json({ error: 'Too many requests', retryAfter: rateLimit.retryAfter });
+  }
+
   const { request_id: requestId } = req.query;
 
   if (!requestId) {
