@@ -105,6 +105,11 @@ const SECTIONS = [
         id: "remove_infinite_scroll",
         defaultValue: false
       },
+      {
+        name: "Hide Playables",
+        id: "remove_playables",
+        defaultValue: false
+      },
     ]
   },
   {
@@ -242,11 +247,6 @@ const SECTIONS = [
         defaultValue: false
       },
       {
-        name: "Disable autoplay for playlists",
-        id: "disable_playlist_autoplay",
-        defaultValue: false
-      },
-      {
         name: "Disable scroll in fullscreen",
         id: "disable_fullscreen_scroll",
         defaultValue: false
@@ -257,11 +257,11 @@ const SECTIONS = [
         id: "normalize_shorts",
         defaultValue: false
       },
-      // {
-      //   name: "Enable theater mode",
-      //   id: "enable_theater",
-      //   defaultValue: true
-      // },
+      {
+        name: "Enable theater mode",
+        id: "enable_theater",
+        defaultValue: false
+      },
     ]
   },
   {
@@ -411,6 +411,11 @@ const SECTIONS = [
       {
         name: "Hide results - shorts",
         id: "remove_shorts_results",
+        defaultValue: false
+      },
+      {
+        name: "Hide result description",
+        id: "remove_results_description",
         defaultValue: false
       },
       {
@@ -671,7 +676,7 @@ const idToShortId = {
   "disable_autoplay":                  '22',
   "disable_ambient_mode":              '23',
   "disable_annotations":               '24',
-  "disable_playlist_autoplay":         '25',
+  "disable_playlist_autoplay":         '25', // deprecated
   "normalize_shorts":                  '26',
   "remove_entire_sidebar":             '27',
   "remove_info_cards":                 '28',
@@ -739,6 +744,9 @@ const idToShortId = {
   "add_reveal_button":                 '90', // deprecated; migrated to add_reveal_* settings
   "remove_sidebar_infinite_scroll":    '91',
   "log_prompt_answered":               '92',
+  "remove_results_description":        '93',
+  "enable_theater":                    '94',
+  "remove_playables":                  '95',
 };
 
 

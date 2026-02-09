@@ -152,6 +152,8 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     qs('.sidebar_section[tag="Subscriptions"]').click();
   } else if (channelRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Channel"]').click();
+  } else if (homepageRegex.test(currentUrl)) {
+    qs('.sidebar_section[tag="Homepage"]').click();
   } else {
     qs('.sidebar_section[tag="Basic"]').click();
   }

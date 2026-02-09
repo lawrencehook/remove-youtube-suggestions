@@ -183,6 +183,15 @@ function runDynamicSettings() {
       });
     }
 
+    // Hide playables
+    if (cache['remove_playables']) {
+      const playableCards = qsa('ytd-mini-game-card-view-model');
+      playableCards?.forEach(card => {
+        const shelfContainer = card.closest('ytd-rich-section-renderer');
+        shelfContainer?.setAttribute('is_playable', '');
+      });
+    }
+
     // Channel page option
     if (onChannel) {
       if (cache['remove_channel_for_you']) {
@@ -334,6 +343,15 @@ function runDynamicSettings() {
       }
     }
 
+    // Enable theater mode
+    if (cache['enable_theater']) {
+      const flexy = document.querySelector("ytd-watch-flexy");
+      const btn = document.querySelector(".ytp-size-button");
+      if (flexy && btn && !flexy.hasAttribute("theater")) {
+        btn.click();
+      }
+    }
+
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
 
@@ -416,6 +434,11 @@ function runDynamicSettings() {
         const section = identifier.closest('ytd-item-section-renderer');
         section?.setAttribute('is-playlist-suggestions', '');
       }
+    }
+
+    // Hide notification number in title
+    if (cache['remove_notif_bell']) {
+      document.title = document.title.replace(/^\(\d+\)/g, '');
     }
 
     // Show video length when thumbnails are hidden
@@ -562,36 +585,6 @@ function injectAnnouncementBanners() {
   });
 }
 
-function injectScripts() {
-  const on = cache['global_enable'] === true;
-  if (!on) return;
-
-  // Disable playlist autoplay
-  if (cache['disable_playlist_autoplay']) {
-    const existingScript = document.querySelector('script[id="disable_playlist_autoplay"]')
-    if (existingScript) return;
-
-    const script = document.createElement("script");
-    script.id = 'disable_playlist_autoplay';
-    script.type = "text/javascript";
-    script.innerText = `
-(function() {
-let pm, intervalId;
-function f() {
-  if (!pm) pm = document.querySelector('yt-playlist-manager');
-  if (pm) {
-    pm.canAutoAdvance_ = false;
-    if (intervalId) clearInterval(intervalId);
-  }
-}
-f();
-intervalId = setInterval(f, 100);
-})()
-`;
-    document.body?.appendChild(script);
-  }
-
-}
 
 
 function handleNewPage() {
@@ -658,7 +651,6 @@ function handleNewPage() {
     }
   }
 
-  injectScripts();
   injectAnnouncementBanners();
   requestRunDynamicSettings();
 }
