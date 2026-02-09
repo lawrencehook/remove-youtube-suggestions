@@ -183,6 +183,15 @@ function runDynamicSettings() {
       });
     }
 
+    // Hide playables
+    if (cache['remove_playables']) {
+      const playableCards = qsa('ytd-mini-game-card-view-model');
+      playableCards?.forEach(card => {
+        const shelfContainer = card.closest('ytd-rich-section-renderer');
+        shelfContainer?.setAttribute('is_playable', '');
+      });
+    }
+
     // Channel page option
     if (onChannel) {
       if (cache['remove_channel_for_you']) {

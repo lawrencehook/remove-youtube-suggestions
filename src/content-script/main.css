@@ -57,6 +57,7 @@ html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="h
 html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 html[global_enable="true"][remove_extra_rows="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
+html[global_enable="true"][remove_playables="true"] *[is_playable],
 
 /* Video Player - UX */
 html[global_enable="true"][disable_fullscreen_scroll="true"] ytd-watch-flexy[fullscreen] div#columns,

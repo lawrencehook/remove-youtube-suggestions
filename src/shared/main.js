@@ -105,6 +105,11 @@ const SECTIONS = [
         id: "remove_infinite_scroll",
         defaultValue: false
       },
+      {
+        name: "Hide Playables",
+        id: "remove_playables",
+        defaultValue: false
+      },
     ]
   },
   {
@@ -741,6 +746,7 @@ const idToShortId = {
   "log_prompt_answered":               '92',
   "remove_results_description":        '93',
   "enable_theater":                    '94',
+  "remove_playables":                  '95',
 };
 
 
