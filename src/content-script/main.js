@@ -14,26 +14,22 @@ const REDIRECT_URLS = {
 // Dynamic settings variables
 const cache = {};
 const closedRevealBoxes = new Set();
-const rysLogoUrl = browser.runtime.getURL('images/rys.svg');
 const REVEAL_BOX_CONFIGS = [
   {
     containerSelector: 'ytd-page-manager',
     boxId: 'rys_homepage_reveal_box',
-    message: 'Homepage suggestions are hidden.',
     showAction: () => HTML.setAttribute('remove_homepage', false),
     revealSetting: 'add_reveal_homepage',
   },
   {
     containerSelector: '#secondary-inner',
     boxId: 'rys_sidebar_reveal_box',
-    message: 'Sidebar suggestions are hidden.',
     showAction: () => HTML.setAttribute('remove_sidebar', false),
     revealSetting: 'add_reveal_sidebar',
   },
   {
     containerSelector: '#movie_player',
     boxId: 'rys_end_of_video_reveal_box',
-    message: 'End-of-video suggestions are hidden.',
     showAction: () => HTML.setAttribute('remove_end_of_video', false),
     revealSetting: 'add_reveal_end_of_video',
   },
@@ -57,12 +53,46 @@ let lastRedirect;
 const redirectInterval = 1_000; // 1 second
 
 
+// Get list of premium feature IDs
+const PREMIUM_FEATURE_IDS = SECTIONS.flatMap(section =>
+  section.options.filter(opt => opt.premium).map(opt => opt.id)
+);
+
+// Decode license token to check premium status (no signature verification - we trust our server)
+function decodeLicenseToken(token) {
+  if (!token) return null;
+  try {
+    const payload = token.split('.')[1];
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+  } catch {
+    return null;
+  }
+}
+
+function isPremiumFromToken(token) {
+  const decoded = decodeLicenseToken(token);
+  if (!decoded) return false;
+  const now = Math.floor(Date.now() / 1000);
+  return decoded.premium === true && decoded.exp > now;
+}
+
 // Respond to changes in settings
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
 
+  // Update premium status in cache if license token changed
+  if ('license_token' in changes) {
+    cache['_isPremium'] = isPremiumFromToken(changes['license_token'].newValue);
+  }
+
   Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
     if (oldValue === newValue) return;
+
+    // Enforce premium features are false for non-premium users
+    if (PREMIUM_FEATURE_IDS.includes(id) && cache['_isPremium'] !== true) {
+      newValue = false;
+    }
 
     HTML.setAttribute(id, newValue);
     cache[id] = newValue;
@@ -74,7 +104,6 @@ function logStorageChange(changes, area) {
 }
 browser.storage.onChanged.addListener(logStorageChange);
 
-
 // Get settings
 browser.storage.local.get(settings => {
   if (!settings) return;
@@ -82,6 +111,15 @@ browser.storage.local.get(settings => {
   const revealUpdates = migrateRevealSettings(settings);
   if (Object.keys(revealUpdates).length) {
     browser.storage.local.set(revealUpdates);
+  }
+
+  // Enforce premium features are false for non-premium users
+  const isPremium = isPremiumFromToken(settings['license_token']);
+  cache['_isPremium'] = isPremium;
+  if (!isPremium) {
+    PREMIUM_FEATURE_IDS.forEach(id => {
+      settings[id] = false;
+    });
   }
 
   Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {
@@ -149,9 +187,11 @@ function runDynamicSettings() {
     handleNewPage();
   }
 
-  // Double check for redirects.
+  // Double check for redirects. Also reset dynamicIters so the
+  // reveal box creation code keeps running on the homepage.
   if (onHomepage && !cache['redirect_off']) {
-    handleNewPage();
+    dynamicIters = 0;
+    checkRedirects();
   }
 
   // Dynamic settings
@@ -190,6 +230,23 @@ function runDynamicSettings() {
         const shelfContainer = card.closest('ytd-rich-section-renderer');
         shelfContainer?.setAttribute('is_playable', '');
       });
+    }
+
+    // Hide all but the first row of homepage suggestions
+    if (onHomepage) {
+      const grid = qs('ytd-browse[page-subtype="home"] ytd-rich-grid-renderer');
+      if (grid) {
+        const items = qsa(':scope > #contents > ytd-rich-item-renderer', grid);
+        if (cache['remove_all_but_one']) {
+          const perRow = parseInt(getComputedStyle(grid).getPropertyValue('--ytd-rich-grid-items-per-row')) || 4;
+          items.forEach((item, i) => {
+            if (i >= perRow) item.setAttribute('rys-hidden-row', '');
+            else item.removeAttribute('rys-hidden-row');
+          });
+        } else {
+          items.forEach(item => item.removeAttribute('rys-hidden-row'));
+        }
+      }
     }
 
     // Channel page option
@@ -485,7 +542,7 @@ function runDynamicSettings() {
     }
 
     // Reveal suggestions boxes (only check on early iterations)
-    if (dynamicIters <= 30) REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, message, showAction, revealSetting }) => {
+    if (dynamicIters <= 30) REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, showAction, revealSetting }) => {
 
       if (closedRevealBoxes.has(boxId)) return;
       if (qs(`#${boxId}`)) return;
@@ -497,20 +554,11 @@ function runDynamicSettings() {
       box.id = boxId;
       box.className = 'rys_reveal_box';
       box.innerHTML = `
-        <div class="rys_reveal_header">
-          <div class="rys_reveal_branding">
-            <img src="${rysLogoUrl}" alt="RYS" class="rys_reveal_logo">
-            <span class="rys_reveal_brand">RYS</span>
-          </div>
-          <div class="rys_reveal_actions">
-            <a class="rys_reveal_dismiss">Don't show again</a>
-            <button class="rys_reveal_close" aria-label="Close">&times;</button>
-          </div>
+        <div class="rys_reveal_actions">
+          <a class="rys_reveal_dismiss">Don't show again</a>
+          <button class="rys_reveal_close" aria-label="Close">&times;</button>
         </div>
-        <div class="rys_reveal_content">
-          <span class="rys_reveal_message">${message}</span>
-          <a class="rys_reveal_show">Reveal</a>
-        </div>
+        <a class="rys_reveal_show">Reveal suggestions</a>
       `;
 
       box.querySelector('.rys_reveal_show')?.addEventListener('click', showAction);
@@ -587,9 +635,33 @@ function injectAnnouncementBanners() {
 
 
 
+function checkRedirects() {
+  const on = cache['global_enable'] === true;
+  if (
+    on &&
+    onHomepage &&
+    !cache['redirect_off'] &&
+    (!lastRedirect || Date.now() - lastRedirect > redirectInterval)
+  ) {
+    if (cache['redirect_to_subs']) {
+      const button = qs('a#endpoint[href="/feed/subscriptions"]');
+      button?.click();
+      lastRedirect = Date.now();
+    }
+    if (cache['redirect_to_wl']) {
+      location.replace(REDIRECT_URLS['redirect_to_wl']);
+      lastRedirect = Date.now();
+    }
+    if (cache['redirect_to_library']) {
+      const button = qs('a#endpoint[href="/feed/library"]');
+      button?.click();
+      lastRedirect = Date.now();
+    }
+  }
+}
+
 function handleNewPage() {
   const on = cache['global_enable'] === true;
-
   dynamicIters = 0;
   url = location.href;
   theaterClicked = false;
@@ -614,28 +686,7 @@ function handleNewPage() {
   // Refresh HTML attributes
   Object.entries(cache).forEach(([key, value]) => HTML.setAttribute(key, value));
 
-  // Homepage redirects
-  if (
-    on &&
-    onHomepage &&
-    !cache['redirect_off'] &&
-    (!lastRedirect || Date.now() - lastRedirect > redirectInterval)
-  ) {
-    if (cache['redirect_to_subs']) {
-      const button = qs('a#endpoint[href="/feed/subscriptions"]');
-      button?.click();
-      lastRedirect = Date.now();
-    }
-    if (cache['redirect_to_wl']) {
-      location.replace(REDIRECT_URLS['redirect_to_wl']);
-      lastRedirect = Date.now();
-    }
-    if (cache['redirect_to_library']) {
-      const button = qs('a#endpoint[href="/feed/library"]');
-      button?.click();
-      lastRedirect = Date.now();
-    }
-  }
+  checkRedirects();
 
   // Redirect the shorts player
   if (on && onShorts && cache['normalize_shorts']) {

@@ -13,35 +13,40 @@ const SECTIONS = [
         name: "Hide all Shorts",
         tags: "Homepage, Subscriptions, Video Player, Search",
         id: "remove_all_shorts",
-        defaultValue: false,
+        defaultValue: true,
       },
       {
         name: "Hide video thumbnails",
         tags: "Homepage, Subscriptions, Video Player, Search",
         id: "remove_video_thumbnails",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Blur video thumbnails",
         tags: "Homepage, Subscriptions, Video Player, Search",
         id: "blur_video_thumbnails",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Shrink video thumbnails",
         tags: "Homepage, Subscriptions, Video Player, Search",
         id: "shrink_video_thumbnails",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable play on hover",
         id: "disable_play_on_hover",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Enable search engine mode",
         id: "search_engine_mode",
         defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -76,12 +81,13 @@ const SECTIONS = [
       {
         name: "Show reveal box for homepage suggestions",
         id: "add_reveal_homepage",
-        defaultValue: true
+        defaultValue: true,
       },
       {
         name: "Hide the header",
         id: "remove_header",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide all but the first row of suggestions",
@@ -93,22 +99,26 @@ const SECTIONS = [
             remove_extra_rows: true,
             remove_infinite_scroll: true,
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Hide extra rows (Shorts, Trending, etc.)",
         id: "remove_extra_rows",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable infinite scroll - homepage",
         id: "remove_infinite_scroll",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide Playables",
         id: "remove_playables",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -121,7 +131,7 @@ const SECTIONS = [
         tags: "Basic",
         id: "remove_left_nav_bar",
         defaultValue: false,
-        effects: { true: { only_show_playlists: false }}
+        effects: { true: { only_show_playlists: false }},
       },
       {
         name: "Only show playlists",
@@ -141,36 +151,42 @@ const SECTIONS = [
             remove_shorts_link: true,
             remove_subscriptions_link: true,
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Disable the YouTube logo link",
         id: "remove_logo_link",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide button - Home",
         id: "remove_home_link",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide button - Explore/Trending",
         id: "remove_explore_link",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide button - Shorts",
         id: "remove_shorts_link",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide button - Subscriptions",
         id: "remove_subscriptions_link",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
     ]
   },
@@ -182,37 +198,43 @@ const SECTIONS = [
         name: "Hide section - Subscriptions",
         id: "remove_sub_section",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide section - You/Library",
         id: "remove_quick_links_section",
         defaultValue: false,
-        effects: { true: { only_show_playlists: false }}
+        effects: { true: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide section - Explore",
         id: "remove_explore_section",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide section - More from YouTube",
         id: "remove_more_section",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide section - Settings",
         id: "remove_settings_section",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
       {
         name: "Hide section - Footer",
         id: "remove_footer_section",
         defaultValue: false,
-        effects: { false: { only_show_playlists: false }}
+        effects: { false: { only_show_playlists: false }},
+        premium: true,
       },
     ]
   },
@@ -224,43 +246,49 @@ const SECTIONS = [
         name: "Skip and close ads",
         tags: "Basic",
         id: "auto_skip_ads",
-        defaultValue: false
+        defaultValue: false,
       },
       {
         name: "Disable autoplay",
         id: "disable_autoplay",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable ambient mode",
         id: "disable_ambient_mode",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable annotations",
         id: "disable_annotations",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Auto-expand the description",
         id: "expand_description",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable scroll in fullscreen",
         id: "disable_fullscreen_scroll",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Redirect shorts to the default viewer",
         tags: "Redirects, Basic",
         id: "normalize_shorts",
-        defaultValue: false
+        defaultValue: false,
       },
       {
         name: "Enable theater mode",
         id: "enable_theater",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -271,52 +299,61 @@ const SECTIONS = [
       {
         name: "Show reveal box for end-of-video suggestions",
         id: "add_reveal_end_of_video",
-        defaultValue: true
+        defaultValue: true,
       },
       {
         name: "Hide info cards",
         id: "remove_info_cards",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide overlay suggestions",
         id: "remove_overlay_suggestions",
-        defaultValue: true
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the play next button",
         id: "remove_play_next_button",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the menu buttons - Like, Share, etc.",
         id: "remove_menu_buttons",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the clip button",
         id: "remove_clip_button",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the likes",
         id: "remove_video_likes",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide channel subscribers count",
         id: "remove_channel_subscribers",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the description",
         id: "remove_vid_description",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide panel - \"More Videos\" in embedded player",
         id: "remove_embedded_more_videos",
-        defaultValue: true
+        defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -327,27 +364,31 @@ const SECTIONS = [
       {
         name: "Show reveal box for sidebar suggestions",
         id: "add_reveal_sidebar",
-        defaultValue: true
+        defaultValue: true,
       },
       {
         name: "Center contents - removes the sidebar",
         id: "remove_entire_sidebar",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable infinite scroll - sidebar",
         id: "remove_sidebar_infinite_scroll",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide extra sidebar tags (English only)",
         id: "remove_extra_sidebar_tags",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the live-stream chat",
         id: "remove_chat",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -359,7 +400,7 @@ const SECTIONS = [
         name: "Hide all comments",
         tags: "Basic",
         id: "remove_comments",
-        defaultValue: false
+        defaultValue: false,
       },
       {
         name: "Hide all but the timestamped comments",
@@ -369,27 +410,32 @@ const SECTIONS = [
           true: {
             remove_comments: false
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Hide comment usernames",
         id: "remove_comment_usernames",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide comment profile pictures",
         id: "remove_comment_profiles",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide comment replies",
         id: "remove_comment_replies",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide comment upvotes",
         id: "remove_comment_upvotes",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -401,37 +447,43 @@ const SECTIONS = [
         name: "Hide search bar suggestions",
         tags: "Basic",
         id: "remove_search_suggestions",
-        defaultValue: false
+        defaultValue: false,
       },
       {
         name: "Hide promoted videos",
         id: "remove_search_promoted",
-        defaultValue: true
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide results - shorts",
         id: "remove_shorts_results",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide result description",
         id: "remove_results_description",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide results - For You, Trending, etc.",
         id: "remove_extra_results",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable the thumbnail slideshow - on hover",
         id: "remove_thumbnail_mouseover_effect",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Disable infinite scroll - search results",
         id: "remove_infinite_scroll_search",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -443,16 +495,19 @@ const SECTIONS = [
         name: "Disable autoplay - channel page",
         id: "disable_channel_autoplay",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the For You section - channel page",
         id: "remove_channel_for_you",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Reverse sort channel videos: oldest, least popular",
         id: "reverse_channel_video_list",
         defaultValue: false,
+        premium: true,
       },
     ]
   },
@@ -463,27 +518,32 @@ const SECTIONS = [
       {
         name: "Hide shorts",
         id: "remove_sub_shorts",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide live videos",
         id: "remove_sub_live",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide upcoming videos",
         id: "remove_sub_upcoming",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide premiere videos",
         id: "remove_sub_premiere",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide VODs (English only)",
         id: "remove_sub_vods",
-        defaultValue: false
+        defaultValue: false,
+        premium: true,
       }
     ]
   },
@@ -504,7 +564,8 @@ const SECTIONS = [
           false: {
             redirect_off: true
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Redirect home to Watch Later",
@@ -519,7 +580,8 @@ const SECTIONS = [
           false: {
             redirect_off: true
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Redirect home to Library",
@@ -534,13 +596,15 @@ const SECTIONS = [
           false: {
             redirect_off: true
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Do not redirect home",
         id: "redirect_off",
-        defaultValue: true,
-        display: false
+        defaultValue: false,
+        display: false,
+        premium: true,
       },
     ]
   },
@@ -552,26 +616,31 @@ const SECTIONS = [
         name: "Hide playlist suggestions",
         id: "remove_playlist_suggestions",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Hide the notification bell",
         id: "remove_notif_bell",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Autofocus the search bar",
         id: "autofocus_search",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Remove context boxes",
         id: "remove_context",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Enable grayscale mode",
         id: "grayscale_mode",
         defaultValue: false,
+        premium: true,
       },
       {
         name: "Lock settings - 10 second timer",
@@ -581,7 +650,8 @@ const SECTIONS = [
           true: {
             lock_code: false,
           }
-        }
+        },
+        premium: true,
       },
       {
         name: "Lock settings - code entry",
@@ -591,7 +661,8 @@ const SECTIONS = [
           true: {
             menu_timer: false,
           }
-        }
+        },
+        premium: true,
       },
     ]
   },

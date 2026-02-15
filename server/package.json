@@ -1,0 +1,27 @@
+{
+  "name": "rys-premium-server",
+  "version": "1.0.0",
+  "description": "Premium subscription server for Remove YouTube Suggestions extension",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.500.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "stripe": "^14.12.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

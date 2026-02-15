@@ -1,0 +1,129 @@
+/* Shared base styles for subpages (donors, feedback, etc.) */
+/* Each page sets :root { --accent; --accent-light } and dark mode --accent-light override */
+
+html[dark_mode='true'] {
+	--body-color: #E0E0E0;
+	--body-background-color: #1a1a2e;
+	--card-background: #16213e;
+	--card-border: #0f3460;
+	--label-color: #E9E9E9;
+	--box-shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+html[dark_mode='false'], html:not([dark_mode]) {
+	--body-color: #333;
+	--body-background-color: #f8f9fa;
+	--card-background: #fff;
+	--card-border: #e9ecef;
+	--label-color: #212529;
+	--box-shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: var(--body-background-color);
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+	color: var(--body-color);
+	line-height: 1.4;
+}
+
+.page-container {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 12px 16px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+/* Back Button */
+#back-button {
+	position: absolute;
+	top: 12px;
+	left: 16px;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 10px;
+	text-decoration: none;
+	color: var(--body-color);
+	background: var(--card-background);
+	border: 1px solid var(--card-border);
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 500;
+	transition: all 0.2s ease;
+	z-index: 1;
+}
+
+#back-button:hover {
+	background: var(--accent-light);
+	border-color: var(--accent);
+	color: var(--accent);
+}
+
+#back-button svg {
+	width: 14px;
+	height: 14px;
+}
+
+/* Header */
+header {
+	flex-shrink: 0;
+	margin-bottom: 8px;
+}
+
+header h1 {
+	margin: 0;
+	font-weight: 700;
+	color: var(--label-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+}
+
+.header-icon {
+	color: var(--accent);
+}
+
+.subtitle {
+	margin: 0;
+	font-size: 13px;
+	color: var(--body-color);
+	opacity: 0.85;
+	text-align: center;
+}
+
+.subtitle.secondary {
+	margin-top: 4px;
+	font-size: 12px;
+	opacity: 0.7;
+}
+
+.subtitle a {
+	color: var(--accent);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.subtitle a:hover {
+	text-decoration: underline;
+}
+
+/* Main content */
+main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 0;
+}

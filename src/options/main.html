@@ -17,6 +17,9 @@
 
     <script defer src="/shared/md5.js"></script>
     <script defer src="/shared/main.js"></script>
+    <script defer src="/shared/config.js"></script>
+    <script defer src="/shared/auth.js"></script>
+    <script defer src="/shared/license.js"></script>
     <script defer src="/shared/https.js"></script>
     <script defer src="/shared/analytics.js"></script>
     <script defer src="/shared/utils.js"></script>
@@ -121,6 +124,107 @@
 
     </div>
 
+    <div id="signin_container_background" hidden>
+      <div id="signin_container">
+        <div id="signin_header">
+          <div id="signin_header_brand">
+            <img src="../images/rys.svg" alt="RYS" id="signin_header_logo">
+            <span id="signin_header_rys">RYS</span>
+            <span id="signin_header_premium">Premium</span>
+          </div>
+        </div>
+
+        <div id="signin_email_form">
+          <p>Enter your email to receive a sign-in link.</p>
+          <div id="signin_email_row">
+            <input id="signin-email-input" type="email" placeholder="you@example.com" autocomplete="email">
+            <button id="signin-send-button" title="Send sign-in link">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="signin_waiting" hidden>
+          <p>Check your email for a sign-in link.</p>
+          <p id="signin-waiting-email"></p>
+          <div id="signin-status-row">
+            <div id="signin-spinner"></div>
+            <p id="signin-status">Waiting for verification...</p>
+          </div>
+          <button id="signin-cancel-button">Cancel</button>
+        </div>
+
+        <div id="signin_error" hidden>
+          <p id="signin-error-message"></p>
+          <button id="signin-retry-button">Try Again</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="account_container_background" hidden>
+      <div id="account_container">
+        <div id="account_row_1">
+          <div id="account-email-container">
+            <span id="account-email-label">Signed in as</span>
+            <span id="account-email"></span>
+          </div>
+          <span id="account-premium-label" data-status="free"></span>
+        </div>
+        <div id="account_row_2">
+          <button id="account-upgrade-button" hidden>Upgrade</button>
+          <button id="account-billing-button" hidden>Manage Subscription</button>
+          <button id="account-signout-button">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="premium_required_container_background" hidden>
+      <div id="premium_required_container">
+        <div id="premium_required_header">
+          <div id="premium_required_header_brand">
+            <img src="../images/rys.svg" alt="RYS" id="premium_required_header_logo">
+            <span id="premium_required_header_rys">RYS</span>
+            <span id="premium_required_header_premium">Premium</span>
+          </div>
+        </div>
+        <p id="premium_required_description">Premium required. Sign in to upgrade.</p>
+        <div id="premium_required_buttons">
+          <button id="premium-required-cancel-button">Cancel</button>
+          <button id="premium-required-signin-button">Sign In</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="upgrade_container_background" hidden>
+      <div id="upgrade_container">
+        <div id="upgrade_header">
+          <div id="upgrade_header_brand">
+            <img src="../images/rys.svg" alt="RYS" id="upgrade_header_logo">
+            <span id="upgrade_header_rys">RYS</span>
+            <span id="upgrade_header_premium">Premium</span>
+          </div>
+          <span id="upgrade_header_action">Upgrade</span>
+        </div>
+        <div id="upgrade_plans">
+          <div class="upgrade-plan" data-plan="monthly">
+            <div class="plan-name">Monthly</div>
+            <div class="plan-price">$3<span class="plan-price-period">/mo</span></div>
+          </div>
+          <div class="upgrade-plan" data-plan="yearly">
+            <div class="plan-name">Yearly</div>
+            <div class="plan-price">$24<span class="plan-price-period">/yr</span></div>
+          </div>
+        </div>
+        <div id="upgrade_buttons">
+          <button id="upgrade-cancel-button">Not now</button>
+          <button id="upgrade-checkout-button">Checkout</button>
+        </div>
+      </div>
+    </div>
+
     <div id="log_prompt_banner" hidden>
       <div id="log_prompt_text">Help improve RYS? Share anonymous usage data to guide development.</div>
       <div id="log_prompt_buttons">
@@ -142,8 +246,10 @@
     </div>
 
     <div id='settings-menu' class='hidden'>
-      <div id='settings-password'>Password</div>
-      <div id='settings-schedule'>Schedule</div>
+      <div id='settings-account'>Sign In</div>
+      <hr>
+      <div id='settings-password' data-premium='true'>Password</div>
+      <div id='settings-schedule' data-premium='true'>Schedule</div>
       <hr>
       <div id='import-settings'>Import settings</div>
       <div id='export-settings'>Export settings</div>
@@ -157,12 +263,12 @@
       <a href='https://github.com/lawrencehook/remove-youtube-suggestions' target='_blank'>View Source Code</a>
       <a href='https://docs.google.com/forms/d/1AzQQxTWgG6M5N87jinvXKQkGS6Mehzg19XV4mjteTK0' target='_blank'>Give Feedback</a>
       <a href='https://lawrencehook.com/rys/' target='_blank'>Homepage</a>
-      <a href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' target='_blank'>❤️ Donate</a>
+      <a id='settings-donate' href='https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=' target='_blank'>Donate</a>
     </div>
 
     <div id="power-options" hidden>
       <div id='global_enable'>Turn <span class="on">on</span><span class='off'>off</span></div>
-      <div id='open-schedule'>Edit Schedule</div>
+      <div id='open-schedule' data-premium='true'>Edit Schedule</div>
       <div id='resume-schedule'>Resume Schedule</div>
       <hr>
       <div minutes="10">Turn <span class="on">on</span><span class='off'>off</span> for 10 minutes</div>
@@ -179,6 +285,7 @@
       </a>
 
       <div id='header-text'>RYS</div>
+      <div id='header-premium-badge' hidden>Premium</div>
 
       <div id='search_bar'>
         <input type=search placeholder='Search' autofocus tabindex="0"></input>
