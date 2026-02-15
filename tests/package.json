@@ -1,0 +1,14 @@
+{
+  "name": "rys-tests",
+  "version": "1.0.0",
+  "description": "Unit tests for Remove YouTube Suggestions extension",
+  "private": true,
+  "scripts": {
+    "test": "node --test **/*.test.js",
+    "test:watch": "node --test --watch **/*.test.js"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

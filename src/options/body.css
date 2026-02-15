@@ -550,3 +550,483 @@ html[foo=bar] {
   flex-direction: column;
   gap: 1px;
 }
+
+
+/*************************************
+ * SIGN-IN / ACCOUNT / UPGRADE MODALS
+ * (Premium/Monetization Feature)
+ *************************************/
+
+#signin_container_background,
+#account_container_background,
+#upgrade_container_background,
+#premium_required_container_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+}
+
+#signin_container,
+#account_container,
+#upgrade_container,
+#premium_required_container {
+  height: fit-content;
+  max-height: calc(100vh - 20px);
+  width: min(90vw, 380px);
+  margin-top: calc(1.2 * var(--header-height));
+  margin-right: auto;
+  margin-left: auto;
+  padding: 20px;
+  overflow-y: auto;
+
+  text-align: center;
+
+  background-color: var(--body-background-color);
+  color: var(--body-color);
+  box-shadow: 0px 0px .5px .5px var(--box-shadow-color);
+  box-sizing: border-box;
+
+  border: 1px solid var(--box-shadow-color);
+  border-radius: 2px;
+
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#account_header {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+#signin_header,
+#upgrade_header,
+#premium_required_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#signin_header_brand,
+#upgrade_header_brand,
+#premium_required_header_brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#signin_header_logo,
+#upgrade_header_logo,
+#premium_required_header_logo {
+  width: 20px;
+  height: 20px;
+}
+
+#signin_header_rys,
+#upgrade_header_rys,
+#premium_required_header_rys {
+  font-size: 1.3rem;
+  font-weight: normal;
+}
+
+#signin_header_premium,
+#upgrade_header_premium,
+#premium_required_header_premium {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--blue-color, #4a6cf7);
+  letter-spacing: 0.02em;
+}
+
+#signin_email_form,
+#signin_error {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+#signin_waiting {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+#signin_email_form p,
+#signin_waiting p {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+#signin-email-input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  background-color: var(--body-background-color);
+  color: var(--body-color);
+}
+
+#signin-email-input::placeholder {
+  color: var(--body-color);
+  opacity: 0.4;
+}
+
+#signin_container button,
+#account_container button,
+#upgrade_container button,
+#premium_required_container button {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  background-color: var(--blue-color);
+  color: white;
+}
+
+#signin_container button:hover,
+#account_container button:hover,
+#upgrade_container button:hover,
+#premium_required_container button:hover {
+  opacity: 0.9;
+}
+
+#signin_container button:disabled,
+#account_container button:disabled,
+#upgrade_container button:disabled,
+#premium_required_container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#signin-send-button,
+#upgrade-checkout-button,
+#premium-required-signin-button {
+  background-color: transparent !important;
+  color: var(--blue-color) !important;
+  border: 1px solid var(--blue-color) !important;
+}
+
+#signin_email_row {
+  display: flex;
+  width: 100%;
+}
+
+#signin_email_row #signin-email-input {
+  flex: 1;
+  border-right: none;
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+#signin-send-button {
+  padding: 8px 10px;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#signin-send-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+#signin-send-button:hover,
+#premium-required-signin-button:hover {
+  background-color: rgba(6, 0, 251, 0.05) !important;
+}
+
+#signin-cancel-button,
+#upgrade-cancel-button,
+#premium-required-cancel-button,
+#account-signout-button {
+  background-color: transparent !important;
+  color: var(--body-color) !important;
+  border: 1px solid var(--box-shadow-color) !important;
+}
+
+#signin-cancel-button:hover,
+#upgrade-cancel-button:hover,
+#premium-required-cancel-button:hover,
+#account-signout-button:hover {
+  background-color: var(--box-shadow-color) !important;
+}
+
+#signin-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#signin-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--box-shadow-color);
+  border-top-color: var(--blue-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#signin-waiting-email {
+  font-weight: bold;
+  word-break: break-all;
+  font-size: 0.85rem;
+}
+
+#signin-status {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+#signin-error-message {
+  color: var(--red-color);
+}
+
+/* Account Modal */
+#account_container {
+  width: auto;
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+#account_row_1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+#account-email-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+#account-email-label {
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
+#account-email {
+  font-size: 0.85rem;
+}
+
+#account-premium-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+#account-premium-label[data-status="free"] {
+  color: var(--body-color);
+  opacity: 0.6;
+}
+
+#account-premium-label[data-status="premium"] {
+  color: var(--blue-color);
+}
+
+#account-premium-label[data-status="grandfathered"] {
+  color: #b8860b;
+}
+
+#account_row_2 {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#account_row_2 button {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+#account-billing-button {
+  background-color: transparent !important;
+  color: var(--blue-color) !important;
+  border: 1px solid var(--blue-color) !important;
+}
+
+#account-billing-button:hover {
+  background-color: rgba(6, 0, 251, 0.05) !important;
+}
+
+#account-signout-button {
+  background-color: transparent !important;
+  color: var(--body-color) !important;
+  border: 1px solid var(--box-shadow-color) !important;
+}
+
+#account-signout-button:hover {
+  background-color: var(--box-shadow-color) !important;
+}
+
+/* Upgrade Modal */
+#upgrade_container {
+  width: auto;
+  padding: 24px;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+
+#upgrade_header_action {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--body-color);
+  opacity: 0.5;
+}
+
+#premium_required_description {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+#upgrade_plans {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.upgrade-plan {
+  width: 120px;
+  padding: 12px;
+  border: 1px solid var(--box-shadow-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.upgrade-plan:hover {
+  border-color: var(--light-blue);
+}
+
+.upgrade-plan[selected] {
+  border-color: var(--blue-color);
+  background-color: rgba(6, 0, 251, 0.08);
+}
+html[dark_mode='true'] .upgrade-plan[selected] {
+  background-color: rgba(74, 108, 247, 0.15);
+}
+
+.plan-name {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--body-color);
+}
+
+.plan-price {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--label-color);
+}
+
+.plan-price-period {
+  font-size: 0.7rem;
+  font-weight: normal;
+  opacity: 0.7;
+}
+
+
+#upgrade_buttons,
+#premium_required_buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+#upgrade_buttons button,
+#premium_required_buttons button {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+#upgrade-checkout-button {
+  width: fit-content;
+}
+
+#upgrade-checkout-button:hover {
+  background-color: rgba(6, 0, 251, 0.05) !important;
+}
+
+#upgrade-cancel-button {
+  width: fit-content;
+}
+
+/* Premium lock icon for options */
+html:not([is_premium='true']) .option[data-premium='true'] {
+  opacity: 0.25;
+  position: relative;
+}
+
+html:not([is_premium='true']) .option[data-premium='true']::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Premium options unlocked */
+html[is_premium='true'] .option[data-premium='true'] {
+  opacity: 1;
+}
+
+/* Premium lock icon for settings menu items */
+html:not([is_premium='true']) #settings-menu div[data-premium='true'],
+html:not([is_premium='true']) #power-options div[data-premium='true'] {
+  opacity: 0.25;
+  position: relative;
+}
+
+html:not([is_premium='true']) #settings-menu div[data-premium='true']::after,
+html:not([is_premium='true']) #power-options div[data-premium='true']::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+html[is_premium='true'] #settings-menu div[data-premium='true'],
+html[is_premium='true'] #power-options div[data-premium='true'] {
+  opacity: 1;
+}
+
+
+

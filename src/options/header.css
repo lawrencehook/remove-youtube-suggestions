@@ -43,12 +43,19 @@ html[dark_mode='false'] #header-light { display: none }
   max-width: var(--icon-dim);
 }
 #header-text {
-  margin-right: auto;
   font-size: 1.3rem;
   color: var(--label-color);
 }
 
+#header-premium-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--blue-color, #4a6cf7);
+  letter-spacing: 0.02em;
+}
+
 #search_bar {
+  margin-left: auto;
   margin-right: auto;
 }
 #search_bar input {

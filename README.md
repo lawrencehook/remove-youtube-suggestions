@@ -4,7 +4,7 @@
 ---
 
 ### What it does
-This extension aims to make YouTube less engaging and more configurable. It provides options to hide recommended videos and to customize the user interface.
+A browser extension that lets you hide recommendations, customize the interface, and take control of your YouTube experience.
 
 ---
 
@@ -14,14 +14,12 @@ Leave a review!
 - [Chrome](https://chrome.google.com/webstore/detail/remove-youtube-suggestion/cdhdichomdnlaadbndgmagohccgpejae)
 - [Google Form](https://docs.google.com/forms/d/1AzQQxTWgG6M5N87jinvXKQkGS6Mehzg19XV4mjteTK0/edit)
 
-Completely free. Donations welcome — [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url)  
+Free to use with optional premium features. Donations welcome — [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FF9K9YD6K6SWG&currency_code=USD&source=url)  
 
 ---
 
 ### Why I made it
-Motivated by an attempt to stymie the YouTube rabbit hole.
-
-The YouTube recommendation algorithm optimizes for the most _engaging_ videos, regardless of whether or not you are interested. Persistent exposure to these suggestions can result in a waste of your time. Download this add-on and remove unwanted suggestions as you please.
+The attention economy has gotten out of control. YouTube's recommendation algorithm optimizes for the most _engaging_ videos, not the ones you actually want to watch — and it's easy to lose hours to the rabbit hole. This extension lets you cut the noise and use YouTube on your own terms.
 
 Available for download at the links below:
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/remove-youtube-s-suggestions)

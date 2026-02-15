@@ -27,6 +27,8 @@ html[dark_mode='true'] {
   --body-background-color: #393939;
   --label-color: #E9E9E9;
   --box-shadow-color: rgba(127, 127, 127, 0.90);
+  --blue-color: hsl(238 80% 70%);
+  --light-blue: hsl(238 50% 70%);
 }
 
 html[dark_mode='false'], html:not([dark_mode]) {
@@ -43,9 +45,11 @@ html[global_enable="false"] #lock_code_container,
 html[global_enable="true"][lock_code="false"] #lock_code_container,
 html[global_enable="true"][lock_code="true"]:not([entering_lock_code]) #lock_code_container,
 html[global_enable="true"] #disabled_message_container,
-html[global_enable="false"] #main_container,
-html[global_enable="false"] #search_bar {
+html[global_enable="false"] #main_container {
   display: none;
+}
+html[global_enable="false"] #search_bar {
+  visibility: hidden;
 }
 
 body {

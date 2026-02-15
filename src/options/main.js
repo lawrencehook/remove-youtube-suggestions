@@ -23,6 +23,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const settings = { ...DEFAULT_SETTINGS, ...localSettings };
+
+    // Enforce premium features are disabled for non-premium users
+    const isPremium = License.isPremiumSync(localSettings['license_token']);
+    if (!isPremium) {
+      SECTIONS.forEach(section => {
+        section.options.forEach(opt => {
+          if (opt.premium) settings[opt.id] = false;
+        });
+      });
+    }
+
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
       acc[id] = id in localSettings ? localSettings[id] : value;
       return acc;
@@ -78,7 +89,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     label.setAttribute('href', sectionNameToUrl(name));
 
     options.forEach(option => {
-      const { id, name, tags, defaultValue, effects, display } = option;
+      const { id, name, tags, defaultValue, effects, display, premium } = option;
       if (display === false) return;
 
       const optionNode = TEMPLATE_OPTION.cloneNode(true);
@@ -90,13 +101,38 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       const optionLabel = optionNode.querySelector('.option_label');
       optionLabel.innerText = name;
 
+      // Mark premium options
+      if (premium) {
+        optionNode.setAttribute('data-premium', 'true');
+      }
+
       const svg = optionNode.querySelector('svg');
       const value = id in SETTING_VALUES ? SETTING_VALUES[id] : defaultValue;
       HTML.setAttribute(id, value);
       cache[id] = value;
       svg.toggleAttribute('active', value);
 
-      optionNode.addEventListener('click', e => {
+      optionNode.addEventListener('click', async e => {
+        // Check if premium-locked
+        if (premium && HTML.getAttribute('is_premium') !== 'true') {
+          // Check if signed in first
+          const signedIn = await Auth.isSignedIn();
+          if (!signedIn) {
+            // Not signed in - show premium required modal
+            if (typeof openPremiumRequiredModal === 'function') {
+              openPremiumRequiredModal();
+            } else {
+              displayStatus('Premium feature - sign in to upgrade');
+            }
+          } else if (typeof openUpgradeModal === 'function') {
+            // Signed in but not premium - open upgrade modal
+            openUpgradeModal();
+          } else {
+            displayStatus('Premium feature - upgrade to access');
+          }
+          return;
+        }
+
         const value = svg.toggleAttribute('active');
         updateSetting(id, value, { manual: true });
 

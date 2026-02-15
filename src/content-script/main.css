@@ -5,6 +5,7 @@ html[global_enable="true"] ytd-carousel-ad-renderer,
 html[global_enable="true"] .ytd-display-ad-renderer,
 html[global_enable="true"] ytd-ad-slot-renderer,
 html[global_enable="true"] ytd-action-companion-ad-renderer,
+html[global_enable="true"] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
 
 /* General */
 html[global_enable="true"][remove_all_shorts="true"] a[title="Shorts"],
@@ -53,7 +54,7 @@ html[global_enable="true"][remove_footer_section="true"]      #guide-renderer > 
 
 /* Homepage */
 html[global_enable="true"][remove_header="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > div#header,
-html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row:nth-child(n+2),
+html[global_enable="true"][remove_all_but_one="true"] ytd-rich-item-renderer[rys-hidden-row],
 html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
 html[global_enable="true"][remove_extra_rows="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-section-renderer,
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
@@ -206,95 +207,54 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 
 /* Reveal suggestions box */
 .rys_reveal_box {
+	--rys-reveal-text: #606060;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 10px;
-	padding: 14px 18px;
+	gap: 6px;
+	padding: 10px 16px;
 	margin: auto;
 	margin-top: 15%;
-	background: var(--rys-primary);
 	border-radius: 12px;
 	font-size: 14px;
 	font-family: var(--rys-font);
-	z-index: 1000000;
+	z-index: 1;
 	position: relative;
 	width: fit-content;
-	box-shadow: 0 4px 16px var(--rys-shadow);
+}
+
+html[dark] .rys_reveal_box {
+	--rys-reveal-text: #aaa;
 }
 
 .rys_reveal_box * {
-	color: var(--rys-text);
-}
-
-.rys_reveal_header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	padding-bottom: 8px;
-	border-bottom: 1px solid var(--rys-separator);
-}
-
-.rys_reveal_branding {
-	display: flex;
-	align-items: center;
-	gap: 5px;
-	opacity: 0.8;
-}
-
-.rys_reveal_logo {
-	width: 14px;
-	height: 14px;
-}
-
-.rys_reveal_brand {
-	font-weight: 600;
-	font-size: 11px;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
+	color: var(--rys-reveal-text);
 }
 
 .rys_reveal_actions {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-}
-
-.rys_reveal_content {
-	display: flex;
-	align-items: center;
 	justify-content: space-between;
 	width: 100%;
-	gap: 24px;
-	white-space: nowrap;
-}
-
-.rys_reveal_message {
-	font-weight: 500;
 }
 
 .rys_reveal_show {
-	background: var(--rys-text);
-	color: var(--rys-primary) !important;
-	padding: 6px 16px;
-	border-radius: 20px;
-	font-size: 13px;
-	font-weight: 600;
+	padding: 6px 0;
+	font-size: 14px;
+	font-weight: 500;
 	cursor: pointer;
 	text-decoration: none;
-	box-shadow: 0 2px 6px var(--rys-shadow);
 }
 
 .rys_reveal_show:hover {
-	background: #f5f5f5;
+	text-decoration: underline;
 }
 
 .rys_reveal_dismiss {
 	cursor: pointer;
 	font-size: 11px;
 	white-space: nowrap;
-	opacity: 0.75;
+	opacity: 0.5;
 	text-decoration: none;
 	transition: opacity 0.15s ease;
 }
@@ -307,12 +267,12 @@ html[global_enable="true"] ytd-rich-grid-row[empty="true"] #contents {
 .rys_reveal_close {
 	background: none;
 	border: none;
-	font-size: 11px;
+	font-size: 14px;
 	cursor: pointer;
-	padding: 0;
+	padding: 2px 4px;
 	opacity: 0.6;
 	line-height: 1;
-	color: var(--rys-text);
+	color: var(--rys-reveal-text);
 	transition: opacity 0.15s ease;
 	display: flex;
 	align-items: center;
@@ -496,8 +456,6 @@ html[global_enable='true'][grayscale_mode='true'] ytd-app {
 :root {
   --rys-primary: #065fd4;
   --rys-text: #fff;
-  --rys-separator: rgba(255, 255, 255, 0.15);
-  --rys-shadow: rgba(0, 0, 0, 0.15);
   --rys-font: "Roboto", "Arial", sans-serif;
   --rys-banner-height: 40px;
 }
