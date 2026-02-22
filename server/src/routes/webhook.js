@@ -55,6 +55,11 @@ router.post('/stripe', async (req, res) => {
       try {
         const email = await getCustomerEmail(subscription.customer);
         if (email) {
+          // Skip non-active created events to avoid overwriting premium with incomplete status
+          if (!premium && event.type === 'customer.subscription.created') {
+            console.log(`[webhook] Subscription created: ${email} -> ${subscription.status} (skipped cache update)`);
+            break;
+          }
           storage.setSubscriptionStatus(email, premium, subscription.customer);
           console.log(`[webhook] Subscription ${action}: ${email} -> ${premium ? 'premium' : 'free'}`);
 

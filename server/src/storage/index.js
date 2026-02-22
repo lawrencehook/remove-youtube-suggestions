@@ -78,7 +78,10 @@ function setSubscriptionStatus(email, premium, customerId) {
 
 function getSubscriptionStatus(email) {
   const data = readSubscriptionFile();
-  return data[email.toLowerCase()] || null;
+  const entry = data[email.toLowerCase()];
+  if (!entry) return null;
+  if (Date.now() - entry.updatedAt > 10000) return null;
+  return entry;
 }
 
 
