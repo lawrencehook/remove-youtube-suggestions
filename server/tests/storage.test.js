@@ -134,6 +134,7 @@ describe('Storage', () => {
     it('should read grandfathered emails from file', () => {
       const grandfatheredFile = path.join(testDataDir, config.GRANDFATHERED_FILE);
       fs.writeFileSync(grandfatheredFile, 'donor1@example.com\nDonor2@Example.com\n');
+      storage.loadGrandfatheredEmails();
 
       assert.strictEqual(storage.isGrandfathered('donor1@example.com'), true);
       assert.strictEqual(storage.isGrandfathered('DONOR1@EXAMPLE.COM'), true);
@@ -142,6 +143,7 @@ describe('Storage', () => {
     });
 
     it('should handle missing grandfathered file gracefully', () => {
+      storage.loadGrandfatheredEmails();
       // File doesn't exist, should not throw
       assert.strictEqual(storage.isGrandfathered('anyone@example.com'), false);
     });
