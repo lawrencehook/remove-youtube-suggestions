@@ -106,6 +106,7 @@ html[global_enable="true"][remove_results_description="true"] #contents ytd-badg
 
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search grid-shelf-view-model.ytGridShelfViewModelHostHasBottomButton.ytd-item-section-renderer.ytGridShelfViewModelHost,
+html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search grid-shelf-view-model.ytGridShelfViewModelHost.ytd-item-section-renderer,
 html[global_enable="true"][remove_extra_results="true"] #container.ytd-search ytd-shelf-renderer,
 html[global_enable="true"][remove_thumbnail_mouseover_effect="true"] #mouseover-overlay,
 html[global_enable="true"][remove_infinite_scroll_search="true"] .ytd-search #contents > ytd-continuation-item-renderer,
