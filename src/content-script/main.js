@@ -10,12 +10,6 @@ const REDIRECT_URLS = {
   "redirect_to_library": 'https://www.youtube.com/feed/library',
 };
 
-const resultsPageRegex = new RegExp('.*://.*youtube\.com/results.*', 'i');
-const homepageRegex    = new RegExp('.*://(www|m)\.youtube\.com(/)?$',  'i');
-const shortsRegex      = new RegExp('.*://.*youtube\.com/shorts.*',  'i');
-const videoRegex       = new RegExp('.*://.*youtube\.com/watch\\?v=.*',  'i');
-const channelRegex     = new RegExp('.*://.*youtube\.com/(@|channel)', 'i');
-const subsRegex        = new RegExp(/\/feed\/subscriptions$/, 'i');
 
 // Dynamic settings variables
 const cache = {};
@@ -49,7 +43,7 @@ let theaterClicked = false, hyper = false;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
-let onVideo = videoRegex.test(url);
+let onVideo = videoPageRegex.test(url);
 let onChannel = channelRegex.test(url);
 let onSubs = subsRegex.test(url);
 let settingsInit = false
@@ -57,8 +51,6 @@ let settingsInit = false
 let dynamicIters = 0;
 let frameRequested = false;
 let isRunning = false;
-// let lastRun = Date.now();
-// let counter = 0;
 let lastScheduleCheck;
 const scheduleInterval = 2_000; // 2 seconds
 let lastRedirect;
@@ -113,8 +105,6 @@ document.addEventListener("DOMContentLoaded", e => handleNewPage());
 // Dynamic settings (i.e. js instead of css)
 function runDynamicSettings() {
   if (isRunning) return;
-  // console.log('runDynamicSettings', Date.now() - lastRun);
-  // lastRun = Date.now();
   isRunning = true;
   dynamicIters += 1;
   const on = cache['global_enable'] === true;
@@ -193,6 +183,15 @@ function runDynamicSettings() {
       });
     }
 
+    // Hide playables
+    if (cache['remove_playables']) {
+      const playableCards = qsa('ytd-mini-game-card-view-model');
+      playableCards?.forEach(card => {
+        const shelfContainer = card.closest('ytd-rich-section-renderer');
+        shelfContainer?.setAttribute('is_playable', '');
+      });
+    }
+
     // Channel page option
     if (onChannel) {
       if (cache['remove_channel_for_you']) {
@@ -204,8 +203,10 @@ function runDynamicSettings() {
       }
     }
 
-    // Subscriptions page options
-    if (onSubs) {
+    // Subscriptions page options (only if any sub-page settings are enabled)
+    const subsSettingsEnabled = cache['remove_sub_shorts'] || cache['remove_sub_live'] ||
+                                cache['remove_sub_upcoming'] || cache['remove_sub_premiere'] || cache['remove_sub_vods'];
+    if (onSubs && subsSettingsEnabled) {
       const badgeSelector = 'ytd-badge-supported-renderer';
       const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]';
       const shortsBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]';
@@ -281,13 +282,15 @@ function runDynamicSettings() {
       });
     }
 
-    // Click on "dismiss" buttons
-    const dismissButtons = qsa('#dismiss-button');
-    dismissButtons.forEach(dismissButton => {
-      if (dismissButton && dismissButton.offsetParent) {
-        dismissButton.click();
-      }
-    })
+    // Click on "dismiss" buttons (only check occasionally, not every iteration)
+    if (dynamicIters % 5 === 0) {
+      const dismissButtons = qsa('#dismiss-button');
+      dismissButtons.forEach(dismissButton => {
+        if (dismissButton && dismissButton.offsetParent) {
+          dismissButton.click();
+        }
+      });
+    }
 
     // Disable autoplay
     if (cache['disable_autoplay'] === true) {
@@ -348,15 +351,14 @@ function runDynamicSettings() {
       }
     }
 
-    // // Enable theater mode
-    // if (cache['enable_theater'] === true && !theaterClicked) {
-    //   const theaterButton = qsa('button[title="Theater mode (t)"]')?.[0];
-    //   if (theaterButton && theaterButton.display !== 'none') {
-    //     console.log('theaterButton.click();')
-    //     theaterButton.click();
-    //     theaterClicked = true;
-    //   }
-    // }
+    // Enable theater mode
+    if (cache['enable_theater']) {
+      const flexy = document.querySelector("ytd-watch-flexy");
+      const btn = document.querySelector(".ytp-size-button");
+      if (flexy && btn && !flexy.hasAttribute("theater")) {
+        btn.click();
+      }
+    }
 
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
@@ -369,10 +371,7 @@ function runDynamicSettings() {
       });
 
       // Click on "Skip ad" button
-      const skipButtons = qsa('.ytp-ad-skip-button').
-                   concat(qsa('.ytp-ad-skip-button-modern')).
-                   concat(qsa('.ytp-skip-ad-button')).
-                   concat(qsa(CSS.escape("button#skip-button:2")));
+      const skipButtons = qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button');
 
       const skippableAd = skipButtons?.some(button => button.offsetParent);
       if (skippableAd) {
@@ -417,10 +416,6 @@ function runDynamicSettings() {
       }
     }
 
-    // if (cache['change_playback_speed']) {
-    //   document.getElementsByTagName("video")[0].playbackRate = Number(cache['change_playback_speed']);
-    // }
-
     // Hide all but the timestamped comments
     if (cache['remove_non_timestamp_comments']) {
       const timestamps = qsa('yt-formatted-string:not(.published-time-text).ytd-comment-renderer > a.yt-simple-endpoint[href^="/watch"]');
@@ -429,30 +424,6 @@ function runDynamicSettings() {
         comment?.setAttribute('timestamp_comment', '');
       });
     }
-
-    // // Disable play on hover
-    // if (dynamicIters % 10 === 0) {
-    //   const prefCookie = getCookie('PREF');
-    //   const prefObj = prefCookie?.split('&')?.reduce((acc, x) => {
-    //     const [ key, value ] = x.split('=');
-    //     acc[key] = value;
-    //     return acc;
-    //   }, {});
-    //   if (prefObj) {
-    //     const f7 = prefObj['f7'] || '0';
-    //     const playOnHoverEnabled = f7[f7.length-1] === '0';
-
-    //     if (cache['disable_play_on_hover'] && playOnHoverEnabled) {
-    //       prefObj['f7'] = f7.substring(0, f7.length-1) + '1';
-    //       const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
-    //       setCookie('PREF', newPref);
-    //     } else if (!cache['disable_play_on_hover'] && !playOnHoverEnabled) {
-    //       prefObj['f7'] = f7.substring(0, f7.length-1) + '0';
-    //       const newPref = Object.entries(prefObj).map(([key, value]) => `${key}=${value}`).join('&');
-    //       setCookie('PREF', newPref);
-    //     }
-    //   }
-    // }
 
     // Show description
     if (cache['expand_description'] || cache['remove_comments']) {
@@ -471,6 +442,11 @@ function runDynamicSettings() {
         const section = identifier.closest('ytd-item-section-renderer');
         section?.setAttribute('is-playlist-suggestions', '');
       }
+    }
+
+    // Hide notification number in title
+    if (cache['remove_notif_bell']) {
+      document.title = document.title.replace(/^\(\d+\)/g, '');
     }
 
     // Show video length when thumbnails are hidden
@@ -516,8 +492,8 @@ function runDynamicSettings() {
       });
     }
 
-    // Reveal suggestions boxes
-    REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, message, showAction, revealSetting }) => {
+    // Reveal suggestions boxes (only check on early iterations)
+    if (dynamicIters <= 30) REVEAL_BOX_CONFIGS.forEach(({ containerSelector, boxId, message, showAction, revealSetting }) => {
 
       if (closedRevealBoxes.has(boxId)) return;
       if (qs(`#${boxId}`)) return;
@@ -569,9 +545,11 @@ function runDynamicSettings() {
 
     // Video Player: hide the 'clip' button.
     //   The path[d=...] selector selects scissor SVGs.
-    qsa('path[d^="M8 7c0 .55-.45 1-1 1s-1-.45-1-1"]').
-      map(path => path.closest('#menu button')).
-      forEach(b => b.setAttribute('scissor_button', ''));
+    if (cache['remove_clip_button']) {
+      qsa('path[d^="M8 7c0 .55-.45 1-1 1s-1-.45-1-1"]').
+        map(path => path.closest('#menu button')).
+        forEach(b => b?.setAttribute('scissor_button', ''));
+    }
 
   } catch (error) {
     console.log(error);
@@ -585,10 +563,19 @@ function runDynamicSettings() {
 
 function requestRunDynamicSettings() {
   if (frameRequested || isRunning) return;
+  if (document.hidden) return; // Pause polling when tab is hidden
   frameRequested = true;
-  // setTimeout(() => runDynamicSettings(), 50);
-  setTimeout(() => runDynamicSettings(), Math.min(100, 50 + 10 * dynamicIters));
+  // Start fast (100ms), slow down to 500ms after page settles
+  const delay = dynamicIters < 20 ? 100 : Math.min(500, 100 + dynamicIters * 10);
+  setTimeout(() => runDynamicSettings(), delay);
 }
+
+// Resume polling when tab becomes visible
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    requestRunDynamicSettings();
+  }
+});
 
 
 function injectAnnouncementBanners() {
@@ -606,33 +593,6 @@ function injectAnnouncementBanners() {
   });
 }
 
-function injectScripts() {
-  const on = cache['global_enable'] === true;
-  if (!on) return;
-
-  // Disable playlist autoplay
-  if (cache['disable_playlist_autoplay']) {
-    const existingScript = document.querySelector('script[id="disable_playlist_autoplay"]')
-    if (existingScript) return;
-
-    const script = document.createElement("script");
-    script.id = 'disable_playlist_autoplay';
-    script.type = "text/javascript";
-    script.innerText = `
-(function() {
-let pm;
-function f() {
-  if (!pm) pm = document.querySelector('yt-playlist-manager');
-  if (pm) pm.canAutoAdvance_ = false;
-}
-f();
-setInterval(f, 100);
-})()
-`;
-    document.body?.appendChild(script);
-  }
-
-}
 
 
 function handleNewPage() {
@@ -645,7 +605,7 @@ function handleNewPage() {
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
   onShorts = shortsRegex.test(url);
-  onVideo = videoRegex.test(url);
+  onVideo = videoPageRegex.test(url);
   onChannel = channelRegex.test(url);
   onSubs = subsRegex.test(url);
   settingsInit = false;
@@ -699,32 +659,8 @@ function handleNewPage() {
     }
   }
 
-  injectScripts();
   injectAnnouncementBanners();
   requestRunDynamicSettings();
-}
-
-function setCookie(cname, cvalue, exdays=370) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  let expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";domain=.youtube.com;path=/";
-}
-
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 
 function updateSetting(id, value) {

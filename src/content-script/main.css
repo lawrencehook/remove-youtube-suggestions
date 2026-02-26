@@ -55,8 +55,9 @@ html[global_enable="true"][remove_footer_section="true"]      #guide-renderer > 
 html[global_enable="true"][remove_header="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > div#header,
 html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row:nth-child(n+2),
 html[global_enable="true"][remove_all_but_one="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
-html[global_enable="true"][remove_extra_rows="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-grid-row + ytd-rich-section-renderer,
+html[global_enable="true"][remove_extra_rows="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-rich-section-renderer,
 html[global_enable="true"][remove_infinite_scroll="true"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer > #contents > ytd-continuation-item-renderer,
+html[global_enable="true"][remove_playables="true"] *[is_playable],
 
 /* Video Player - UX */
 html[global_enable="true"][disable_fullscreen_scroll="true"] ytd-watch-flexy[fullscreen] div#columns,
@@ -94,6 +95,14 @@ html[global_enable="true"][remove_comment_upvotes="true"] #vote-count-middle.ytd
 html[global_enable="true"][remove_search_suggestions="true"] div.sbdd_a,
 html[global_enable="true"][remove_search_promoted="true"] #container.ytd-search ytd-search-pyv-renderer,
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-video-renderer[is_short="true"],
+
+html[global_enable="true"][remove_results_description="true"] #contents .metadata-snippet-container,
+html[global_enable="true"][remove_results_description="true"] #contents .metadata-snippet-container-one-line,
+html[global_enable="true"][remove_results_description="true"] #contents #description-text,
+html[global_enable="true"][remove_results_description="true"] #contents #description,
+html[global_enable="true"][remove_results_description="true"] #contents ytd-expandable-metadata-renderer,
+html[global_enable="true"][remove_results_description="true"] #contents ytd-badge-supported-renderer,
+
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search grid-shelf-view-model.ytGridShelfViewModelHostHasBottomButton.ytd-item-section-renderer.ytGridShelfViewModelHost,
 html[global_enable="true"][remove_extra_results="true"] #container.ytd-search ytd-shelf-renderer,
@@ -173,10 +182,14 @@ html[global_enable="true"][blur_video_thumbnails="true"] .video-thumbnail-img {
 
 /* Shrink thumbnails */
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-thumbnail,
+html[global_enable="true"][shrink_video_thumbnails="true"] ytd-rich-item-renderer yt-thumbnail-view-model,
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-playlist-thumbnail,
+html[global_enable="true"][shrink_video_thumbnails="true"] *:has(> yt-collection-thumbnail-view-model),
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-channel-renderer #avatar-section,
 html[global_enable="true"][shrink_video_thumbnails="true"] ytd-movie-renderer .thumbnail-container {
-	max-width: 0 !important;
+  max-width: 240px !important;
+  min-width: 210px !important;
+  max-height: 134px;
 }
 
 

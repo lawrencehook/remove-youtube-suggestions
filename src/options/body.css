@@ -390,6 +390,75 @@ html[foo=bar] {
 }
 
 
+/* Logging Opt-in Banner */
+#log_prompt_banner {
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+
+  background: var(--body-color);
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+#log_prompt_banner * {
+  color: var(--body-background-color);
+}
+
+#log_prompt_text {
+  flex: 1;
+}
+
+#log_prompt_buttons {
+  display: flex;
+  gap: 6px;
+}
+
+#log_prompt_buttons button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#log_prompt_yes {
+  background-color: var(--body-background-color);
+  color: var(--body-color) !important;
+}
+
+#log_prompt_no {
+  background-color: transparent;
+  border: 1px solid var(--box-shadow-color) !important;
+}
+
+#log_prompt_buttons button:hover {
+  opacity: 0.85;
+}
+
+#log_prompt_dismiss {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.7;
+  line-height: 1;
+}
+
+#log_prompt_dismiss:hover {
+  opacity: 1;
+}
+
+
 /* Menu Timer */
 #timer_container {
   position: fixed;
@@ -439,7 +508,7 @@ html[foo=bar] {
 
 #sidebar {
   height: calc(6px + var(--body-height));
-  width: 140px;
+  width: 160px;
   padding: 8px 6px;
   overflow: hidden;
 
