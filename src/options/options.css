@@ -29,6 +29,10 @@
   text-decoration: none;
 }
 
+#active_section .section_label {
+  display: none;
+}
+
 
 div.option {
 	cursor: default;
