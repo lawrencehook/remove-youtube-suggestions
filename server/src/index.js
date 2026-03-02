@@ -98,6 +98,7 @@ function runCleanup() {
   try {
     storage.pruneExpiredAuthRequests();
     storage.pruneExpiredRateLimits();
+    storage.pruneExpiredIpRateLimits();
   } catch (err) {
     console.error('Cleanup error:', err);
   }

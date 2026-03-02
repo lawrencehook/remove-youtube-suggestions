@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 
 // Set up test environment variables
 process.env.JWT_SECRET = 'test-secret-key-for-testing-only-32chars';
@@ -15,6 +14,8 @@ process.env.DATA_DIR = './tests/test-data';
 const testDataDir = './tests/test-data';
 
 function cleanTestData() {
+  const storage = require('../src/storage');
+  storage.closeDatabase();
   try {
     if (fs.existsSync(testDataDir)) {
       fs.rmSync(testDataDir, { recursive: true, force: true });

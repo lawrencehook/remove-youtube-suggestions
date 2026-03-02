@@ -1,4 +1,4 @@
-const { describe, it, before, after, beforeEach } = require('node:test');
+const { describe, it, after, beforeEach } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
@@ -74,24 +74,14 @@ describe('Storage', () => {
       const requestId = 'expired-request';
       const email = 'test@example.com';
 
-      // Create request with old timestamp
-      const oldTimestamp = Date.now() - config.REQUEST_ID_EXPIRY_MS - 1000;
-      const filename = `${oldTimestamp}-${requestId}.json`;
-      const filePath = path.join(testDataDir, config.AUTH_REQUESTS_DIR, filename);
+      storage.createAuthRequest(requestId, email);
 
-      fs.writeFileSync(filePath, JSON.stringify({
-        request_id: requestId,
-        email: email,
-        status: 'pending',
-        created_at: oldTimestamp,
-        session_token: null,
-      }));
+      // Backdate via direct SQL
+      const oldTimestamp = Date.now() - config.REQUEST_ID_EXPIRY_MS - 1000;
+      storage.getDb().prepare('UPDATE auth_requests SET created_at = ? WHERE request_id = ?').run(oldTimestamp, requestId);
 
       const retrieved = storage.getAuthRequest(requestId);
       assert.strictEqual(retrieved, null);
-
-      // File should be deleted
-      assert.strictEqual(fs.existsSync(filePath), false);
     });
   });
 
@@ -166,11 +156,9 @@ describe('Storage', () => {
     it('should expire cache entries after 10 seconds', () => {
       storage.setSubscriptionStatus('ttl@example.com', false, null);
 
-      // Manually backdate the entry
-      const cachePath = path.join(testDataDir, 'subscriptions.json');
-      const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-      data['ttl@example.com'].updatedAt = Date.now() - 11000;
-      fs.writeFileSync(cachePath, JSON.stringify(data, null, 2));
+      // Backdate via direct SQL
+      const oldTime = Date.now() - 11000;
+      storage.getDb().prepare('UPDATE subscription_cache SET updated_at = ? WHERE email = ?').run(oldTime, 'ttl@example.com');
 
       const status = storage.getSubscriptionStatus('ttl@example.com');
       assert.strictEqual(status, null);
@@ -186,11 +174,10 @@ describe('Storage', () => {
 
   describe('Pruning', () => {
     it('should prune expired auth requests', () => {
-      // Create an expired request
+      // Create an expired request via createAuthRequest + backdate
+      storage.createAuthRequest('old-request', 'test@example.com');
       const oldTimestamp = Date.now() - config.REQUEST_ID_EXPIRY_MS - 1000;
-      const filename = `${oldTimestamp}-old-request.json`;
-      const filePath = path.join(testDataDir, config.AUTH_REQUESTS_DIR, filename);
-      fs.writeFileSync(filePath, JSON.stringify({ created_at: oldTimestamp }));
+      storage.getDb().prepare('UPDATE auth_requests SET created_at = ? WHERE request_id = ?').run(oldTimestamp, 'old-request');
 
       // Create a valid request
       storage.createAuthRequest('valid-request', 'test@example.com');
@@ -198,7 +185,7 @@ describe('Storage', () => {
       const pruned = storage.pruneExpiredAuthRequests();
 
       assert.strictEqual(pruned, 1);
-      assert.strictEqual(fs.existsSync(filePath), false);
+      assert.strictEqual(storage.getAuthRequest('old-request'), null);
       assert.notStrictEqual(storage.getAuthRequest('valid-request'), null);
     });
   });
