@@ -1,7 +1,9 @@
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const { SESv2Client, GetEmailAddressInsightsCommand } = require('@aws-sdk/client-sesv2');
 const config = require('../config');
 
 const sesClient = new SESClient({ region: config.AWS_REGION });
+const sesV2Client = new SESv2Client({ region: config.AWS_REGION });
 
 async function sendMagicLinkEmail(email, magicLinkUrl, { isPremium = false } = {}) {
   const premiumBadge = isPremium
@@ -188,8 +190,26 @@ async function sendCancellationEmail(email) {
   return sesClient.send(command);
 }
 
+async function validateEmail(email) {
+  try {
+    const command = new GetEmailAddressInsightsCommand({ EmailAddress: email });
+    const result = await sesV2Client.send(command, {
+      abortSignal: AbortSignal.timeout(2000),
+    });
+    const verdict = result.MailboxValidation?.IsValid?.ConfidenceVerdict;
+    if (verdict === 'LOW') {
+      return { valid: false, reason: `Low confidence: ${email}` };
+    }
+    return { valid: true };
+  } catch (err) {
+    console.warn('[email] validateEmail error, failing open:', err.message);
+    return { valid: true };
+  }
+}
+
 module.exports = {
   sendMagicLinkEmail,
   sendWelcomeEmail,
   sendCancellationEmail,
+  validateEmail,
 };

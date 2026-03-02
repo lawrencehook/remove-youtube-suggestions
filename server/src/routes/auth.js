@@ -2,7 +2,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const config = require('../config');
 const storage = require('../storage');
-const { sendMagicLinkEmail } = require('../services/email');
+const emailService = require('../services/email');
 const { generateSessionToken } = require('../services/jwt');
 const { checkPremiumStatus } = require('../services/stripe');
 const { renderPage } = require('../templates');
@@ -57,7 +57,19 @@ router.post('/send-magic-link', async (req, res) => {
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
-    // Check rate limit
+    // Check IP rate limit
+    const ip = req.ip || req.connection.remoteAddress;
+    const ipLimit = storage.checkIpRateLimit(ip);
+    if (!ipLimit.allowed) {
+      const retryAfter = Math.ceil((ipLimit.resetTime - Date.now()) / 1000);
+      res.set('Retry-After', retryAfter);
+      return res.status(429).json({
+        error: 'Too many requests. Please try again later.',
+        retryAfter,
+      });
+    }
+
+    // Check per-email rate limit
     const rateLimit = storage.checkRateLimit(email);
     if (!rateLimit.allowed) {
       const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
@@ -68,15 +80,21 @@ router.post('/send-magic-link', async (req, res) => {
       });
     }
 
+    // Validate email with SES insights
+    const validation = await emailService.validateEmail(email);
+    if (!validation.valid) {
+      return res.status(400).json({ error: 'This email address appears to be invalid.' });
+    }
+
     // Generate request ID and create auth request
     const requestId = uuidv4();
-    storage.createAuthRequest(requestId, email);
+    storage.createAuthRequest(requestId, email, { ip });
 
     // Send magic link email
     const magicLinkUrl = `${config.BASE_URL}/auth/verify?token=${requestId}`;
     try {
       const status = await checkPremiumStatus(email);
-      await sendMagicLinkEmail(email, magicLinkUrl, { isPremium: status.premium });
+      await emailService.sendMagicLinkEmail(email, magicLinkUrl, { isPremium: status.premium });
     } catch (err) {
       storage.deleteAuthRequest(requestId);
       throw err;
@@ -118,6 +136,9 @@ router.get('/verify', async (req, res) => {
       session_token: sessionToken,
     });
     storage.decrementRateLimit(authRequest.email);
+    if (authRequest.ip) {
+      storage.decrementIpRateLimit(authRequest.ip);
+    }
     console.log(`[auth] Email verified: ${authRequest.email}`);
   }
 
