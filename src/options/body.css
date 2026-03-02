@@ -1019,6 +1019,13 @@ html[dark_mode='true'] .upgrade-plan[selected] {
   width: fit-content;
 }
 
+#upgrade_footer {
+  font-size: 0.7rem;
+  color: var(--label-color);
+  opacity: 0.6;
+  align-self: flex-end;
+}
+
 /* Premium lock icon for options */
 html:not([is_premium='true']) .option[data-premium='true'] {
   opacity: 0.25;

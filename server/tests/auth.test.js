@@ -1,4 +1,4 @@
-const { describe, it, before, after, beforeEach } = require('node:test');
+const { describe, it, after, beforeEach } = require('node:test');
 const assert = require('node:assert');
 const request = require('supertest');
 
@@ -25,6 +25,7 @@ describe('Auth Routes', () => {
     cleanTestData();
     storage.ensureDirectories();
     lastSentEmail = null;
+    emailService.validateEmail = async () => ({ valid: true });
   });
 
   after(() => {
@@ -58,6 +59,17 @@ describe('Auth Routes', () => {
         .send({});
 
       assert.strictEqual(res.status, 400);
+    });
+
+    it('should reject email with low confidence from SES insights', async () => {
+      emailService.validateEmail = async () => ({ valid: false, reason: 'Low confidence' });
+
+      const res = await request(app)
+        .post('/auth/send-magic-link')
+        .send({ email: 'bad@disposable.com' });
+
+      assert.strictEqual(res.status, 400);
+      assert.ok(res.body.error.includes('invalid'));
     });
 
     it('should rate limit after too many requests', async () => {

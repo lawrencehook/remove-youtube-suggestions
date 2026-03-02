@@ -18,6 +18,8 @@ module.exports = {
   REQUEST_ID_EXPIRY_MS: 20 * 60 * 1000,        // 20 minutes
   RATE_LIMIT_WINDOW_MS: 60 * 60 * 1000,        // 1 hour
   RATE_LIMIT_MAX_REQUESTS: 5,                   // per email per window
+  IP_RATE_LIMIT_WINDOW_MS: 60 * 60 * 1000,     // 1 hour
+  IP_RATE_LIMIT_MAX_REQUESTS: 5,                // per IP per window
 
   // Stripe
   get STRIPE_SECRET_KEY() { return process.env.STRIPE_SECRET_KEY; },
@@ -31,7 +33,5 @@ module.exports = {
 
   // File paths
   get DATA_DIR() { return process.env.DATA_DIR || './data'; },
-  AUTH_REQUESTS_DIR: 'auth-requests',
-  RATE_LIMITS_DIR: 'rate-limits',
   GRANDFATHERED_FILE: 'grandfathered.txt',
 };

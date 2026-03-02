@@ -1,32 +1,67 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const Database = require('better-sqlite3');
 const config = require('../config');
 
-// Get paths dynamically to support test environment changes
-function getDataDir() {
-  return config.DATA_DIR;
-}
+// --- Database setup ---
 
-function getAuthRequestsDir() {
-  return path.join(getDataDir(), config.AUTH_REQUESTS_DIR);
-}
+let db = null;
 
-function getRateLimitsDir() {
-  return path.join(getDataDir(), config.RATE_LIMITS_DIR);
+function getDb() {
+  if (db) return db;
+
+  const dataDir = config.DATA_DIR;
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+
+  db = new Database(path.join(dataDir, 'storage.db'));
+  db.pragma('journal_mode = WAL');
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS auth_requests (
+      request_id TEXT PRIMARY KEY,
+      email TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at INTEGER NOT NULL,
+      session_token TEXT,
+      ip TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS email_rate_limits (
+      key_hash TEXT PRIMARY KEY,
+      count INTEGER NOT NULL DEFAULT 0,
+      window_start INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS ip_rate_limits (
+      key_hash TEXT PRIMARY KEY,
+      count INTEGER NOT NULL DEFAULT 0,
+      window_start INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS subscription_cache (
+      email TEXT PRIMARY KEY,
+      premium INTEGER NOT NULL,
+      customer_id TEXT,
+      updated_at INTEGER NOT NULL
+    );
+  `);
+
+  return db;
 }
 
 function ensureDirectories() {
-  const dirs = [getDataDir(), getAuthRequestsDir(), getRateLimitsDir()];
-  dirs.forEach(dir => {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-  });
+  getDb();
 }
 
-// Initialize on load
-ensureDirectories();
+function closeDatabase() {
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
 
 // --- Grandfathered Emails (loaded once at startup) ---
 
@@ -34,7 +69,7 @@ let grandfatheredSet = null;
 
 function readGrandfatheredEmails() {
   try {
-    const filePath = path.join(getDataDir(), config.GRANDFATHERED_FILE);
+    const filePath = path.join(config.DATA_DIR, config.GRANDFATHERED_FILE);
     if (fs.existsSync(filePath)) {
       const lines = fs.readFileSync(filePath, 'utf8').split('\n');
       return new Set(lines.map(l => l.trim().toLowerCase()).filter(l => l && !l.startsWith('#')));
@@ -55,58 +90,28 @@ function isGrandfathered(email) {
   return grandfatheredSet.has(email.toLowerCase());
 }
 
-// --- Subscription Cache (email -> premium status, file-backed, no in-memory cache) ---
-
-function getSubscriptionCachePath() {
-  return path.join(getDataDir(), 'subscriptions.json');
-}
-
-function readSubscriptionFile() {
-  try {
-    const filePath = getSubscriptionCachePath();
-    if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    }
-  } catch (err) {
-    console.error('Failed to read subscription cache:', err.message);
-  }
-  return {};
-}
+// --- Subscription Cache ---
 
 function setSubscriptionStatus(email, premium, customerId) {
   email = email.toLowerCase();
-  const data = readSubscriptionFile();
-  data[email] = { premium, customerId, updatedAt: Date.now() };
-  try {
-    fs.writeFileSync(getSubscriptionCachePath(), JSON.stringify(data, null, 2));
-  } catch (err) {
-    console.error('Failed to save subscription cache:', err.message);
-  }
+  const stmt = getDb().prepare(`
+    INSERT INTO subscription_cache (email, premium, customer_id, updated_at)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(email) DO UPDATE SET premium=excluded.premium, customer_id=excluded.customer_id, updated_at=excluded.updated_at
+  `);
+  stmt.run(email, premium ? 1 : 0, customerId, Date.now());
 }
 
 function getSubscriptionStatus(email) {
-  const data = readSubscriptionFile();
-  const entry = data[email.toLowerCase()];
-  if (!entry) return null;
-  if (Date.now() - entry.updatedAt > 10000) return null;
-  return entry;
+  const row = getDb().prepare('SELECT * FROM subscription_cache WHERE email = ?').get(email.toLowerCase());
+  if (!row) return null;
+  if (Date.now() - row.updated_at > 10000) return null;
+  return { premium: row.premium === 1, customerId: row.customer_id, updatedAt: row.updated_at };
 }
 
+// --- Auth Requests ---
 
-// --- Auth Requests (file per request) ---
-
-function getAuthRequestFilename(requestId, timestamp) {
-  return `${timestamp}-${requestId}.json`;
-}
-
-function parseAuthRequestFilename(filename) {
-  const match = filename.match(/^(\d+)-(.+)\.json$/);
-  if (!match) return null;
-  return { timestamp: parseInt(match[1], 10), requestId: match[2] };
-}
-
-function createAuthRequest(requestId, email) {
-  ensureDirectories(); // Ensure directory exists before write
+function createAuthRequest(requestId, email, { ip } = {}) {
   const timestamp = Date.now();
   const data = {
     request_id: requestId,
@@ -115,171 +120,148 @@ function createAuthRequest(requestId, email) {
     created_at: timestamp,
     session_token: null,
   };
-  const filename = getAuthRequestFilename(requestId, timestamp);
-  const filePath = path.join(getAuthRequestsDir(), filename);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  if (ip) data.ip = ip;
+
+  const stmt = getDb().prepare(`
+    INSERT INTO auth_requests (request_id, email, status, created_at, session_token, ip)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `);
+  stmt.run(requestId, email, 'pending', timestamp, null, ip || null);
   return data;
 }
 
-function findAuthRequestFile(requestId) {
-  const dir = getAuthRequestsDir();
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const parsed = parseAuthRequestFilename(file);
-    if (parsed && parsed.requestId === requestId) {
-      return path.join(dir, file);
-    }
-  }
-  return null;
-}
-
 function getAuthRequest(requestId) {
-  const filePath = findAuthRequestFile(requestId);
-  if (!filePath) return null;
+  const row = getDb().prepare('SELECT * FROM auth_requests WHERE request_id = ?').get(requestId);
+  if (!row) return null;
 
-  try {
-    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-
-    // Check if expired
-    if (Date.now() - data.created_at > config.REQUEST_ID_EXPIRY_MS) {
-      // Clean up expired request
-      fs.unlinkSync(filePath);
-      return null;
-    }
-
-    return data;
-  } catch (err) {
+  if (Date.now() - row.created_at > config.REQUEST_ID_EXPIRY_MS) {
+    getDb().prepare('DELETE FROM auth_requests WHERE request_id = ?').run(requestId);
     return null;
   }
+
+  return {
+    request_id: row.request_id,
+    email: row.email,
+    status: row.status,
+    created_at: row.created_at,
+    session_token: row.session_token,
+    ...(row.ip ? { ip: row.ip } : {}),
+  };
 }
 
 function updateAuthRequest(requestId, updates) {
-  const filePath = findAuthRequestFile(requestId);
-  if (!filePath) return null;
+  const row = getDb().prepare('SELECT * FROM auth_requests WHERE request_id = ?').get(requestId);
+  if (!row) return null;
 
-  try {
-    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    const updated = { ...data, ...updates };
-    fs.writeFileSync(filePath, JSON.stringify(updated, null, 2));
-    return updated;
-  } catch (err) {
-    return null;
-  }
+  const merged = { ...row, ...updates };
+  getDb().prepare(`
+    UPDATE auth_requests SET email=?, status=?, created_at=?, session_token=?, ip=?
+    WHERE request_id=?
+  `).run(merged.email, merged.status, merged.created_at, merged.session_token, merged.ip, requestId);
+
+  return {
+    request_id: merged.request_id,
+    email: merged.email,
+    status: merged.status,
+    created_at: merged.created_at,
+    session_token: merged.session_token,
+    ...(merged.ip ? { ip: merged.ip } : {}),
+  };
 }
 
 function deleteAuthRequest(requestId) {
-  const filePath = findAuthRequestFile(requestId);
-  if (filePath && fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-    return true;
-  }
-  return false;
+  const result = getDb().prepare('DELETE FROM auth_requests WHERE request_id = ?').run(requestId);
+  return result.changes > 0;
 }
 
 function pruneExpiredAuthRequests() {
-  const now = Date.now();
-  const dir = getAuthRequestsDir();
-  const files = fs.readdirSync(dir);
-  let pruned = 0;
-
-  for (const file of files) {
-    const parsed = parseAuthRequestFilename(file);
-    if (parsed && now - parsed.timestamp > config.REQUEST_ID_EXPIRY_MS) {
-      fs.unlinkSync(path.join(dir, file));
-      pruned++;
-    }
+  const cutoff = Date.now() - config.REQUEST_ID_EXPIRY_MS;
+  const result = getDb().prepare('DELETE FROM auth_requests WHERE created_at < ?').run(cutoff);
+  if (result.changes > 0) {
+    console.log(`Pruned ${result.changes} expired auth requests`);
   }
-
-  if (pruned > 0) {
-    console.log(`Pruned ${pruned} expired auth requests`);
-  }
-  return pruned;
+  return result.changes;
 }
 
-// --- Rate Limiting (file per email hash) ---
+// --- Rate Limiting ---
 
 function getEmailHash(email) {
   return crypto.createHash('sha256').update(email.toLowerCase()).digest('hex').slice(0, 16);
 }
 
-function getRateLimitFilePath(email) {
-  return path.join(getRateLimitsDir(), `${getEmailHash(email)}.json`);
+function getIpHash(ip) {
+  return crypto.createHash('sha256').update(ip).digest('hex').slice(0, 16);
 }
 
-function checkRateLimit(email) {
-  ensureDirectories(); // Ensure directory exists before write
-  const filePath = getRateLimitFilePath(email);
+function _checkRateLimit(table, keyHash, windowMs, maxRequests) {
   const now = Date.now();
+  const d = getDb();
 
-  let data = { count: 0, windowStart: now };
+  let row = d.prepare(`SELECT * FROM ${table} WHERE key_hash = ?`).get(keyHash);
 
-  try {
-    if (fs.existsSync(filePath)) {
-      data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-
-      // Reset if window expired
-      if (now - data.windowStart > config.RATE_LIMIT_WINDOW_MS) {
-        data = { count: 0, windowStart: now };
-      }
-    }
-  } catch (err) {
-    // Start fresh on error
-    data = { count: 0, windowStart: now };
+  if (row && now - row.window_start > windowMs) {
+    d.prepare(`DELETE FROM ${table} WHERE key_hash = ?`).run(keyHash);
+    row = null;
   }
 
-  // Check if over limit
-  if (data.count >= config.RATE_LIMIT_MAX_REQUESTS) {
-    const resetTime = data.windowStart + config.RATE_LIMIT_WINDOW_MS;
+  if (!row) {
+    row = { key_hash: keyHash, count: 0, window_start: now };
+  }
+
+  if (row.count >= maxRequests) {
+    const resetTime = row.window_start + windowMs;
     return { allowed: false, resetTime };
   }
 
-  // Increment and save
-  data.count++;
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  row.count++;
+  d.prepare(`
+    INSERT INTO ${table} (key_hash, count, window_start)
+    VALUES (?, ?, ?)
+    ON CONFLICT(key_hash) DO UPDATE SET count=excluded.count, window_start=excluded.window_start
+  `).run(keyHash, row.count, row.window_start);
 
-  return { allowed: true, remaining: config.RATE_LIMIT_MAX_REQUESTS - data.count };
+  return { allowed: true, remaining: maxRequests - row.count };
+}
+
+function _decrementRateLimit(table, keyHash) {
+  const d = getDb();
+  const row = d.prepare(`SELECT * FROM ${table} WHERE key_hash = ?`).get(keyHash);
+  if (row && row.count > 0) {
+    d.prepare(`UPDATE ${table} SET count = ? WHERE key_hash = ?`).run(row.count - 1, keyHash);
+  }
+}
+
+function _pruneExpiredRateLimits(table, windowMs, label) {
+  const cutoff = Date.now() - windowMs;
+  const result = getDb().prepare(`DELETE FROM ${table} WHERE window_start < ?`).run(cutoff);
+  if (result.changes > 0) {
+    console.log(`Pruned ${result.changes} expired ${label} records`);
+  }
+  return result.changes;
+}
+
+function checkRateLimit(email) {
+  return _checkRateLimit('email_rate_limits', getEmailHash(email), config.RATE_LIMIT_WINDOW_MS, config.RATE_LIMIT_MAX_REQUESTS);
 }
 
 function decrementRateLimit(email) {
-  const filePath = getRateLimitFilePath(email);
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      if (data.count > 0) {
-        data.count--;
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-      }
-    }
-  } catch (err) {
-    // Ignore errors
-  }
+  _decrementRateLimit('email_rate_limits', getEmailHash(email));
 }
 
 function pruneExpiredRateLimits() {
-  const now = Date.now();
-  const dir = getRateLimitsDir();
-  const files = fs.readdirSync(dir);
-  let pruned = 0;
+  return _pruneExpiredRateLimits('email_rate_limits', config.RATE_LIMIT_WINDOW_MS, 'rate limit');
+}
 
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    try {
-      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      if (now - data.windowStart > config.RATE_LIMIT_WINDOW_MS) {
-        fs.unlinkSync(filePath);
-        pruned++;
-      }
-    } catch (err) {
-      // Remove invalid files
-      fs.unlinkSync(filePath);
-      pruned++;
-    }
-  }
+function checkIpRateLimit(ip) {
+  return _checkRateLimit('ip_rate_limits', getIpHash(ip), config.IP_RATE_LIMIT_WINDOW_MS, config.IP_RATE_LIMIT_MAX_REQUESTS);
+}
 
-  if (pruned > 0) {
-    console.log(`Pruned ${pruned} expired rate limit records`);
-  }
-  return pruned;
+function decrementIpRateLimit(ip) {
+  _decrementRateLimit('ip_rate_limits', getIpHash(ip));
+}
+
+function pruneExpiredIpRateLimits() {
+  return _pruneExpiredRateLimits('ip_rate_limits', config.IP_RATE_LIMIT_WINDOW_MS, 'IP rate limit');
 }
 
 module.exports = {
@@ -295,10 +277,15 @@ module.exports = {
   deleteAuthRequest,
   pruneExpiredAuthRequests,
 
-  // Rate limiting
+  // Rate limiting (per-email)
   checkRateLimit,
   decrementRateLimit,
   pruneExpiredRateLimits,
+
+  // Rate limiting (per-IP)
+  checkIpRateLimit,
+  decrementIpRateLimit,
+  pruneExpiredIpRateLimits,
 
   // Subscription cache
   setSubscriptionStatus,
@@ -306,4 +293,8 @@ module.exports = {
 
   // Utils
   ensureDirectories,
+  closeDatabase,
+
+  // DB access for tests
+  getDb,
 };
