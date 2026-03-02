@@ -55,8 +55,7 @@
   "permissions": [
     "storage",
     "*://www.youtube.com/*",
-    "*://m.youtube.com/*",
-    "https://server.lawrencehook.com/*"
+    "*://m.youtube.com/*"
   ],
   "web_accessible_resources": [
     "/images/rys.svg"

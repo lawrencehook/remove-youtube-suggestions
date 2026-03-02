@@ -54,8 +54,7 @@
   ],
   "host_permissions": [
     "*://www.youtube.com/*",
-    "*://m.youtube.com/*",
-    "https://server.lawrencehook.com/*"
+    "*://m.youtube.com/*"
   ],
   "web_accessible_resources": [{
     "resources": ["/images/rys.svg"],
