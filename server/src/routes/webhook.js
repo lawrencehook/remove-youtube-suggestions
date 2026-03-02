@@ -35,13 +35,14 @@ router.post('/stripe', async (req, res) => {
       try {
         const email = session.customer_email || await getCustomerEmail(session.customer);
         if (email) {
+          storage.setSubscriptionStatus(email, true, session.customer);
           await sendWelcomeEmail(email);
-          console.log(`[webhook] Checkout completed: ${email} (welcome email sent)`);
+          console.log(`[webhook] Checkout completed: ${email} (cache updated, welcome email sent)`);
         } else {
           console.log(`[webhook] Checkout completed: ${session.customer} (no email found)`);
         }
       } catch (err) {
-        console.error(`[webhook] Checkout completed but welcome email failed:`, err.message);
+        console.error(`[webhook] Checkout completed but failed:`, err.message);
       }
       break;
     }
@@ -54,6 +55,11 @@ router.post('/stripe', async (req, res) => {
       try {
         const email = await getCustomerEmail(subscription.customer);
         if (email) {
+          // Skip non-active created events to avoid overwriting premium with incomplete status
+          if (!premium && event.type === 'customer.subscription.created') {
+            console.log(`[webhook] Subscription created: ${email} -> ${subscription.status} (skipped cache update)`);
+            break;
+          }
           storage.setSubscriptionStatus(email, premium, subscription.customer);
           console.log(`[webhook] Subscription ${action}: ${email} -> ${premium ? 'premium' : 'free'}`);
 

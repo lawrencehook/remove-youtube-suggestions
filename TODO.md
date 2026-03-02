@@ -21,7 +21,7 @@ Hardcoded English strings that break for non-English YouTube:
 ## Fragility
 
 YouTube frequently changes their DOM structure. Monitor these selectors:
-- `ytd-rich-grid-row`
+- `ytd-rich-item-renderer` (homepage now uses flat list instead of `ytd-rich-grid-row`)
 - `#metadata-line span`
 - `ytd-thumbnail-overlay-time-status-renderer`
 - `yt-chip-cloud-chip-renderer`

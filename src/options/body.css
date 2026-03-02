@@ -509,7 +509,7 @@ html[foo=bar] {
 #sidebar {
   height: calc(6px + var(--body-height));
   width: 160px;
-  padding: 8px 6px;
+  padding: 0 6px 8px;
   overflow: hidden;
 
   box-sizing: border-box;
@@ -534,6 +534,47 @@ html[foo=bar] {
   background-color: var(--box-shadow-color);
 }
 #sidebar .sidebar_section[selected] {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+html[dark_mode='true'] #sidebar .sidebar_section[selected] {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+#sidebar_top_row {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 2px;
+  width: fit-content;
+  border-bottom: 1px solid var(--box-shadow-color);
+  border-radius: 0 0 6px 6px;
+}
+#sidebar_top_row .sidebar_section {
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: lowercase;
+  opacity: 0.5;
+  padding: 2px 6px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#sidebar_top_row .sidebar_section[selected] {
+  opacity: 1;
+}
+#active_sidebar .active_count {
+  font-size: 9px;
+  min-width: 14px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 7px;
+  background-color: rgba(0, 0, 0, 0.15);
+  color: var(--label-color);
+}
+html[dark_mode='true'] #active_sidebar .active_count {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+#sidebar #active_sidebar[selected] .active_count {
   background-color: var(--label-color);
   color: var(--body-background-color);
 }

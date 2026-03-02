@@ -96,7 +96,7 @@ describe('License Routes', () => {
       // Set up grandfathered file
       const grandfatheredFile = path.join(testDataDir, config.GRANDFATHERED_FILE);
       fs.writeFileSync(grandfatheredFile, 'donor@example.com\n');
-
+      storage.loadGrandfatheredEmails();
 
       const token = generateSessionToken('donor@example.com');
 
@@ -116,7 +116,7 @@ describe('License Routes', () => {
     it('should handle grandfathered check case-insensitively', async () => {
       const grandfatheredFile = path.join(testDataDir, config.GRANDFATHERED_FILE);
       fs.writeFileSync(grandfatheredFile, 'Donor@Example.com\n');
-
+      storage.loadGrandfatheredEmails();
 
       // Token with lowercase email
       const token = generateSessionToken('donor@example.com');

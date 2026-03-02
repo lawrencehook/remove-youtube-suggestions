@@ -28,7 +28,9 @@ function ensureDirectories() {
 // Initialize on load
 ensureDirectories();
 
-// --- Grandfathered Emails (file-backed, no in-memory cache) ---
+// --- Grandfathered Emails (loaded once at startup) ---
+
+let grandfatheredSet = null;
 
 function readGrandfatheredEmails() {
   try {
@@ -43,8 +45,14 @@ function readGrandfatheredEmails() {
   return new Set();
 }
 
+function loadGrandfatheredEmails() {
+  grandfatheredSet = readGrandfatheredEmails();
+  return grandfatheredSet;
+}
+
 function isGrandfathered(email) {
-  return readGrandfatheredEmails().has(email.toLowerCase());
+  if (!grandfatheredSet) loadGrandfatheredEmails();
+  return grandfatheredSet.has(email.toLowerCase());
 }
 
 // --- Subscription Cache (email -> premium status, file-backed, no in-memory cache) ---
@@ -78,7 +86,10 @@ function setSubscriptionStatus(email, premium, customerId) {
 
 function getSubscriptionStatus(email) {
   const data = readSubscriptionFile();
-  return data[email.toLowerCase()] || null;
+  const entry = data[email.toLowerCase()];
+  if (!entry) return null;
+  if (Date.now() - entry.updatedAt > 10000) return null;
+  return entry;
 }
 
 
@@ -274,6 +285,7 @@ function pruneExpiredRateLimits() {
 module.exports = {
   // Grandfathered
   readGrandfatheredEmails,
+  loadGrandfatheredEmails,
   isGrandfathered,
 
   // Auth requests

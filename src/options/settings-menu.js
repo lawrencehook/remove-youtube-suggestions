@@ -493,9 +493,9 @@ function updatePremiumUI(licenseData) {
     ACCOUNT_OPTION.textContent = 'Sign In';
     HTML.setAttribute('is_premium', 'false');
     if (DONATE_LINK) {
+      DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
       DONATE_LINK.setAttribute('href', DONATE_URL);
-      DONATE_LINK.style.cursor = '';
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
     return;
@@ -504,17 +504,15 @@ function updatePremiumUI(licenseData) {
   if (licenseData && licenseData.isPremium) {
     HTML.setAttribute('is_premium', 'true');
     if (DONATE_LINK) {
-      DONATE_LINK.textContent = 'Premium';
-      DONATE_LINK.removeAttribute('href');
-      DONATE_LINK.style.cursor = 'default';
+      DONATE_LINK.hidden = true;
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
     HTML.setAttribute('is_premium', 'false');
     if (DONATE_LINK) {
+      DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
       DONATE_LINK.setAttribute('href', DONATE_URL);
-      DONATE_LINK.style.cursor = '';
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
   }

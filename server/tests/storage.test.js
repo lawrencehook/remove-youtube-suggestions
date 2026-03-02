@@ -134,6 +134,7 @@ describe('Storage', () => {
     it('should read grandfathered emails from file', () => {
       const grandfatheredFile = path.join(testDataDir, config.GRANDFATHERED_FILE);
       fs.writeFileSync(grandfatheredFile, 'donor1@example.com\nDonor2@Example.com\n');
+      storage.loadGrandfatheredEmails();
 
       assert.strictEqual(storage.isGrandfathered('donor1@example.com'), true);
       assert.strictEqual(storage.isGrandfathered('DONOR1@EXAMPLE.COM'), true);
@@ -142,8 +143,44 @@ describe('Storage', () => {
     });
 
     it('should handle missing grandfathered file gracefully', () => {
+      storage.loadGrandfatheredEmails();
       // File doesn't exist, should not throw
       assert.strictEqual(storage.isGrandfathered('anyone@example.com'), false);
+    });
+  });
+
+  describe('Subscription Cache', () => {
+    it('should store and retrieve subscription status', () => {
+      storage.setSubscriptionStatus('sub@example.com', true, 'cus_123');
+
+      const status = storage.getSubscriptionStatus('sub@example.com');
+      assert.strictEqual(status.premium, true);
+      assert.strictEqual(status.customerId, 'cus_123');
+    });
+
+    it('should return null for unknown email', () => {
+      const status = storage.getSubscriptionStatus('unknown@example.com');
+      assert.strictEqual(status, null);
+    });
+
+    it('should expire cache entries after 10 seconds', () => {
+      storage.setSubscriptionStatus('ttl@example.com', false, null);
+
+      // Manually backdate the entry
+      const cachePath = path.join(testDataDir, 'subscriptions.json');
+      const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+      data['ttl@example.com'].updatedAt = Date.now() - 11000;
+      fs.writeFileSync(cachePath, JSON.stringify(data, null, 2));
+
+      const status = storage.getSubscriptionStatus('ttl@example.com');
+      assert.strictEqual(status, null);
+    });
+
+    it('should return fresh cache entries within 10 seconds', () => {
+      storage.setSubscriptionStatus('fresh@example.com', false, null);
+
+      const status = storage.getSubscriptionStatus('fresh@example.com');
+      assert.strictEqual(status.premium, false);
     });
   });
 

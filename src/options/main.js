@@ -66,12 +66,90 @@ function logStorageChange(changes, area) {
 browser.storage.onChanged.addListener(logStorageChange);
 
 
+function refreshActiveSection() {
+  const section = document.getElementById('active_section');
+  const sidebarItem = document.getElementById('active_sidebar');
+  if (!section || !sidebarItem) return;
+
+  const isSelected = sidebarItem.hasAttribute('selected');
+
+  // Remove old option nodes
+  section.querySelectorAll('.option').forEach(opt => opt.remove());
+
+  let count = 0;
+  SECTIONS.forEach(s => {
+    s.options.forEach(option => {
+      const { id, name, effects, display, premium } = option;
+      if (display === false) return;
+      if (!cache[id]) return;
+
+      count++;
+      const optionNode = TEMPLATE_OPTION.cloneNode(true);
+      optionNode.classList.remove('removed');
+      optionNode.removeAttribute('id');
+      optionNode.setAttribute('name', name);
+      optionNode.querySelector('.option_label').innerText = name;
+
+      const svg = optionNode.querySelector('svg');
+      svg.toggleAttribute('active', true);
+
+      optionNode.addEventListener('click', async e => {
+        if (premium && HTML.getAttribute('is_premium') !== 'true') {
+          const signedIn = await Auth.isSignedIn();
+          if (!signedIn) {
+            if (typeof openPremiumRequiredModal === 'function') {
+              openPremiumRequiredModal();
+            } else {
+              displayStatus('Premium feature - sign in to upgrade');
+            }
+          } else if (typeof openUpgradeModal === 'function') {
+            openUpgradeModal();
+          } else {
+            displayStatus('Premium feature - upgrade to access');
+          }
+          return;
+        }
+
+        updateSetting(id, false, { manual: true });
+        // Sync the original toggle
+        const originalSvg = document.querySelector(`div#${id} svg`);
+        originalSvg?.toggleAttribute('active', false);
+
+        if (effects && false in effects) {
+          Object.entries(effects[false]).forEach(([eid, val]) => {
+            const s = document.querySelector(`div#${eid} svg`);
+            s?.toggleAttribute('active', val);
+            updateSetting(eid, val);
+          });
+        }
+      });
+
+      section.append(optionNode);
+    });
+  });
+
+  // Update sidebar badge
+  const badge = sidebarItem.querySelector('.active_count');
+  if (badge) badge.innerText = count;
+
+  // Only show the section when its sidebar item is selected and there are options
+  section.classList.toggle('removed', !isSelected || count === 0);
+}
+
+
 function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Clear the options list, and the sidebar
   OPTIONS_LIST.innerHTML = '';
   SIDEBAR.innerHTML = '';
   let allTags = [];
+
+  // Create the Active Options section (hidden until sidebar selected)
+  const activeSection = TEMPLATE_SECTION.cloneNode(true);
+  activeSection.id = 'active_section';
+  activeSection.querySelector('.section_label > a').innerText = 'Active Options';
+  activeSection.querySelector('.section_label > a').removeAttribute('href');
+  OPTIONS_LIST.append(activeSection);
 
   // Add option nodes to the HTML.
   SECTIONS.forEach(section => {
@@ -150,6 +228,25 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
     OPTIONS_LIST.append(sectionNode);
   });
+
+  // Add "All" and "Active" sidebar items at the top
+  const sidebarTopRow = document.createElement('div');
+  sidebarTopRow.id = 'sidebar_top_row';
+
+  const allSidebar = document.createElement('div');
+  allSidebar.id = 'all_sidebar';
+  allSidebar.className = 'sidebar_section';
+  allSidebar.innerText = 'all';
+  allSidebar.addEventListener('click', showAll);
+
+  const activeSidebar = document.createElement('div');
+  activeSidebar.id = 'active_sidebar';
+  activeSidebar.className = 'sidebar_section';
+  activeSidebar.innerHTML = '<span>active</span><span class="active_count"></span>';
+  activeSidebar.addEventListener('click', activeSidebarListener);
+
+  sidebarTopRow.append(allSidebar, activeSidebar);
+  SIDEBAR.append(sidebarTopRow);
 
   // Add sections to the sidebar
   const uniqueTags = Array.from(new Set(allTags));
@@ -237,6 +334,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Begin time loop -- checks for timedChanges, scheduling
   timeLoop();
+  refreshActiveSection();
   HTML.setAttribute('loaded', true);
 }
 
@@ -314,25 +412,22 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   if (timeInfoIds.includes(id)) {
     updateTimeInfo();
   }
+
+  refreshActiveSection();
 }
 
 
 function onSearchInput(e) {
-  const { target } = e;
-  const { value } = target;
-  const sidebarSections = qsa('.sidebar_section');
-  const sections = qsa('.section_container:not(#template_section)');
+  const { value } = e.target;
 
-  // Reset
-  sidebarSections.forEach(s => s.removeAttribute('selected'));
-  sections.forEach(section => {
-    section.classList.remove('removed');
-    const options = Array.from(section.querySelectorAll('div.option'));
-    options.forEach(option => option.classList.remove('removed'));
-  });
-
+  showAll();
   if (value === '') return;
 
+  // Deselect "all" during active search
+  const allSidebar = document.getElementById('all_sidebar');
+  if (allSidebar) allSidebar.removeAttribute('selected');
+
+  const sections = qsa('.section_container:not(#template_section):not(#active_section)');
   const searchTerms = value.toLowerCase().split(' ');
 
   sections.forEach(section => {
@@ -362,27 +457,53 @@ function onSearchInput(e) {
 }
 
 
-function sidebarSectionListener(e) {
-  const sidebarSection = e.target;
+function showAll() {
   const sidebarSections = qsa('.sidebar_section');
-  const selected = sidebarSection.toggleAttribute('selected');
-  const tag = sidebarSection.getAttribute('tag');
-  const sections = qsa('.section_container:not(#template_section)');
+  const sections = qsa('.section_container:not(#template_section):not(#active_section)');
+  const activeSection = document.getElementById('active_section');
 
-  recordEvent('Section selected', { tag, selected });
-
-  // Reset
+  sidebarSections.forEach(s => s.removeAttribute('selected'));
+  const allSidebar = document.getElementById('all_sidebar');
+  if (allSidebar) allSidebar.setAttribute('selected', '');
   sections.forEach(section => {
     section.classList.remove('removed');
-    const options = Array.from(section.querySelectorAll('div.option'));
-    options.forEach(option => option.classList.remove('removed'));
+    section.querySelectorAll('div.option').forEach(opt => opt.classList.remove('removed'));
   });
-  sidebarSections.forEach(sidebarSection => {
-    sidebarSection.removeAttribute('selected');
-  })
+  if (activeSection) activeSection.classList.add('removed');
+}
 
-  sidebarSection.toggleAttribute('selected', selected);
-  if (!selected) return;
+
+function activeSidebarListener(e) {
+  const target = e.currentTarget;
+  const selected = target.toggleAttribute('selected');
+
+  if (selected) {
+    // Reset other selections, hide regular sections, show active
+    qsa('.sidebar_section').forEach(s => {
+      if (s !== target) s.removeAttribute('selected');
+    });
+    qsa('.section_container:not(#template_section):not(#active_section)').forEach(s => s.classList.add('removed'));
+    refreshActiveSection();
+  } else {
+    showAll();
+  }
+}
+
+
+function sidebarSectionListener(e) {
+  const sidebarSection = e.target;
+  const wasSelected = sidebarSection.hasAttribute('selected');
+  const tag = sidebarSection.getAttribute('tag');
+
+  recordEvent('Section selected', { tag, selected: !wasSelected });
+
+  showAll();
+  if (wasSelected) return;
+
+  const allSidebar = document.getElementById('all_sidebar');
+  if (allSidebar) allSidebar.removeAttribute('selected');
+  sidebarSection.setAttribute('selected', '');
+  const sections = qsa('.section_container:not(#template_section):not(#active_section)');
 
   sections.forEach(section => {
     const sectionTags = section.getAttribute('tags').split(',').map(t => t.trim());

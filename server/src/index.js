@@ -135,6 +135,7 @@ function start() {
   setInterval(runCleanup, CLEANUP_INTERVAL_MS);
 
   // Start listening
+  storage.loadGrandfatheredEmails();
   const grandfathered = storage.readGrandfatheredEmails();
   console.log(`Loaded ${grandfathered.size} grandfathered emails`);
 
