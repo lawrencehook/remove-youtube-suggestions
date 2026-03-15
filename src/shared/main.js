@@ -522,6 +522,12 @@ const SECTIONS = [
         premium: true,
       },
       {
+        name: "Hide \"Most relevant\" section",
+        id: "remove_sub_most_relevant",
+        defaultValue: false,
+        premium: true,
+      },
+      {
         name: "Hide live videos",
         id: "remove_sub_live",
         defaultValue: false,
@@ -818,6 +824,7 @@ const idToShortId = {
   "remove_results_description":        '93',
   "enable_theater":                    '94',
   "remove_playables":                  '95',
+  "remove_sub_most_relevant":          '96',
 };
 
 

@@ -262,7 +262,8 @@ function runDynamicSettings() {
 
     // Subscriptions page options (only if any sub-page settings are enabled)
     const subsSettingsEnabled = cache['remove_sub_shorts'] || cache['remove_sub_live'] ||
-                                cache['remove_sub_upcoming'] || cache['remove_sub_premiere'] || cache['remove_sub_vods'];
+                                cache['remove_sub_upcoming'] || cache['remove_sub_premiere'] || cache['remove_sub_vods'] ||
+                                cache['remove_sub_most_relevant'];
     if (onSubs && subsSettingsEnabled) {
       const badgeSelector = 'ytd-badge-supported-renderer';
       const upcomingBadgeSelector = 'ytd-thumbnail-overlay-time-status-renderer[overlay-style="UPCOMING"]';
@@ -303,6 +304,18 @@ function runDynamicSettings() {
         video?.setAttribute('is_vod', '');
         updatedGridVideo?.setAttribute('is_vod', '');
       });
+
+      // "Most relevant" shelf
+      if (cache['remove_sub_most_relevant']) {
+        const shelves = qsa('ytd-rich-section-renderer ytd-rich-shelf-renderer');
+        shelves.forEach(shelf => {
+          const title = qs('span#title', shelf);
+          if (title?.innerText.trim().toLowerCase() === 'most relevant') {
+            const section = shelf.closest('ytd-rich-section-renderer');
+            section?.setAttribute('is_most_relevant', '');
+          }
+        });
+      }
 
       // Reduce empty space.
       const subsRows = qsa('ytd-rich-grid-row');
