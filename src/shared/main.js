@@ -842,3 +842,15 @@ function sectionNameToUrl(name) {
 
   return HOST + 'features/' + sectionPath + '/';
 }
+
+
+const PREMIUM_FEATURE_IDS = SECTIONS.flatMap(section =>
+  section.options.filter(opt => opt.premium).map(opt => opt.id)
+);
+const PREMIUM_FEATURE_ID_SET = new Set(PREMIUM_FEATURE_IDS);
+
+function countActivePremium(cache) {
+  let n = 0;
+  PREMIUM_FEATURE_IDS.forEach(id => { if (cache[id] === true) n++; });
+  return n;
+}

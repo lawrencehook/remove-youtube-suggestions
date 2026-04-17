@@ -396,6 +396,22 @@ const ACCOUNT_OPTION = qs('#settings-account');
 const DONATE_LINK = qs('#settings-donate');
 const DONATE_URL = 'https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=';
 const HEADER_PREMIUM_BADGE = qs('#header-premium-badge');
+const HEADER_SLOT_INDICATOR = qs('#header-slot-indicator');
+const HEADER_SLOT_COUNT = qs('#header-slot-count');
+const HEADER_SLOT_MAX = qs('#header-slot-max');
+if (HEADER_SLOT_MAX) HEADER_SLOT_MAX.textContent = String(PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+
+function updateSlotIndicator() {
+  if (!HEADER_SLOT_INDICATOR) return;
+  if (HTML.getAttribute('tier') !== 'free_signed_in') {
+    HEADER_SLOT_INDICATOR.setAttribute('hidden', '');
+    return;
+  }
+  if (HEADER_SLOT_COUNT) {
+    HEADER_SLOT_COUNT.textContent = String(countActivePremium(cache));
+  }
+  HEADER_SLOT_INDICATOR.removeAttribute('hidden');
+}
 
 // Sign-in modal elements
 const signinModalContainer = qs('#signin_container_background');
@@ -475,10 +491,15 @@ async function initAccountState() {
   const signedIn = await Auth.isSignedIn();
   if (signedIn) {
     ACCOUNT_OPTION.textContent = 'Account';
+    // Provisionally treat as free_signed_in until license check returns
+    HTML.setAttribute('tier', 'free_signed_in');
+    updateSlotIndicator();
     // Check license in background
     refreshLicense(true);
   } else {
     ACCOUNT_OPTION.textContent = 'Sign In';
+    HTML.setAttribute('tier', 'free');
+    updateSlotIndicator();
     // Auto-open sign-in modal if ?signin=1 param is present
     const params = new URLSearchParams(window.location.search);
     if (params.get('signin') === '1') {
@@ -492,23 +513,27 @@ function updatePremiumUI(licenseData) {
   if (licenseData && licenseData.signedOut) {
     ACCOUNT_OPTION.textContent = 'Sign In';
     HTML.setAttribute('is_premium', 'false');
+    HTML.setAttribute('tier', 'free');
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
       DONATE_LINK.setAttribute('href', DONATE_URL);
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
+    updateSlotIndicator();
     return;
   }
 
   if (licenseData && licenseData.isPremium) {
     HTML.setAttribute('is_premium', 'true');
+    HTML.setAttribute('tier', 'premium');
     if (DONATE_LINK) {
       DONATE_LINK.hidden = true;
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
     HTML.setAttribute('is_premium', 'false');
+    HTML.setAttribute('tier', 'free_signed_in');
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
@@ -516,6 +541,7 @@ function updatePremiumUI(licenseData) {
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
   }
+  updateSlotIndicator();
 }
 
 // Account option click handler
@@ -713,8 +739,14 @@ accountBillingButton.addEventListener('click', async () => {
 });
 
 // Upgrade modal
-function openUpgradeModal() {
-  recordEvent('Upgrade Modal Opened');
+function openUpgradeModal(options = {}) {
+  const { reason } = options;
+  recordEvent('Upgrade Modal Opened', { reason: reason || 'default' });
+  const slotNote = document.getElementById('upgrade_slot_limit_note');
+  if (slotNote) {
+    if (reason === 'slot_limit') slotNote.removeAttribute('hidden');
+    else slotNote.setAttribute('hidden', '');
+  }
   upgradeModalContainer.removeAttribute('hidden');
   selectPlan('monthly');
 }

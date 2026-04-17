@@ -24,14 +24,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const settings = { ...DEFAULT_SETTINGS, ...localSettings };
 
-    // Enforce premium features are disabled for non-premium users
-    const isPremium = License.isPremiumSync(localSettings['license_token']);
-    if (!isPremium) {
+    const tier = License.getTierSync(localSettings['license_token'], localSettings['session_token']);
+    if (tier === 'free') {
       SECTIONS.forEach(section => {
         section.options.forEach(opt => {
           if (opt.premium) settings[opt.id] = false;
         });
       });
+    } else if (tier === 'free_signed_in') {
+      const writeBack = {};
+      let kept = 0;
+      SECTIONS.forEach(section => {
+        section.options.forEach(opt => {
+          if (!opt.premium) return;
+          if (settings[opt.id] === true) {
+            if (kept < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+              kept++;
+            } else {
+              settings[opt.id] = false;
+              writeBack[opt.id] = false;
+            }
+          }
+        });
+      });
+      if (Object.keys(writeBack).length) {
+        browser.storage.local.set(writeBack);
+      }
     }
 
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
@@ -94,22 +112,6 @@ function refreshActiveSection() {
       svg.toggleAttribute('active', true);
 
       optionNode.addEventListener('click', async e => {
-        if (premium && HTML.getAttribute('is_premium') !== 'true') {
-          const signedIn = await Auth.isSignedIn();
-          if (!signedIn) {
-            if (typeof openPremiumRequiredModal === 'function') {
-              openPremiumRequiredModal();
-            } else {
-              displayStatus('Premium feature - sign in to upgrade');
-            }
-          } else if (typeof openUpgradeModal === 'function') {
-            openUpgradeModal();
-          } else {
-            displayStatus('Premium feature - upgrade to access');
-          }
-          return;
-        }
-
         updateSetting(id, false, { manual: true });
         // Sync the original toggle
         const originalSvg = document.querySelector(`div#${id} svg`);
@@ -191,24 +193,16 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       svg.toggleAttribute('active', value);
 
       optionNode.addEventListener('click', async e => {
-        // Check if premium-locked
         if (premium && HTML.getAttribute('is_premium') !== 'true') {
-          // Check if signed in first
-          const signedIn = await Auth.isSignedIn();
-          if (!signedIn) {
-            // Not signed in - show premium required modal
-            if (typeof openPremiumRequiredModal === 'function') {
-              openPremiumRequiredModal();
-            } else {
-              displayStatus('Premium feature - sign in to upgrade');
-            }
-          } else if (typeof openUpgradeModal === 'function') {
-            // Signed in but not premium - open upgrade modal
-            openUpgradeModal();
-          } else {
-            displayStatus('Premium feature - upgrade to access');
+          const togglingOn = cache[id] !== true;
+          const tier = HTML.getAttribute('tier');
+          const hasSlot = tier === 'free_signed_in' &&
+                          countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS;
+          if (togglingOn && !hasSlot) {
+            if (tier === 'free_signed_in') openUpgradeModal({ reason: 'slot_limit' });
+            else openPremiumRequiredModal();
+            return;
           }
-          return;
         }
 
         const value = svg.toggleAttribute('active');
@@ -290,6 +284,8 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   } else {
     qs('.sidebar_section[tag="Basic"]').click();
   }
+
+  updateSlotIndicator();
 
   const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
@@ -388,6 +384,18 @@ function updateTimeInfo() {
 
 function updateSetting(id, value, { write=true, manual=false }={}) {
 
+  // Clamp premium writes that would exceed the free-tier slot budget, so chained
+  // effects behave the same as direct toggles.
+  if (PREMIUM_FEATURE_ID_SET.has(id) && value === true) {
+    const tier = HTML.getAttribute('tier');
+    if (tier === 'free') {
+      value = false;
+    } else if (tier === 'free_signed_in' && cache[id] !== true &&
+               countActivePremium(cache) >= PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+      value = false;
+    }
+  }
+
   if (manual) recordEvent('Setting changed', { id, value });
 
   HTML.setAttribute(id, value);
@@ -414,6 +422,8 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   }
 
   refreshActiveSection();
+
+  if (PREMIUM_FEATURE_ID_SET.has(id)) updateSlotIndicator();
 }
 
 
