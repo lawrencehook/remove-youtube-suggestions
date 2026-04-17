@@ -53,11 +53,6 @@ let lastRedirect;
 const redirectInterval = 1_000; // 1 second
 
 
-// Get list of premium feature IDs
-const PREMIUM_FEATURE_IDS = SECTIONS.flatMap(section =>
-  section.options.filter(opt => opt.premium).map(opt => opt.id)
-);
-
 // Decode license token to check premium status (no signature verification - we trust our server)
 function decodeLicenseToken(token) {
   if (!token) return null;
@@ -77,21 +72,41 @@ function isPremiumFromToken(token) {
   return decoded.premium === true && decoded.exp > now;
 }
 
+function getTier(licenseToken, sessionToken) {
+  if (isPremiumFromToken(licenseToken)) return 'premium';
+  if (sessionToken) return 'free_signed_in';
+  return 'free';
+}
+
 // Respond to changes in settings
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
 
-  // Update premium status in cache if license token changed
-  if ('license_token' in changes) {
-    cache['_isPremium'] = isPremiumFromToken(changes['license_token'].newValue);
+  if ('license_token' in changes || 'session_token' in changes) {
+    const licenseToken = 'license_token' in changes
+      ? changes['license_token'].newValue
+      : cache['_licenseToken'];
+    const sessionToken = 'session_token' in changes
+      ? changes['session_token'].newValue
+      : cache['_sessionToken'];
+    if ('license_token' in changes) cache['_licenseToken'] = licenseToken;
+    if ('session_token' in changes) cache['_sessionToken'] = sessionToken;
+    cache['_tier'] = getTier(licenseToken, sessionToken);
   }
 
   Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
     if (oldValue === newValue) return;
 
-    // Enforce premium features are false for non-premium users
-    if (PREMIUM_FEATURE_IDS.includes(id) && cache['_isPremium'] !== true) {
-      newValue = false;
+    if (PREMIUM_FEATURE_ID_SET.has(id)) {
+      const tier = cache['_tier'];
+      if (tier === 'free') {
+        newValue = false;
+      } else if (tier === 'free_signed_in' && newValue === true) {
+        const alreadyOn = cache[id] === true;
+        if (!alreadyOn && countActivePremium(cache) >= PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+          newValue = false;
+        }
+      }
     }
 
     HTML.setAttribute(id, newValue);
@@ -113,13 +128,30 @@ browser.storage.local.get(settings => {
     browser.storage.local.set(revealUpdates);
   }
 
-  // Enforce premium features are false for non-premium users
-  const isPremium = isPremiumFromToken(settings['license_token']);
-  cache['_isPremium'] = isPremium;
-  if (!isPremium) {
+  const tier = getTier(settings['license_token'], settings['session_token']);
+  cache['_tier'] = tier;
+  cache['_licenseToken'] = settings['license_token'];
+  cache['_sessionToken'] = settings['session_token'];
+  if (tier === 'free') {
     PREMIUM_FEATURE_IDS.forEach(id => {
       settings[id] = false;
     });
+  } else if (tier === 'free_signed_in') {
+    const writeBack = {};
+    let kept = 0;
+    PREMIUM_FEATURE_IDS.forEach(id => {
+      if (settings[id] === true) {
+        if (kept < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+          kept++;
+        } else {
+          settings[id] = false;
+          writeBack[id] = false;
+        }
+      }
+    });
+    if (Object.keys(writeBack).length) {
+      browser.storage.local.set(writeBack);
+    }
   }
 
   Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {

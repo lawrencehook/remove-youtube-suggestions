@@ -944,6 +944,15 @@ html[dark_mode='true'] #active_sidebar .active_count {
   margin: 0;
 }
 
+#upgrade_slot_limit_note {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--body-color);
+  opacity: 0.75;
+  text-align: center;
+  padding: 0 8px;
+}
+
 #upgrade_plans {
   display: flex;
   gap: 12px;
@@ -1048,6 +1057,11 @@ html:not([is_premium='true']) .option[data-premium='true']::after {
 /* Premium options unlocked */
 html[is_premium='true'] .option[data-premium='true'] {
   opacity: 1;
+}
+
+/* Free-tier signed-in users: premium options are interactable (with slot budget) */
+html[tier='free_signed_in'] .option[data-premium='true'] {
+  opacity: 0.65;
 }
 
 /* Premium lock icon for settings menu items */

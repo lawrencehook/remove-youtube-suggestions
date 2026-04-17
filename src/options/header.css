@@ -54,6 +54,14 @@ html[dark_mode='false'] #header-light { display: none }
   letter-spacing: 0.02em;
 }
 
+#header-slot-indicator {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--label-color);
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
 #search_bar {
   margin-left: auto;
   margin-right: auto;
