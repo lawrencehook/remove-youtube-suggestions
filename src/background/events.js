@@ -11,7 +11,11 @@ browser.runtime.setUninstallURL(uninstallUrl);
 browser.runtime.onInstalled.addListener(object => {
   const url = "http://lawrencehook.com/rys/welcome";
   if (object.reason === browser.runtime.OnInstalledReason.INSTALL) {
-    browser.tabs.create({ url }, tab => {});
+    browser.management.getSelf(info => {
+      // Skip the welcome tab for unpacked/dev loads (local development + UI tests).
+      if (info.installType === 'development') return;
+      browser.tabs.create({ url }, tab => {});
+    });
   }
 });
 
