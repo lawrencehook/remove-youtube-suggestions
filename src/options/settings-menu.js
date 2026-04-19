@@ -506,10 +506,26 @@ async function initAccountState() {
 }
 initAccountState();
 
+// Turn off every premium feature (including menu-level ones like schedule/password).
+// Used when dropping to the `free` tier via sign-out or license revocation.
+function disableAllPremiumFeatures() {
+  PREMIUM_FEATURE_IDS.forEach(id => updateSetting(id, false));
+}
+
+// When transitioning into `free_signed_in` (e.g. subscription lapsed while the
+// options page is open), disable any premium features beyond FREE_PREMIUM_SLOTS
+// so current state matches the new tier. Reuses the shared enforceSlotBudget
+// helper and routes writes through updateSetting so the full UI stays in sync.
+function pruneToSlotBudget() {
+  const overBudget = enforceSlotBudget(cache, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+  Object.keys(overBudget).forEach(id => updateSetting(id, false));
+}
+
 function updatePremiumUI(licenseData) {
   if (licenseData && licenseData.signedOut) {
     ACCOUNT_OPTION.textContent = 'Sign In';
     HTML.setAttribute('tier', 'free');
+    disableAllPremiumFeatures();
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
@@ -528,6 +544,7 @@ function updatePremiumUI(licenseData) {
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
     HTML.setAttribute('tier', 'free_signed_in');
+    pruneToSlotBudget();
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
@@ -696,12 +713,7 @@ accountSignoutButton.addEventListener('click', async () => {
   ACCOUNT_OPTION.textContent = 'Sign In';
   HTML.setAttribute('tier', 'free');
   updateSlotIndicator();
-  // Disable all premium options
-  SECTIONS.forEach(section => {
-    section.options.forEach(option => {
-      if (option.premium) updateSetting(option.id, false);
-    });
-  });
+  disableAllPremiumFeatures();
   if (DONATE_LINK) {
     DONATE_LINK.textContent = 'Donate';
     DONATE_LINK.setAttribute('href', DONATE_URL);
@@ -744,20 +756,6 @@ function openUpgradeModal(options = {}) {
   }
   upgradeModalContainer.removeAttribute('hidden');
   selectPlan('monthly');
-}
-
-// Premium feature click handler - checks sign-in first
-async function handlePremiumFeatureClick() {
-  const signedIn = await Auth.isSignedIn();
-  if (!signedIn) {
-    // Not signed in - show premium required modal
-    recordEvent('Premium Feature Click', { signedIn: false });
-    openPremiumRequiredModal();
-    return;
-  }
-  // Signed in but not premium - open upgrade modal
-  recordEvent('Premium Feature Click', { signedIn: true });
-  openUpgradeModal();
 }
 
 // Gate a menu-level premium feature by tier + slot budget.

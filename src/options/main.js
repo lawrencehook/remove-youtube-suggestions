@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const settings = { ...DEFAULT_SETTINGS, ...localSettings };
 
     const tier = License.getTierSync(localSettings['license_token'], localSettings['session_token']);
+    HTML.setAttribute('tier', tier);
     if (tier === 'free') {
       clearAllPremium(settings);
     } else if (tier === 'free_signed_in') {

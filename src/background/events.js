@@ -8,15 +8,14 @@ if (typeof browser === 'undefined') {
 const uninstallUrl = "http://lawrencehook.com/rys/👋";
 browser.runtime.setUninstallURL(uninstallUrl);
 
-browser.runtime.onInstalled.addListener(object => {
+browser.runtime.onInstalled.addListener(async object => {
   const url = "http://lawrencehook.com/rys/welcome";
-  if (object.reason === browser.runtime.OnInstalledReason.INSTALL) {
-    browser.management.getSelf(info => {
-      // Skip the welcome tab for unpacked/dev loads (local development + UI tests).
-      if (info.installType === 'development') return;
-      browser.tabs.create({ url }, tab => {});
-    });
-  }
+  if (object.reason !== browser.runtime.OnInstalledReason.INSTALL) return;
+  // management.getSelf() returns a Promise in both Chrome MV3 and Firefox
+  // (Firefox ignores callbacks), so use await for cross-browser consistency.
+  const info = await browser.management.getSelf();
+  if (info && info.installType === 'development') return; // skip on unpacked/dev loads
+  browser.tabs.create({ url });
 });
 
 // Change the browserAction icon if the extension is disabled

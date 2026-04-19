@@ -861,13 +861,17 @@ function countActivePremium(cache) {
   return n;
 }
 
-// Mutates `settings` to force every premium feature off.
+// Mutates `settings` to force every premium feature off. In-memory only —
+// does not return a write-back map because callers intentionally leave stored
+// values alone so the user's premium state returns on re-upgrade.
 function clearAllPremium(settings) {
   PREMIUM_FEATURE_IDS.forEach(id => { settings[id] = false; });
 }
 
-// Mutates `settings` so at most `slotLimit` premium features stay true (by iteration order).
-// Returns an object of changes that need to be written back to storage.
+// Mutates `settings` so at most `slotLimit` premium features stay true (by
+// iteration order). Returns a write-back map of the cleared settings — callers
+// should persist these to storage so over-budget premium settings don't
+// re-surface on the next load.
 function enforceSlotBudget(settings, slotLimit) {
   const writeBack = {};
   let kept = 0;
