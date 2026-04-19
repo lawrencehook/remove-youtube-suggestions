@@ -397,9 +397,13 @@ const DONATE_LINK = qs('#settings-donate');
 const DONATE_URL = 'https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=';
 const HEADER_PREMIUM_BADGE = qs('#header-premium-badge');
 const HEADER_SLOT_INDICATOR = qs('#header-slot-indicator');
-const HEADER_SLOT_COUNT = qs('#header-slot-count');
-const HEADER_SLOT_MAX = qs('#header-slot-max');
-if (HEADER_SLOT_MAX) HEADER_SLOT_MAX.textContent = String(PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+if (HEADER_SLOT_INDICATOR) {
+  for (let i = 0; i < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'slot-dot';
+    HEADER_SLOT_INDICATOR.appendChild(dot);
+  }
+}
 
 function updateSlotIndicator() {
   if (!HEADER_SLOT_INDICATOR) return;
@@ -407,9 +411,11 @@ function updateSlotIndicator() {
     HEADER_SLOT_INDICATOR.setAttribute('hidden', '');
     return;
   }
-  if (HEADER_SLOT_COUNT) {
-    HEADER_SLOT_COUNT.textContent = String(countActivePremium(cache));
-  }
+  const used = countActivePremium(cache);
+  HEADER_SLOT_INDICATOR.querySelectorAll('.slot-dot').forEach((dot, i) => {
+    dot.toggleAttribute('filled', i < used);
+  });
+  HEADER_SLOT_INDICATOR.title = `${used}/${PREMIUM_CONFIG.FREE_PREMIUM_SLOTS} free premium features used`;
   HEADER_SLOT_INDICATOR.removeAttribute('hidden');
 }
 

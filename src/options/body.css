@@ -926,6 +926,7 @@ html[dark_mode='true'] #active_sidebar .active_count {
 /* Upgrade Modal */
 #upgrade_container {
   width: auto;
+  max-width: min(90vw, 380px);
   padding: 24px;
   gap: 18px;
   align-items: flex-start;
@@ -1035,33 +1036,30 @@ html[dark_mode='true'] .upgrade-plan[selected] {
   align-self: flex-end;
 }
 
-/* Premium lock icon for options */
+/* Premium options: dim slightly for non-premium users, full opacity for premium */
 html:not([is_premium='true']) .option[data-premium='true'] {
-  opacity: 0.25;
-  position: relative;
+  opacity: 0.65;
+}
+html[is_premium='true'] .option[data-premium='true'],
+#active_section .option[data-premium='true'] {
+  opacity: 1;
 }
 
-html:not([is_premium='true']) .option[data-premium='true']::after {
+/* Blue dot at the right edge of every premium option, aligned across rows. */
+.option[data-premium='true'] {
+  position: relative;
+}
+.option[data-premium='true']::after {
   content: '';
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-/* Premium options unlocked */
-html[is_premium='true'] .option[data-premium='true'] {
-  opacity: 1;
-}
-
-/* Free-tier signed-in users: premium options are interactable (with slot budget) */
-html[tier='free_signed_in'] .option[data-premium='true'] {
-  opacity: 0.65;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--blue-color, #4a6cf7);
+  opacity: 0.85;
 }
 
 /* Premium lock icon for settings menu items */

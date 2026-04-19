@@ -55,11 +55,20 @@ html[dark_mode='false'] #header-light { display: none }
 }
 
 #header-slot-indicator {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--label-color);
-  letter-spacing: 0.02em;
-  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#header-slot-indicator .slot-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--label-color);
+  opacity: 0.25;
+}
+#header-slot-indicator .slot-dot[filled] {
+  background-color: var(--blue-color, #4a6cf7);
+  opacity: 0.85;
 }
 
 #search_bar {

@@ -106,6 +106,7 @@ function refreshActiveSection() {
       optionNode.classList.remove('removed');
       optionNode.removeAttribute('id');
       optionNode.setAttribute('name', name);
+      if (premium) optionNode.setAttribute('data-premium', 'true');
       optionNode.querySelector('.option_label').innerText = name;
 
       const svg = optionNode.querySelector('svg');
