@@ -854,3 +854,25 @@ function countActivePremium(cache) {
   PREMIUM_FEATURE_IDS.forEach(id => { if (cache[id] === true) n++; });
   return n;
 }
+
+// Mutates `settings` to force every premium feature off.
+function clearAllPremium(settings) {
+  PREMIUM_FEATURE_IDS.forEach(id => { settings[id] = false; });
+}
+
+// Mutates `settings` so at most `slotLimit` premium features stay true (by iteration order).
+// Returns an object of changes that need to be written back to storage.
+function enforceSlotBudget(settings, slotLimit) {
+  const writeBack = {};
+  let kept = 0;
+  PREMIUM_FEATURE_IDS.forEach(id => {
+    if (settings[id] !== true) return;
+    if (kept < slotLimit) {
+      kept++;
+    } else {
+      settings[id] = false;
+      writeBack[id] = false;
+    }
+  });
+  return writeBack;
+}

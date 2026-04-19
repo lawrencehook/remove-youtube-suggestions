@@ -20,6 +20,7 @@
     {
       "js": [
         "/shared/main.js",
+        "/shared/config.js",
         "/shared/https.js",
         "/shared/utils.js",
         "/shared/banners.js",

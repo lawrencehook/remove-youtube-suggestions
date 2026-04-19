@@ -82,16 +82,10 @@ function getTier(licenseToken, sessionToken) {
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
 
+  if ('license_token' in changes) cache['_licenseToken'] = changes['license_token'].newValue;
+  if ('session_token' in changes) cache['_sessionToken'] = changes['session_token'].newValue;
   if ('license_token' in changes || 'session_token' in changes) {
-    const licenseToken = 'license_token' in changes
-      ? changes['license_token'].newValue
-      : cache['_licenseToken'];
-    const sessionToken = 'session_token' in changes
-      ? changes['session_token'].newValue
-      : cache['_sessionToken'];
-    if ('license_token' in changes) cache['_licenseToken'] = licenseToken;
-    if ('session_token' in changes) cache['_sessionToken'] = sessionToken;
-    cache['_tier'] = getTier(licenseToken, sessionToken);
+    cache['_tier'] = getTier(cache['_licenseToken'], cache['_sessionToken']);
   }
 
   Object.entries(changes).forEach(([id, { oldValue, newValue }]) => {
@@ -133,25 +127,10 @@ browser.storage.local.get(settings => {
   cache['_licenseToken'] = settings['license_token'];
   cache['_sessionToken'] = settings['session_token'];
   if (tier === 'free') {
-    PREMIUM_FEATURE_IDS.forEach(id => {
-      settings[id] = false;
-    });
+    clearAllPremium(settings);
   } else if (tier === 'free_signed_in') {
-    const writeBack = {};
-    let kept = 0;
-    PREMIUM_FEATURE_IDS.forEach(id => {
-      if (settings[id] === true) {
-        if (kept < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
-          kept++;
-        } else {
-          settings[id] = false;
-          writeBack[id] = false;
-        }
-      }
-    });
-    if (Object.keys(writeBack).length) {
-      browser.storage.local.set(writeBack);
-    }
+    const writeBack = enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+    if (Object.keys(writeBack).length) browser.storage.local.set(writeBack);
   }
 
   Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {

@@ -26,30 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tier = License.getTierSync(localSettings['license_token'], localSettings['session_token']);
     if (tier === 'free') {
-      SECTIONS.forEach(section => {
-        section.options.forEach(opt => {
-          if (opt.premium) settings[opt.id] = false;
-        });
-      });
+      clearAllPremium(settings);
     } else if (tier === 'free_signed_in') {
-      const writeBack = {};
-      let kept = 0;
-      SECTIONS.forEach(section => {
-        section.options.forEach(opt => {
-          if (!opt.premium) return;
-          if (settings[opt.id] === true) {
-            if (kept < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
-              kept++;
-            } else {
-              settings[opt.id] = false;
-              writeBack[opt.id] = false;
-            }
-          }
-        });
-      });
-      if (Object.keys(writeBack).length) {
-        browser.storage.local.set(writeBack);
-      }
+      const writeBack = enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+      if (Object.keys(writeBack).length) browser.storage.local.set(writeBack);
     }
 
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
