@@ -147,6 +147,10 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   SIDEBAR.innerHTML = '';
   let allTags = [];
 
+  const selectionIndicator = document.createElement('div');
+  selectionIndicator.id = 'current_selection_indicator';
+  OPTIONS_LIST.append(selectionIndicator);
+
   // Create the Active Options section (hidden until sidebar selected)
   const activeSection = TEMPLATE_SECTION.cloneNode(true);
   activeSection.id = 'active_section';
@@ -224,9 +228,15 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     OPTIONS_LIST.append(sectionNode);
   });
 
-  // Add "All" and "Active" sidebar items at the top
+  // Add "Free", "All", and "Active" sidebar items at the top
   const sidebarTopRow = document.createElement('div');
   sidebarTopRow.id = 'sidebar_top_row';
+
+  const freeSidebar = document.createElement('div');
+  freeSidebar.id = 'free_sidebar';
+  freeSidebar.className = 'sidebar_section';
+  freeSidebar.innerText = 'free';
+  freeSidebar.addEventListener('click', freeSidebarListener);
 
   const allSidebar = document.createElement('div');
   allSidebar.id = 'all_sidebar';
@@ -240,7 +250,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   activeSidebar.innerHTML = '<span>active</span><span class="active_count"></span>';
   activeSidebar.addEventListener('click', activeSidebarListener);
 
-  sidebarTopRow.append(allSidebar, activeSidebar);
+  sidebarTopRow.append(freeSidebar, allSidebar, activeSidebar);
   SIDEBAR.append(sidebarTopRow);
 
   // Add sections to the sidebar
@@ -271,8 +281,11 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     });
   }
 
-  // Pre-select sidebar option based on current window. Default to 'Basic'
-  if (resultsPageRegex.test(currentUrl)) {
+  // Pre-select sidebar. Non-premium users default to "free"; others use URL-based section.
+  const tier = License.getTierSync(SETTING_VALUES['license_token'], SETTING_VALUES['session_token']);
+  if (tier !== 'premium') {
+    qs('#free_sidebar').click();
+  } else if (resultsPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Search"]').click();
   } else if (videoPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Video Player"]').click();
@@ -437,6 +450,7 @@ function onSearchInput(e) {
   // Deselect "all" during active search
   const allSidebar = document.getElementById('all_sidebar');
   if (allSidebar) allSidebar.removeAttribute('selected');
+  setSelectionLabel(`"${value}"`);
 
   const sections = qsa('.section_container:not(#template_section):not(#active_section)');
   const searchTerms = value.toLowerCase().split(' ');
@@ -468,6 +482,12 @@ function onSearchInput(e) {
 }
 
 
+function setSelectionLabel(text) {
+  const el = document.getElementById('current_selection_indicator');
+  if (el) el.textContent = text;
+}
+
+
 function showAll() {
   const sidebarSections = qsa('.sidebar_section');
   const sections = qsa('.section_container:not(#template_section):not(#active_section)');
@@ -481,6 +501,35 @@ function showAll() {
     section.querySelectorAll('div.option').forEach(opt => opt.classList.remove('removed'));
   });
   if (activeSection) activeSection.classList.add('removed');
+  setSelectionLabel('all');
+}
+
+
+function freeSidebarListener(e) {
+  const target = e.currentTarget;
+  qsa('.sidebar_section').forEach(s => {
+    if (s !== target) s.removeAttribute('selected');
+  });
+  target.setAttribute('selected', '');
+
+  const activeSection = document.getElementById('active_section');
+  if (activeSection) activeSection.classList.add('removed');
+
+  const sections = qsa('.section_container:not(#template_section):not(#active_section)');
+  sections.forEach(section => {
+    section.classList.remove('removed');
+    let hasFreeOption = false;
+    section.querySelectorAll('div.option').forEach(opt => {
+      if (opt.getAttribute('data-premium') === 'true') {
+        opt.classList.add('removed');
+      } else {
+        opt.classList.remove('removed');
+        hasFreeOption = true;
+      }
+    });
+    if (!hasFreeOption) section.classList.add('removed');
+  });
+  setSelectionLabel('free');
 }
 
 
@@ -495,6 +544,7 @@ function activeSidebarListener(e) {
     });
     qsa('.section_container:not(#template_section):not(#active_section)').forEach(s => s.classList.add('removed'));
     refreshActiveSection();
+    setSelectionLabel('active');
   } else {
     showAll();
   }
@@ -537,6 +587,7 @@ function sidebarSectionListener(e) {
       section.classList.add('removed');
     }
   });
+  setSelectionLabel(tag);
 }
 
 

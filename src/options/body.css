@@ -592,6 +592,23 @@ html[dark_mode='true'] #active_sidebar .active_count {
   gap: 1px;
 }
 
+#current_selection_indicator {
+  position: sticky;
+  top: 0;
+  align-self: flex-end;
+  margin-bottom: -28px;
+  font-size: 0.8rem;
+  color: var(--label-color);
+  opacity: 0.75;
+  padding: 4px 10px;
+  background-color: var(--body-background-color);
+  border-left: 1px solid var(--box-shadow-color);
+  border-bottom: 1px solid var(--box-shadow-color);
+  border-bottom-left-radius: 6px;
+  pointer-events: none;
+  z-index: 5;
+}
+
 
 /*************************************
  * SIGN-IN / ACCOUNT / UPGRADE MODALS
