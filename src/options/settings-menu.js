@@ -82,18 +82,12 @@ function openScheduleModal() {
     updateDays(scheduleDays);
   });
 }
-SCHEDULING_OPTION.addEventListener('click', async e => {
-  if (HTML.getAttribute('is_premium') !== 'true') {
-    await handlePremiumFeatureClick();
-    return;
-  }
+SCHEDULING_OPTION.addEventListener('click', e => {
+  if (!canUsePremiumFeature('schedule')) return;
   openScheduleModal();
 });
-OPEN_SCHEDULE_OPTION.addEventListener('click', async e => {
-  if (HTML.getAttribute('is_premium') !== 'true') {
-    await handlePremiumFeatureClick();
-    return;
-  }
+OPEN_SCHEDULE_OPTION.addEventListener('click', e => {
+  if (!canUsePremiumFeature('schedule')) return;
   openScheduleModal();
 });
 RESUME_SCHEDULE_OPTION.addEventListener('click', e => {
@@ -192,11 +186,8 @@ function openPasswordModal() {
     DISABLE_PASSWORD_CONTAINER.toggleAttribute('hidden', !password);
   });
 }
-PASSWORD_OPTION.addEventListener('click', async e => {
-  if (HTML.getAttribute('is_premium') !== 'true') {
-    await handlePremiumFeatureClick();
-    return;
-  }
+PASSWORD_OPTION.addEventListener('click', e => {
+  if (!canUsePremiumFeature('password')) return;
   openPasswordModal();
 });
 
@@ -518,7 +509,6 @@ initAccountState();
 function updatePremiumUI(licenseData) {
   if (licenseData && licenseData.signedOut) {
     ACCOUNT_OPTION.textContent = 'Sign In';
-    HTML.setAttribute('is_premium', 'false');
     HTML.setAttribute('tier', 'free');
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
@@ -531,14 +521,12 @@ function updatePremiumUI(licenseData) {
   }
 
   if (licenseData && licenseData.isPremium) {
-    HTML.setAttribute('is_premium', 'true');
     HTML.setAttribute('tier', 'premium');
     if (DONATE_LINK) {
       DONATE_LINK.hidden = true;
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
-    HTML.setAttribute('is_premium', 'false');
     HTML.setAttribute('tier', 'free_signed_in');
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
@@ -706,7 +694,8 @@ accountModalContainer.addEventListener('click', e => {
 accountSignoutButton.addEventListener('click', async () => {
   await Auth.signOut();
   ACCOUNT_OPTION.textContent = 'Sign In';
-  HTML.setAttribute('is_premium', 'false');
+  HTML.setAttribute('tier', 'free');
+  updateSlotIndicator();
   // Disable all premium options
   SECTIONS.forEach(section => {
     section.options.forEach(option => {
@@ -769,6 +758,20 @@ async function handlePremiumFeatureClick() {
   // Signed in but not premium - open upgrade modal
   recordEvent('Premium Feature Click', { signedIn: true });
   openUpgradeModal();
+}
+
+// Gate a menu-level premium feature by tier + slot budget.
+// Returns true when the caller should proceed (open its modal).
+function canUsePremiumFeature(settingId) {
+  const tier = HTML.getAttribute('tier');
+  if (tier === 'premium') return true;
+  if (cache[settingId] === true) return true; // already active — managing is fine
+  if (tier === 'free_signed_in' && countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+    return true;
+  }
+  if (tier === 'free_signed_in') openUpgradeModal({ reason: 'slot_limit' });
+  else openPremiumRequiredModal();
+  return false;
 }
 
 // Premium required modal (for non-signed-in users)

@@ -958,17 +958,29 @@ html[dark_mode='true'] #active_sidebar .active_count {
 }
 
 #premium_required_description {
-  font-size: 0.85rem;
   margin: 0;
+  text-align: center;
 }
 
 #upgrade_slot_limit_note {
-  font-size: 0.85rem;
-  line-height: 1.4;
   color: var(--body-color);
-  opacity: 0.75;
   text-align: center;
   padding: 0 8px;
+}
+
+.premium-note-main,
+.premium-note-sub {
+  display: block;
+  line-height: 1.4;
+}
+.premium-note-main {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+.premium-note-sub {
+  font-size: 0.8rem;
+  opacity: 0.55;
+  margin-top: 4px;
 }
 
 #upgrade_plans {
@@ -1054,19 +1066,19 @@ html[dark_mode='true'] .upgrade-plan[selected] {
 }
 
 /* Premium options: dim slightly for non-premium users, full opacity for premium */
-html:not([is_premium='true']) .option[data-premium='true'] {
+html:not([tier='premium']) .option[data-premium='true'] {
   opacity: 0.65;
 }
-html[is_premium='true'] .option[data-premium='true'],
+html[tier='premium'] .option[data-premium='true'],
 #active_section .option[data-premium='true'] {
   opacity: 1;
 }
 
-/* Blue dot at the right edge of every premium option, aligned across rows. */
+/* Blue dot at the right edge of premium options (only shown for non-premium users). */
 .option[data-premium='true'] {
   position: relative;
 }
-.option[data-premium='true']::after {
+html:not([tier='premium']) .option[data-premium='true']::after {
   content: '';
   position: absolute;
   right: 10px;
@@ -1080,14 +1092,14 @@ html[is_premium='true'] .option[data-premium='true'],
 }
 
 /* Premium lock icon for settings menu items */
-html:not([is_premium='true']) #settings-menu div[data-premium='true'],
-html:not([is_premium='true']) #power-options div[data-premium='true'] {
+html:not([tier='premium']) #settings-menu div[data-premium='true'],
+html:not([tier='premium']) #power-options div[data-premium='true'] {
   opacity: 0.25;
   position: relative;
 }
 
-html:not([is_premium='true']) #settings-menu div[data-premium='true']::after,
-html:not([is_premium='true']) #power-options div[data-premium='true']::after {
+html:not([tier='premium']) #settings-menu div[data-premium='true']::after,
+html:not([tier='premium']) #power-options div[data-premium='true']::after {
   content: '';
   position: absolute;
   right: 8px;
@@ -1100,8 +1112,8 @@ html:not([is_premium='true']) #power-options div[data-premium='true']::after {
   background-repeat: no-repeat;
 }
 
-html[is_premium='true'] #settings-menu div[data-premium='true'],
-html[is_premium='true'] #power-options div[data-premium='true'] {
+html[tier='premium'] #settings-menu div[data-premium='true'],
+html[tier='premium'] #power-options div[data-premium='true'] {
   opacity: 1;
 }
 

@@ -844,9 +844,15 @@ function sectionNameToUrl(name) {
 }
 
 
-const PREMIUM_FEATURE_IDS = SECTIONS.flatMap(section =>
-  section.options.filter(opt => opt.premium).map(opt => opt.id)
-);
+// Premium features in SECTIONS plus menu-level premium toggles (schedule, password).
+// Together these form the pool of features a slot-budgeted free user can activate.
+const PREMIUM_FEATURE_IDS = [
+  ...SECTIONS.flatMap(section =>
+    section.options.filter(opt => opt.premium).map(opt => opt.id)
+  ),
+  'schedule',
+  'password',
+];
 const PREMIUM_FEATURE_ID_SET = new Set(PREMIUM_FEATURE_IDS);
 
 function countActivePremium(cache) {

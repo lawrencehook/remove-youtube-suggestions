@@ -178,9 +178,9 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       svg.toggleAttribute('active', value);
 
       optionNode.addEventListener('click', async e => {
-        if (premium && HTML.getAttribute('is_premium') !== 'true') {
+        const tier = HTML.getAttribute('tier');
+        if (premium && tier !== 'premium') {
           const togglingOn = cache[id] !== true;
-          const tier = HTML.getAttribute('tier');
           const hasSlot = tier === 'free_signed_in' &&
                           countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS;
           if (togglingOn && !hasSlot) {
