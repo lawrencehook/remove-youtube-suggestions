@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tier = License.getTierSync(localSettings['license_token'], localSettings['session_token']);
     HTML.setAttribute('tier', tier);
-    if (tier === 'free') {
+    if (tier === TIER.FREE) {
       clearAllPremium(settings);
-    } else if (tier === 'free_signed_in') {
+    } else if (tier === TIER.FREE_SIGNED_IN) {
       const writeBack = enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
       if (Object.keys(writeBack).length) browser.storage.local.set(writeBack);
     }
@@ -180,12 +180,12 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
       optionNode.addEventListener('click', async e => {
         const tier = HTML.getAttribute('tier');
-        if (premium && tier !== 'premium') {
+        if (premium && tier !== TIER.PREMIUM) {
           const togglingOn = cache[id] !== true;
-          const hasSlot = tier === 'free_signed_in' &&
+          const hasSlot = tier === TIER.FREE_SIGNED_IN &&
                           countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS;
           if (togglingOn && !hasSlot) {
-            if (tier === 'free_signed_in') openUpgradeModal({ reason: 'slot_limit' });
+            if (tier === TIER.FREE_SIGNED_IN) openUpgradeModal({ reason: 'slot_limit' });
             else openPremiumRequiredModal();
             return;
           }
@@ -264,7 +264,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
 
   // Pre-select sidebar. Non-premium users default to "free"; others use URL-based section.
   const tier = License.getTierSync(SETTING_VALUES['license_token'], SETTING_VALUES['session_token']);
-  if (tier !== 'premium') {
+  if (tier !== TIER.PREMIUM) {
     qs('#free_sidebar').click();
   } else if (resultsPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Search"]').click();
@@ -383,9 +383,9 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   // effects behave the same as direct toggles.
   if (PREMIUM_FEATURE_ID_SET.has(id) && value === true) {
     const tier = HTML.getAttribute('tier');
-    if (tier === 'free') {
+    if (tier === TIER.FREE) {
       value = false;
-    } else if (tier === 'free_signed_in' && cache[id] !== true &&
+    } else if (tier === TIER.FREE_SIGNED_IN && cache[id] !== true &&
                countActivePremium(cache) >= PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
       value = false;
     }

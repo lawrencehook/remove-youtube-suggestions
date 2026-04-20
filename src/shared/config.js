@@ -20,3 +20,10 @@ const PREMIUM_CONFIG = {
     USER_EMAIL: 'user_email',
   },
 };
+
+// Tier enum for License.getTierSync() and the html[tier] attribute.
+const TIER = Object.freeze({
+  PREMIUM: 'premium',
+  FREE_SIGNED_IN: 'free_signed_in',
+  FREE: 'free',
+});

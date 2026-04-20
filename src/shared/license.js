@@ -117,11 +117,10 @@ const License = {
     return decoded.premium === true && decoded.exp > now;
   },
 
-  // Synchronous tier check: 'premium' | 'free_signed_in' | 'free'
   getTierSync(licenseToken, sessionToken) {
-    if (this.isPremiumSync(licenseToken)) return 'premium';
-    if (sessionToken) return 'free_signed_in';
-    return 'free';
+    if (this.isPremiumSync(licenseToken)) return TIER.PREMIUM;
+    if (sessionToken) return TIER.FREE_SIGNED_IN;
+    return TIER.FREE;
   },
 
   // Create checkout session for subscription

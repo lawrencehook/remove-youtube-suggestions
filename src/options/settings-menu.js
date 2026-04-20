@@ -398,7 +398,7 @@ if (HEADER_SLOT_INDICATOR) {
 
 function updateSlotIndicator() {
   if (!HEADER_SLOT_INDICATOR) return;
-  if (HTML.getAttribute('tier') !== 'free_signed_in') {
+  if (HTML.getAttribute('tier') !== TIER.FREE_SIGNED_IN) {
     HEADER_SLOT_INDICATOR.setAttribute('hidden', '');
     return;
   }
@@ -489,13 +489,13 @@ async function initAccountState() {
   if (signedIn) {
     ACCOUNT_OPTION.textContent = 'Account';
     // Provisionally treat as free_signed_in until license check returns
-    HTML.setAttribute('tier', 'free_signed_in');
+    HTML.setAttribute('tier', TIER.FREE_SIGNED_IN);
     updateSlotIndicator();
     // Check license in background
     refreshLicense(true);
   } else {
     ACCOUNT_OPTION.textContent = 'Sign In';
-    HTML.setAttribute('tier', 'free');
+    HTML.setAttribute('tier', TIER.FREE);
     updateSlotIndicator();
     // Auto-open sign-in modal if ?signin=1 param is present
     const params = new URLSearchParams(window.location.search);
@@ -524,7 +524,7 @@ function pruneToSlotBudget() {
 function updatePremiumUI(licenseData) {
   if (licenseData && licenseData.signedOut) {
     ACCOUNT_OPTION.textContent = 'Sign In';
-    HTML.setAttribute('tier', 'free');
+    HTML.setAttribute('tier', TIER.FREE);
     disableAllPremiumFeatures();
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
@@ -537,13 +537,13 @@ function updatePremiumUI(licenseData) {
   }
 
   if (licenseData && licenseData.isPremium) {
-    HTML.setAttribute('tier', 'premium');
+    HTML.setAttribute('tier', TIER.PREMIUM);
     if (DONATE_LINK) {
       DONATE_LINK.hidden = true;
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
-    HTML.setAttribute('tier', 'free_signed_in');
+    HTML.setAttribute('tier', TIER.FREE_SIGNED_IN);
     pruneToSlotBudget();
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
@@ -711,7 +711,7 @@ accountModalContainer.addEventListener('click', e => {
 accountSignoutButton.addEventListener('click', async () => {
   await Auth.signOut();
   ACCOUNT_OPTION.textContent = 'Sign In';
-  HTML.setAttribute('tier', 'free');
+  HTML.setAttribute('tier', TIER.FREE);
   updateSlotIndicator();
   disableAllPremiumFeatures();
   if (DONATE_LINK) {
@@ -762,12 +762,12 @@ function openUpgradeModal(options = {}) {
 // Returns true when the caller should proceed (open its modal).
 function canUsePremiumFeature(settingId) {
   const tier = HTML.getAttribute('tier');
-  if (tier === 'premium') return true;
+  if (tier === TIER.PREMIUM) return true;
   if (cache[settingId] === true) return true; // already active — managing is fine
-  if (tier === 'free_signed_in' && countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+  if (tier === TIER.FREE_SIGNED_IN && countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
     return true;
   }
-  if (tier === 'free_signed_in') openUpgradeModal({ reason: 'slot_limit' });
+  if (tier === TIER.FREE_SIGNED_IN) openUpgradeModal({ reason: 'slot_limit' });
   else openPremiumRequiredModal();
   return false;
 }

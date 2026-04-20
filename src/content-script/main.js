@@ -73,9 +73,9 @@ function isPremiumFromToken(token) {
 }
 
 function getTier(licenseToken, sessionToken) {
-  if (isPremiumFromToken(licenseToken)) return 'premium';
-  if (sessionToken) return 'free_signed_in';
-  return 'free';
+  if (isPremiumFromToken(licenseToken)) return TIER.PREMIUM;
+  if (sessionToken) return TIER.FREE_SIGNED_IN;
+  return TIER.FREE;
 }
 
 // Respond to changes in settings
@@ -93,9 +93,9 @@ function logStorageChange(changes, area) {
 
     if (PREMIUM_FEATURE_ID_SET.has(id)) {
       const tier = cache['_tier'];
-      if (tier === 'free') {
+      if (tier === TIER.FREE) {
         newValue = false;
-      } else if (tier === 'free_signed_in' && newValue === true) {
+      } else if (tier === TIER.FREE_SIGNED_IN && newValue === true) {
         const alreadyOn = cache[id] === true;
         if (!alreadyOn && countActivePremium(cache) >= PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
           newValue = false;
@@ -126,9 +126,9 @@ browser.storage.local.get(settings => {
   cache['_tier'] = tier;
   cache['_licenseToken'] = settings['license_token'];
   cache['_sessionToken'] = settings['session_token'];
-  if (tier === 'free') {
+  if (tier === TIER.FREE) {
     clearAllPremium(settings);
-  } else if (tier === 'free_signed_in') {
+  } else if (tier === TIER.FREE_SIGNED_IN) {
     const writeBack = enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
     if (Object.keys(writeBack).length) browser.storage.local.set(writeBack);
   }
