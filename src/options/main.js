@@ -24,14 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const settings = { ...DEFAULT_SETTINGS, ...localSettings };
 
-    // Enforce premium features are disabled for non-premium users
-    const isPremium = License.isPremiumSync(localSettings['license_token']);
-    if (!isPremium) {
-      SECTIONS.forEach(section => {
-        section.options.forEach(opt => {
-          if (opt.premium) settings[opt.id] = false;
-        });
-      });
+    const tier = License.getTierSync(localSettings['license_token'], localSettings['session_token']);
+    HTML.setAttribute('tier', tier);
+    if (tier === TIER.FREE) {
+      clearAllPremium(settings);
+    } else if (tier === TIER.FREE_SIGNED_IN) {
+      const writeBack = enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+      if (Object.keys(writeBack).length) browser.storage.local.set(writeBack);
     }
 
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
@@ -88,28 +87,13 @@ function refreshActiveSection() {
       optionNode.classList.remove('removed');
       optionNode.removeAttribute('id');
       optionNode.setAttribute('name', name);
+      if (premium) optionNode.setAttribute('data-premium', 'true');
       optionNode.querySelector('.option_label').innerText = name;
 
       const svg = optionNode.querySelector('svg');
       svg.toggleAttribute('active', true);
 
       optionNode.addEventListener('click', async e => {
-        if (premium && HTML.getAttribute('is_premium') !== 'true') {
-          const signedIn = await Auth.isSignedIn();
-          if (!signedIn) {
-            if (typeof openPremiumRequiredModal === 'function') {
-              openPremiumRequiredModal();
-            } else {
-              displayStatus('Premium feature - sign in to upgrade');
-            }
-          } else if (typeof openUpgradeModal === 'function') {
-            openUpgradeModal();
-          } else {
-            displayStatus('Premium feature - upgrade to access');
-          }
-          return;
-        }
-
         updateSetting(id, false, { manual: true });
         // Sync the original toggle
         const originalSvg = document.querySelector(`div#${id} svg`);
@@ -143,6 +127,10 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   OPTIONS_LIST.innerHTML = '';
   SIDEBAR.innerHTML = '';
   let allTags = [];
+
+  const selectionIndicator = document.createElement('div');
+  selectionIndicator.id = 'current_selection_indicator';
+  OPTIONS_LIST.append(selectionIndicator);
 
   // Create the Active Options section (hidden until sidebar selected)
   const activeSection = TEMPLATE_SECTION.cloneNode(true);
@@ -191,24 +179,16 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
       svg.toggleAttribute('active', value);
 
       optionNode.addEventListener('click', async e => {
-        // Check if premium-locked
-        if (premium && HTML.getAttribute('is_premium') !== 'true') {
-          // Check if signed in first
-          const signedIn = await Auth.isSignedIn();
-          if (!signedIn) {
-            // Not signed in - show premium required modal
-            if (typeof openPremiumRequiredModal === 'function') {
-              openPremiumRequiredModal();
-            } else {
-              displayStatus('Premium feature - sign in to upgrade');
-            }
-          } else if (typeof openUpgradeModal === 'function') {
-            // Signed in but not premium - open upgrade modal
-            openUpgradeModal();
-          } else {
-            displayStatus('Premium feature - upgrade to access');
+        const tier = HTML.getAttribute('tier');
+        if (premium && tier !== TIER.PREMIUM) {
+          const togglingOn = cache[id] !== true;
+          const hasSlot = tier === TIER.FREE_SIGNED_IN &&
+                          countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS;
+          if (togglingOn && !hasSlot) {
+            if (tier === TIER.FREE_SIGNED_IN) openUpgradeModal({ reason: 'slot_limit' });
+            else openPremiumRequiredModal();
+            return;
           }
-          return;
         }
 
         const value = svg.toggleAttribute('active');
@@ -229,9 +209,15 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     OPTIONS_LIST.append(sectionNode);
   });
 
-  // Add "All" and "Active" sidebar items at the top
+  // Add "Free", "All", and "Active" sidebar items at the top
   const sidebarTopRow = document.createElement('div');
   sidebarTopRow.id = 'sidebar_top_row';
+
+  const freeSidebar = document.createElement('div');
+  freeSidebar.id = 'free_sidebar';
+  freeSidebar.className = 'sidebar_section';
+  freeSidebar.innerText = 'free';
+  freeSidebar.addEventListener('click', freeSidebarListener);
 
   const allSidebar = document.createElement('div');
   allSidebar.id = 'all_sidebar';
@@ -245,7 +231,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   activeSidebar.innerHTML = '<span>active</span><span class="active_count"></span>';
   activeSidebar.addEventListener('click', activeSidebarListener);
 
-  sidebarTopRow.append(allSidebar, activeSidebar);
+  sidebarTopRow.append(freeSidebar, allSidebar, activeSidebar);
   SIDEBAR.append(sidebarTopRow);
 
   // Add sections to the sidebar
@@ -276,8 +262,11 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     });
   }
 
-  // Pre-select sidebar option based on current window. Default to 'Basic'
-  if (resultsPageRegex.test(currentUrl)) {
+  // Pre-select sidebar. Non-premium users default to "free"; others use URL-based section.
+  const tier = License.getTierSync(SETTING_VALUES['license_token'], SETTING_VALUES['session_token']);
+  if (tier !== TIER.PREMIUM) {
+    qs('#free_sidebar').click();
+  } else if (resultsPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Search"]').click();
   } else if (videoPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Video Player"]').click();
@@ -290,6 +279,8 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   } else {
     qs('.sidebar_section[tag="Basic"]').click();
   }
+
+  updateSlotIndicator();
 
   const searchBar = document.getElementById('search_bar');
   searchBar.addEventListener('input', onSearchInput);
@@ -388,6 +379,18 @@ function updateTimeInfo() {
 
 function updateSetting(id, value, { write=true, manual=false }={}) {
 
+  // Clamp premium writes that would exceed the free-tier slot budget, so chained
+  // effects behave the same as direct toggles.
+  if (PREMIUM_FEATURE_ID_SET.has(id) && value === true) {
+    const tier = HTML.getAttribute('tier');
+    if (tier === TIER.FREE) {
+      value = false;
+    } else if (tier === TIER.FREE_SIGNED_IN && cache[id] !== true &&
+               countActivePremium(cache) >= PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+      value = false;
+    }
+  }
+
   if (manual) recordEvent('Setting changed', { id, value });
 
   HTML.setAttribute(id, value);
@@ -414,6 +417,8 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   }
 
   refreshActiveSection();
+
+  if (PREMIUM_FEATURE_ID_SET.has(id)) updateSlotIndicator();
 }
 
 
@@ -426,6 +431,7 @@ function onSearchInput(e) {
   // Deselect "all" during active search
   const allSidebar = document.getElementById('all_sidebar');
   if (allSidebar) allSidebar.removeAttribute('selected');
+  setSelectionLabel(`"${value}"`);
 
   const sections = qsa('.section_container:not(#template_section):not(#active_section)');
   const searchTerms = value.toLowerCase().split(' ');
@@ -457,6 +463,12 @@ function onSearchInput(e) {
 }
 
 
+function setSelectionLabel(text) {
+  const el = document.getElementById('current_selection_indicator');
+  if (el) el.textContent = text;
+}
+
+
 function showAll() {
   const sidebarSections = qsa('.sidebar_section');
   const sections = qsa('.section_container:not(#template_section):not(#active_section)');
@@ -470,6 +482,35 @@ function showAll() {
     section.querySelectorAll('div.option').forEach(opt => opt.classList.remove('removed'));
   });
   if (activeSection) activeSection.classList.add('removed');
+  setSelectionLabel('all');
+}
+
+
+function freeSidebarListener(e) {
+  const target = e.currentTarget;
+  qsa('.sidebar_section').forEach(s => {
+    if (s !== target) s.removeAttribute('selected');
+  });
+  target.setAttribute('selected', '');
+
+  const activeSection = document.getElementById('active_section');
+  if (activeSection) activeSection.classList.add('removed');
+
+  const sections = qsa('.section_container:not(#template_section):not(#active_section)');
+  sections.forEach(section => {
+    section.classList.remove('removed');
+    let hasFreeOption = false;
+    section.querySelectorAll('div.option').forEach(opt => {
+      if (opt.getAttribute('data-premium') === 'true') {
+        opt.classList.add('removed');
+      } else {
+        opt.classList.remove('removed');
+        hasFreeOption = true;
+      }
+    });
+    if (!hasFreeOption) section.classList.add('removed');
+  });
+  setSelectionLabel('free');
 }
 
 
@@ -484,6 +525,7 @@ function activeSidebarListener(e) {
     });
     qsa('.section_container:not(#template_section):not(#active_section)').forEach(s => s.classList.add('removed'));
     refreshActiveSection();
+    setSelectionLabel('active');
   } else {
     showAll();
   }
@@ -526,6 +568,7 @@ function sidebarSectionListener(e) {
       section.classList.add('removed');
     }
   });
+  setSelectionLabel(tag);
 }
 
 

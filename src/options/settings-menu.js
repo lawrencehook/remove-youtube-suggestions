@@ -82,18 +82,12 @@ function openScheduleModal() {
     updateDays(scheduleDays);
   });
 }
-SCHEDULING_OPTION.addEventListener('click', async e => {
-  if (HTML.getAttribute('is_premium') !== 'true') {
-    await handlePremiumFeatureClick();
-    return;
-  }
+SCHEDULING_OPTION.addEventListener('click', e => {
+  if (!canUsePremiumFeature('schedule')) return;
   openScheduleModal();
 });
-OPEN_SCHEDULE_OPTION.addEventListener('click', async e => {
-  if (HTML.getAttribute('is_premium') !== 'true') {
-    await handlePremiumFeatureClick();
-    return;
-  }
+OPEN_SCHEDULE_OPTION.addEventListener('click', e => {
+  if (!canUsePremiumFeature('schedule')) return;
   openScheduleModal();
 });
 RESUME_SCHEDULE_OPTION.addEventListener('click', e => {
@@ -192,11 +186,8 @@ function openPasswordModal() {
     DISABLE_PASSWORD_CONTAINER.toggleAttribute('hidden', !password);
   });
 }
-PASSWORD_OPTION.addEventListener('click', async e => {
-  if (HTML.getAttribute('is_premium') !== 'true') {
-    await handlePremiumFeatureClick();
-    return;
-  }
+PASSWORD_OPTION.addEventListener('click', e => {
+  if (!canUsePremiumFeature('password')) return;
   openPasswordModal();
 });
 
@@ -396,6 +387,28 @@ const ACCOUNT_OPTION = qs('#settings-account');
 const DONATE_LINK = qs('#settings-donate');
 const DONATE_URL = 'https://www.paypal.com/donate/?cmd=_donations&business=FF9K9YD6K6SWG&Z3JncnB0=';
 const HEADER_PREMIUM_BADGE = qs('#header-premium-badge');
+const HEADER_SLOT_INDICATOR = qs('#header-slot-indicator');
+if (HEADER_SLOT_INDICATOR) {
+  for (let i = 0; i < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'slot-dot';
+    HEADER_SLOT_INDICATOR.appendChild(dot);
+  }
+}
+
+function updateSlotIndicator() {
+  if (!HEADER_SLOT_INDICATOR) return;
+  if (HTML.getAttribute('tier') !== TIER.FREE_SIGNED_IN) {
+    HEADER_SLOT_INDICATOR.setAttribute('hidden', '');
+    return;
+  }
+  const used = countActivePremium(cache);
+  HEADER_SLOT_INDICATOR.querySelectorAll('.slot-dot').forEach((dot, i) => {
+    dot.toggleAttribute('filled', i < used);
+  });
+  HEADER_SLOT_INDICATOR.title = `${used}/${PREMIUM_CONFIG.FREE_PREMIUM_SLOTS} free premium features used`;
+  HEADER_SLOT_INDICATOR.removeAttribute('hidden');
+}
 
 // Sign-in modal elements
 const signinModalContainer = qs('#signin_container_background');
@@ -475,10 +488,15 @@ async function initAccountState() {
   const signedIn = await Auth.isSignedIn();
   if (signedIn) {
     ACCOUNT_OPTION.textContent = 'Account';
+    // Provisionally treat as free_signed_in until license check returns
+    HTML.setAttribute('tier', TIER.FREE_SIGNED_IN);
+    updateSlotIndicator();
     // Check license in background
     refreshLicense(true);
   } else {
     ACCOUNT_OPTION.textContent = 'Sign In';
+    HTML.setAttribute('tier', TIER.FREE);
+    updateSlotIndicator();
     // Auto-open sign-in modal if ?signin=1 param is present
     const params = new URLSearchParams(window.location.search);
     if (params.get('signin') === '1') {
@@ -488,27 +506,45 @@ async function initAccountState() {
 }
 initAccountState();
 
+// Turn off every premium feature (including menu-level ones like schedule/password).
+// Used when dropping to the `free` tier via sign-out or license revocation.
+function disableAllPremiumFeatures() {
+  PREMIUM_FEATURE_IDS.forEach(id => updateSetting(id, false));
+}
+
+// When transitioning into `free_signed_in` (e.g. subscription lapsed while the
+// options page is open), disable any premium features beyond FREE_PREMIUM_SLOTS
+// so current state matches the new tier. Reuses the shared enforceSlotBudget
+// helper and routes writes through updateSetting so the full UI stays in sync.
+function pruneToSlotBudget() {
+  const overBudget = enforceSlotBudget(cache, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+  Object.keys(overBudget).forEach(id => updateSetting(id, false));
+}
+
 function updatePremiumUI(licenseData) {
   if (licenseData && licenseData.signedOut) {
     ACCOUNT_OPTION.textContent = 'Sign In';
-    HTML.setAttribute('is_premium', 'false');
+    HTML.setAttribute('tier', TIER.FREE);
+    disableAllPremiumFeatures();
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
       DONATE_LINK.setAttribute('href', DONATE_URL);
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
+    updateSlotIndicator();
     return;
   }
 
   if (licenseData && licenseData.isPremium) {
-    HTML.setAttribute('is_premium', 'true');
+    HTML.setAttribute('tier', TIER.PREMIUM);
     if (DONATE_LINK) {
       DONATE_LINK.hidden = true;
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
   } else {
-    HTML.setAttribute('is_premium', 'false');
+    HTML.setAttribute('tier', TIER.FREE_SIGNED_IN);
+    pruneToSlotBudget();
     if (DONATE_LINK) {
       DONATE_LINK.hidden = false;
       DONATE_LINK.textContent = 'Donate';
@@ -516,6 +552,7 @@ function updatePremiumUI(licenseData) {
     }
     if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.setAttribute('hidden', '');
   }
+  updateSlotIndicator();
 }
 
 // Account option click handler
@@ -674,13 +711,9 @@ accountModalContainer.addEventListener('click', e => {
 accountSignoutButton.addEventListener('click', async () => {
   await Auth.signOut();
   ACCOUNT_OPTION.textContent = 'Sign In';
-  HTML.setAttribute('is_premium', 'false');
-  // Disable all premium options
-  SECTIONS.forEach(section => {
-    section.options.forEach(option => {
-      if (option.premium) updateSetting(option.id, false);
-    });
-  });
+  HTML.setAttribute('tier', TIER.FREE);
+  updateSlotIndicator();
+  disableAllPremiumFeatures();
   if (DONATE_LINK) {
     DONATE_LINK.textContent = 'Donate';
     DONATE_LINK.setAttribute('href', DONATE_URL);
@@ -713,24 +746,30 @@ accountBillingButton.addEventListener('click', async () => {
 });
 
 // Upgrade modal
-function openUpgradeModal() {
-  recordEvent('Upgrade Modal Opened');
+function openUpgradeModal(options = {}) {
+  const { reason } = options;
+  recordEvent('Upgrade Modal Opened', { reason: reason || 'default' });
+  const slotNote = document.getElementById('upgrade_slot_limit_note');
+  if (slotNote) {
+    if (reason === 'slot_limit') slotNote.removeAttribute('hidden');
+    else slotNote.setAttribute('hidden', '');
+  }
   upgradeModalContainer.removeAttribute('hidden');
   selectPlan('monthly');
 }
 
-// Premium feature click handler - checks sign-in first
-async function handlePremiumFeatureClick() {
-  const signedIn = await Auth.isSignedIn();
-  if (!signedIn) {
-    // Not signed in - show premium required modal
-    recordEvent('Premium Feature Click', { signedIn: false });
-    openPremiumRequiredModal();
-    return;
+// Gate a menu-level premium feature by tier + slot budget.
+// Returns true when the caller should proceed (open its modal).
+function canUsePremiumFeature(settingId) {
+  const tier = HTML.getAttribute('tier');
+  if (tier === TIER.PREMIUM) return true;
+  if (cache[settingId] === true) return true; // already active — managing is fine
+  if (tier === TIER.FREE_SIGNED_IN && countActivePremium(cache) < PREMIUM_CONFIG.FREE_PREMIUM_SLOTS) {
+    return true;
   }
-  // Signed in but not premium - open upgrade modal
-  recordEvent('Premium Feature Click', { signedIn: true });
-  openUpgradeModal();
+  if (tier === TIER.FREE_SIGNED_IN) openUpgradeModal({ reason: 'slot_limit' });
+  else openPremiumRequiredModal();
+  return false;
 }
 
 // Premium required modal (for non-signed-in users)

@@ -190,7 +190,10 @@
             <span id="premium_required_header_premium">Premium</span>
           </div>
         </div>
-        <p id="premium_required_description">Premium required. Sign in to upgrade.</p>
+        <p id="premium_required_description">
+          <span class="premium-note-main">Sign in to enable any 2 premium features.</span>
+          <span class="premium-note-sub">Upgrade to unlock them all.</span>
+        </p>
         <div id="premium_required_buttons">
           <button id="premium-required-cancel-button">Cancel</button>
           <button id="premium-required-signin-button">Sign In</button>
@@ -207,6 +210,10 @@
             <span id="upgrade_header_premium">Premium</span>
           </div>
           <span id="upgrade_header_action">Upgrade</span>
+        </div>
+        <div id="upgrade_slot_limit_note" hidden>
+          <span class="premium-note-main">Free tier allows 2 premium features.</span>
+          <span class="premium-note-sub">Upgrade or deselect one.</span>
         </div>
         <div id="upgrade_plans">
           <div class="upgrade-plan" data-plan="monthly">
@@ -291,6 +298,8 @@
       <div id='search_bar'>
         <input type=search placeholder='Search' autofocus tabindex="0"></input>
       </div>
+
+      <div id='header-slot-indicator' hidden title='Free premium features used'></div>
 
       <a title='On/Off' id="power-icon">
         <div id='power-pop-up'>Button is disabled because the schedule is active.</div>
