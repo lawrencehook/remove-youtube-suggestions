@@ -842,3 +842,47 @@ function sectionNameToUrl(name) {
 
   return HOST + 'features/' + sectionPath + '/';
 }
+
+
+// Premium features in SECTIONS plus menu-level premium toggles (schedule, password).
+// Together these form the pool of features a slot-budgeted free user can activate.
+const PREMIUM_FEATURE_IDS = [
+  ...SECTIONS.flatMap(section =>
+    section.options.filter(opt => opt.premium).map(opt => opt.id)
+  ),
+  'schedule',
+  'password',
+];
+const PREMIUM_FEATURE_ID_SET = new Set(PREMIUM_FEATURE_IDS);
+
+function countActivePremium(cache) {
+  let n = 0;
+  PREMIUM_FEATURE_IDS.forEach(id => { if (cache[id] === true) n++; });
+  return n;
+}
+
+// Mutates `settings` to force every premium feature off. In-memory only —
+// does not return a write-back map because callers intentionally leave stored
+// values alone so the user's premium state returns on re-upgrade.
+function clearAllPremium(settings) {
+  PREMIUM_FEATURE_IDS.forEach(id => { settings[id] = false; });
+}
+
+// Mutates `settings` so at most `slotLimit` premium features stay true (by
+// iteration order). Returns a write-back map of the cleared settings — callers
+// should persist these to storage so over-budget premium settings don't
+// re-surface on the next load.
+function enforceSlotBudget(settings, slotLimit) {
+  const writeBack = {};
+  let kept = 0;
+  PREMIUM_FEATURE_IDS.forEach(id => {
+    if (settings[id] !== true) return;
+    if (kept < slotLimit) {
+      kept++;
+    } else {
+      settings[id] = false;
+      writeBack[id] = false;
+    }
+  });
+  return writeBack;
+}
