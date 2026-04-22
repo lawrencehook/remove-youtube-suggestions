@@ -129,6 +129,11 @@ function start() {
     process.exit(1);
   }
 
+  if (config.STRIPE_ALLOWED_PRODUCT_IDS.length === 0) {
+    console.error('STRIPE_ALLOWED_PRODUCT_IDS must be set (comma-separated Stripe product IDs)');
+    process.exit(1);
+  }
+
   // Ensure data directories exist
   storage.ensureDirectories();
 

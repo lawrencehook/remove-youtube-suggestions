@@ -6,6 +6,7 @@ process.env.STRIPE_SECRET_KEY = 'sk_test_fake';
 process.env.STRIPE_PRICE_MONTHLY = 'price_test_monthly';
 process.env.STRIPE_PRICE_YEARLY = 'price_test_yearly';
 process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+process.env.STRIPE_ALLOWED_PRODUCT_IDS = 'prod_test_rys';
 process.env.EMAIL_FROM = 'test@example.com';
 process.env.BASE_URL = 'http://localhost:3000';
 process.env.DATA_DIR = './tests/test-data';

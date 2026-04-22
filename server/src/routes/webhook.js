@@ -1,5 +1,10 @@
 const express = require('express');
-const { constructWebhookEvent, stripe } = require('../services/stripe');
+const {
+  constructWebhookEvent,
+  stripe,
+  getEventProductIds,
+  isAllowedProduct,
+} = require('../services/stripe');
 const { sendWelcomeEmail, sendCancellationEmail } = require('../services/email');
 const storage = require('../storage');
 
@@ -26,6 +31,21 @@ router.post('/stripe', async (req, res) => {
   } catch (err) {
     console.error('[webhook] Signature verification failed:', err.message);
     return res.status(400).json({ error: 'Invalid signature' });
+  }
+
+  // Reject events whose product isn't in our allowlist. Protects against
+  // cross-product bleed when multiple apps share a Stripe account.
+  try {
+    const productIds = await getEventProductIds(event);
+    if (productIds !== null && !isAllowedProduct(productIds)) {
+      console.log(
+        `[webhook] Ignored ${event.type} ${event.id} (products [${productIds.join(', ')}] not in allowlist)`
+      );
+      return res.json({ received: true, ignored: true });
+    }
+  } catch (err) {
+    console.error(`[webhook] Product allowlist check failed for ${event.id}:`, err.message);
+    return res.status(500).json({ error: 'Allowlist check failed' });
   }
 
   // Handle the event

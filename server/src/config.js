@@ -26,6 +26,15 @@ module.exports = {
   get STRIPE_PRICE_MONTHLY() { return process.env.STRIPE_PRICE_MONTHLY; },
   get STRIPE_PRICE_YEARLY() { return process.env.STRIPE_PRICE_YEARLY; },
   get STRIPE_WEBHOOK_SECRET() { return process.env.STRIPE_WEBHOOK_SECRET; },
+  // Comma-separated list of Stripe product IDs this server is allowed to act on.
+  // Webhook events whose products are not in this list are ignored. Guards against
+  // cross-product event bleed when multiple apps share a Stripe account.
+  get STRIPE_ALLOWED_PRODUCT_IDS() {
+    return (process.env.STRIPE_ALLOWED_PRODUCT_IDS || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+  },
 
   // AWS SES
   get AWS_REGION() { return process.env.AWS_REGION || 'us-east-1'; },

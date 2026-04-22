@@ -23,6 +23,18 @@ stripeService.stripe.customers = {
         return { email: 'buyer@example.com' };
     },
 };
+stripeService.stripe.checkout = {
+    sessions: {
+        retrieve: async (id) => ({
+            id,
+            line_items: {
+                data: [{ price: { product: 'prod_test_rys' } }],
+            },
+        }),
+    },
+};
+
+const ownedItems = { data: [{ price: { product: 'prod_test_rys' } }] };
 
 const { app } = require('../src/index');
 const storage = require('../src/storage');
@@ -54,11 +66,33 @@ describe('Webhook Routes', () => {
         assert.strictEqual(res.status, 400);
     });
 
+    it('should ignore subscription events for products not in the allowlist', async () => {
+        mockWebhookEvent = {
+            id: 'evt_foreign',
+            type: 'customer.subscription.updated',
+            data: {
+                object: {
+                    customer: 'cus_123',
+                    status: 'active',
+                    items: { data: [{ price: { product: 'prod_other_app' } }] },
+                },
+            },
+        };
+
+        const res = await sendWebhook();
+        assert.strictEqual(res.status, 200);
+        assert.strictEqual(res.body.ignored, true);
+
+        const status = storage.getSubscriptionStatus('buyer@example.com');
+        assert.ok(!status || status.premium !== true, 'foreign product should not upgrade user');
+    });
+
     it('checkout.session.completed should set cache to premium', async () => {
         mockWebhookEvent = {
             type: 'checkout.session.completed',
             data: {
                 object: {
+                    id: 'cs_test_123',
                     customer_email: 'buyer@example.com',
                     customer: 'cus_123',
                 },
@@ -85,6 +119,7 @@ describe('Webhook Routes', () => {
                 object: {
                     customer: 'cus_123',
                     status: 'incomplete',
+                    items: ownedItems,
                 },
             },
         };
@@ -103,6 +138,7 @@ describe('Webhook Routes', () => {
                 object: {
                     customer: 'cus_123',
                     status: 'active',
+                    items: ownedItems,
                 },
             },
         };
@@ -121,7 +157,7 @@ describe('Webhook Routes', () => {
             mockWebhookEvent = {
                 type: 'customer.subscription.updated',
                 data: {
-                    object: { customer: 'cus_123', status: 'active' },
+                    object: { customer: 'cus_123', status: 'active', items: ownedItems },
                 },
             };
             await sendWebhook();
@@ -133,7 +169,7 @@ describe('Webhook Routes', () => {
             mockWebhookEvent = {
                 type: 'customer.subscription.created',
                 data: {
-                    object: { customer: 'cus_123', status: 'incomplete' },
+                    object: { customer: 'cus_123', status: 'incomplete', items: ownedItems },
                 },
             };
             await sendWebhook();
@@ -147,7 +183,7 @@ describe('Webhook Routes', () => {
             mockWebhookEvent = {
                 type: 'customer.subscription.updated',
                 data: {
-                    object: { customer: 'cus_123', status: 'active' },
+                    object: { customer: 'cus_123', status: 'active', items: ownedItems },
                 },
             };
             await sendWebhook();
@@ -155,7 +191,7 @@ describe('Webhook Routes', () => {
             mockWebhookEvent = {
                 type: 'customer.subscription.created',
                 data: {
-                    object: { customer: 'cus_123', status: 'incomplete' },
+                    object: { customer: 'cus_123', status: 'incomplete', items: ownedItems },
                 },
             };
             await sendWebhook();
@@ -164,6 +200,7 @@ describe('Webhook Routes', () => {
                 type: 'checkout.session.completed',
                 data: {
                     object: {
+                        id: 'cs_test_123',
                         customer_email: 'buyer@example.com',
                         customer: 'cus_123',
                     },

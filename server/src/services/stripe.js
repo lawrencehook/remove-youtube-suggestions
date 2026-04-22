@@ -92,6 +92,43 @@ function constructWebhookEvent(payload, signature) {
   );
 }
 
+// Extract the product IDs associated with a webhook event, or null if the event
+// type has no product association we can determine. For checkout.session.completed
+// we must re-fetch the session with line items expanded — the event payload
+// doesn't include them.
+async function getEventProductIds(event) {
+  const obj = event.data.object;
+  switch (event.type) {
+    case 'checkout.session.completed': {
+      const session = await stripe.checkout.sessions.retrieve(obj.id, {
+        expand: ['line_items.data.price'],
+      });
+      return (session.line_items?.data || [])
+        .map(li => li.price?.product)
+        .filter(Boolean);
+    }
+    case 'customer.subscription.created':
+    case 'customer.subscription.updated':
+    case 'customer.subscription.deleted':
+      return (obj.items?.data || [])
+        .map(i => i.price?.product)
+        .filter(Boolean);
+    case 'invoice.payment_failed':
+    case 'invoice.payment_succeeded':
+      return (obj.lines?.data || [])
+        .map(l => l.price?.product)
+        .filter(Boolean);
+    default:
+      return null;
+  }
+}
+
+function isAllowedProduct(productIds) {
+  if (!productIds || productIds.length === 0) return false;
+  const allowlist = new Set(config.STRIPE_ALLOWED_PRODUCT_IDS);
+  return productIds.some(id => allowlist.has(id));
+}
+
 module.exports = {
   stripe,
   findCustomerByEmail,
@@ -102,4 +139,6 @@ module.exports = {
   createCheckoutSession,
   createBillingPortalSession,
   constructWebhookEvent,
+  getEventProductIds,
+  isAllowedProduct,
 };
