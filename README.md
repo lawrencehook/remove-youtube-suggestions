@@ -32,11 +32,15 @@ This project is 100% open source. Created and maintained by me, [Lawrence Hook](
 
 Have a feature request or found a bug? Feel free to create a Github issue, submit a PR, or contact me at lawrencehook@gmail.com.
 
-The following commands will set up a Firefox dev environment.
+`./dev.sh <firefox|chrome>` lets both browsers run side-by-side without clobbering each other's `manifest.json`.
 
 ```bash
 git clone https://github.com/lawrencehook/remove-youtube-suggestions.git
-cd remove-youtube-suggestions/src
+cd remove-youtube-suggestions
 npm install --global web-ext
-web-ext run
+
+./dev.sh firefox     # writes src/manifest.json, launches web-ext run
+./dev.sh chrome      # builds dist/chrome/ — load as unpacked in chrome://extensions
 ```
+
+Firefox runs from `src/` directly (web-ext doesn't reliably load scripts through directory symlinks). Chrome runs from `dist/chrome/`, a tree of symlinks back into `src/` with `chrome_manifest.json` copied in. Edits in `src/` propagate live to both.

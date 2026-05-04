@@ -4,3 +4,4 @@ extension.zip
 manifest.json
 _scratch/
 node_modules/
+dist/

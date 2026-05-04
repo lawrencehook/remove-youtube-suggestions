@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install web-ext
+        run: npm install -g web-ext
+
+      - name: Build Firefox zip
+        run: ./firefox.sh
+
+      - name: Build Chrome zip
+        run: ./chrome.sh
+
+      - name: Stage release assets
+        run: |
+          mkdir -p dist
+          cp src/web-ext-artifacts/*.zip "dist/rys-firefox-${GITHUB_REF_NAME}.zip"
+          cp extension.zip "dist/rys-chrome-${GITHUB_REF_NAME}.zip"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          fail_on_unmatched_files: true

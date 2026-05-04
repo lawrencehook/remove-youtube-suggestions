@@ -571,7 +571,6 @@ const SECTIONS = [
             redirect_off: true
           }
         },
-        premium: true,
       },
       {
         name: "Redirect home to Watch Later",
@@ -587,7 +586,6 @@ const SECTIONS = [
             redirect_off: true
           }
         },
-        premium: true,
       },
       {
         name: "Redirect home to Library",
@@ -603,14 +601,12 @@ const SECTIONS = [
             redirect_off: true
           }
         },
-        premium: true,
       },
       {
         name: "Do not redirect home",
         id: "redirect_off",
         defaultValue: false,
         display: false,
-        premium: true,
       },
     ]
   },
