@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # Local dev launcher. Two strategies, one per browser:
 #
-#   firefox  Run web-ext from src/ directly. web-ext / Firefox don't
-#            reliably load scripts through directory symlinks, so the
-#            dist/-symlink trick we use for Chrome doesn't work here.
-#            We just drop the firefox manifest into src/ and run.
+#   firefox  Run web-ext from src/ directly. Drops firefox_manifest.json
+#            in as manifest.json and launches a temp Firefox profile.
 #
-#   chrome   Build dist/chrome/ as a tree of symlinks back into src/,
-#            with chrome_manifest.json copied in as manifest.json.
-#            Load that as an unpacked extension via chrome://extensions.
+#   chrome   Sync src/ into dist/chrome/ as real files (rsync), with
+#            chrome_manifest.json copied in as manifest.json. Load as
+#            an unpacked extension via chrome://extensions.
 #
-# Both can run side-by-side: dist/chrome/manifest.json is a real copy
-# in its own directory, so writing src/manifest.json for Firefox doesn't
-# affect Chrome.
+#            We don't symlink — Chrome's content-script loader silently
+#            rejects scripts whose realpath is outside the extension
+#            directory, so the popup loads but content scripts don't fire.
+#            Re-run this script and click "reload" in chrome://extensions
+#            after editing src/.
 
 set -euo pipefail
 
@@ -38,14 +38,11 @@ case "$browser" in
     dst="$repo/dist/chrome"
     mkdir -p "$dst"
 
-    for path in "$src"/* "$src"/.[!.]*; do
-      [ -e "$path" ] || continue
-      name=$(basename "$path")
-      case "$name" in
-        *_manifest.json|manifest.json|web-ext-artifacts) continue ;;
-      esac
-      ln -snf "$path" "$dst/$name"
-    done
+    rsync -a --delete \
+      --exclude='*_manifest.json' \
+      --exclude='manifest.json' \
+      --exclude='web-ext-artifacts' \
+      "$src/" "$dst/"
 
     cp "$src/chrome_manifest.json" "$dst/manifest.json"
     echo "Ready: $dst"
