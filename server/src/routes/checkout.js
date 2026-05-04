@@ -1,6 +1,6 @@
 const express = require('express');
 const { requireAuth } = require('../services/jwt');
-const { createCheckoutSession, createBillingPortalSession } = require('../services/stripe');
+const { createCheckoutSession } = require('../services/stripe');
 const { renderPage } = require('../templates');
 
 const router = express.Router();
