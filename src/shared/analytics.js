@@ -4,10 +4,10 @@ for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".
 mixpanel.init('44d2dff3b4d141679640b297d31d5093');
 
 function recordEvent(name, props={}) {
-	const logEnabled = document.documentElement.getAttribute('log_enabled') || 'false';
+    const logEnabled = document.documentElement.getAttribute('log_enabled') || 'false';
 
-	if (logEnabled !== 'true') return;
+    if (logEnabled !== 'true') return;
 
-	props.extension_version = browser.runtime.getManifest().version;
-	mixpanel.track(name, props);
+    props.extension_version = browser.runtime.getManifest().version;
+    mixpanel.track(name, props);
 }
