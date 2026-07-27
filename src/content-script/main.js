@@ -35,7 +35,7 @@ const REVEAL_BOX_CONFIGS = [
   },
 ];
 let url = location.href;
-let theaterClicked = false, hyper = false;
+let theaterClicked = false, hyper = false, adActive = false;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
@@ -435,58 +435,7 @@ function runDynamicSettings() {
 
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
-
-      // Close overlay ads.
-      qsa('.ytp-ad-overlay-close-button')?.forEach(e => {
-        if (e && e.offsetParent) {
-          e.click();
-        }
-      });
-
-      // Click on "Skip ad" button
-      const skipButtons = qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button');
-
-      const skippableAd = skipButtons?.some(button => button.offsetParent);
-      if (skippableAd) {
-        skipButtons?.forEach(e => {
-          if (e && e.offsetParent) {
-            e.click();
-          }
-        });
-      } else {
-
-        // Speed through ads that can't be skipped (yet).
-        let adSelectors = [
-          '.ytp-ad-player-overlay-instream-info',
-          '.ytp-ad-button-icon'
-        ];
-        let adElements = adSelectors.flatMap(selector => qsa(selector));
-        const adActive = adElements.some(elt => elt && window.getComputedStyle(elt).display !== 'none');
-        const video = qs('video');
-        if (adActive) {
-          if (!hyper) {
-            hyper = true;
-          }
-          video.playbackRate = 10;
-          video.muted = true;
-        } else {
-          if (hyper) {
-            let playbackRate = 1;
-            let muted = false;
-            try {
-              const playbackRateObject = window.sessionStorage['yt-player-playback-rate'];
-              const volumeObject = window.sessionStorage['yt-player-volume'];
-              playbackRate = Number(JSON.parse(playbackRateObject).data);
-              muted = JSON.parse(JSON.parse(volumeObject).data).muted;
-            } catch (error) {
-              console.log(error);
-            }
-            video.playbackRate = playbackRate !== undefined ? playbackRate : 1;
-            video.muted = muted !== undefined ? muted : false;
-            hyper = false;
-          }
-        }
-      }
+      skipAds();
     }
 
     // Hide all but the timestamped comments
@@ -625,12 +574,102 @@ function runDynamicSettings() {
 }
 
 
+// `#movie_player.ad-showing` is the player's own state flag. It's more stable
+// than the cosmetic ytp-ad-* classes, and it's only set for client-side ads --
+// which also tells us the <video> src is the ad itself.
+function clientSideAdShowing() {
+  return !!qs('#movie_player.ad-showing');
+}
+
+// Older/secondary signals. Kept as a fallback in case `ad-showing` is missing.
+function legacyAdShowing() {
+  const adSelectors = [
+    '.ytp-ad-player-overlay-instream-info',
+    '.ytp-ad-button-icon',
+  ];
+  return adSelectors
+    .flatMap(selector => qsa(selector))
+    .some(elt => elt && window.getComputedStyle(elt).display !== 'none');
+}
+
+// Undo whatever we did to get through the ad.
+function restorePlayback(video) {
+  if (!hyper) return;
+
+  let playbackRate = 1;
+  let muted = false;
+  try {
+    const playbackRateObject = window.sessionStorage['yt-player-playback-rate'];
+    const volumeObject = window.sessionStorage['yt-player-volume'];
+    playbackRate = Number(JSON.parse(playbackRateObject).data);
+    muted = JSON.parse(JSON.parse(volumeObject).data).muted;
+  } catch (error) {
+    console.log(error);
+  }
+
+  video.playbackRate = Number.isFinite(playbackRate) && playbackRate > 0 ? playbackRate : 1;
+  video.muted = muted === true;
+  hyper = false;
+}
+
+function skipAds() {
+
+  // Close overlay ads.
+  qsa('.ytp-ad-overlay-close-button').forEach(e => {
+    if (e && e.offsetParent) {
+      e.click();
+    }
+  });
+
+  // Click on "Skip ad" button
+  const skipButtons = qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button');
+  if (skipButtons.some(button => button.offsetParent)) {
+    skipButtons.forEach(e => {
+      if (e && e.offsetParent) {
+        e.click();
+      }
+    });
+    return;
+  }
+
+  const video = qs('video');
+  if (!video) return;
+
+  const clientSideAd = clientSideAdShowing();
+  adActive = clientSideAd || legacyAdShowing();
+  if (!adActive) {
+    restorePlayback(video);
+    return;
+  }
+
+  // Seeking is only safe when we know the <video> src is the ad itself.
+  // Server-stitched (SSAP) ads share a timeline with the video, so
+  // video.duration covers both -- seeking there would skip the whole video.
+  const duration = video.duration;
+  if (clientSideAd && Number.isFinite(duration) && duration > 0) {
+    hyper = true;
+    video.muted = true;
+    video.currentTime = duration;
+    return;
+  }
+
+  // Fall back to speeding through when we can't safely seek.
+  hyper = true;
+  video.playbackRate = 10;
+  video.muted = true;
+}
+
+
 function requestRunDynamicSettings() {
   if (frameRequested || isRunning) return;
   if (document.hidden) return; // Pause polling when tab is hidden
   frameRequested = true;
-  // Start fast (100ms), slow down to 500ms after page settles
-  const delay = dynamicIters < 20 ? 100 : Math.min(500, 100 + dynamicIters * 10);
+  // Start fast (100ms), slow down after the page settles. Ad skipping wants low
+  // latency, so cap the backoff on video pages and poll hard while an ad is up.
+  const skipping = onVideo && cache['global_enable'] === true && cache['auto_skip_ads'] === true;
+  const delay = (skipping && adActive)
+    ? 50
+    : dynamicIters < 20 ? 100 : Math.min(skipping ? 250 : 500, 100 + dynamicIters * 10);
   setTimeout(() => runDynamicSettings(), delay);
 }
 
@@ -690,6 +729,7 @@ function handleNewPage() {
   url = location.href;
   theaterClicked = false;
   hyper = false;
+  adActive = false;
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
   onShorts = shortsRegex.test(url);
