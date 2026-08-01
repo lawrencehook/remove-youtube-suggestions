@@ -123,11 +123,29 @@ does. The behavioral patch is four concentrated call-site changes:
 - In `src/options/main.js`, make the identical change: clamp the local
   `settings` copy without writing the returned map to storage.
 - In `pruneToSlotBudget()`, retain the helper and UI updates but call
-  `updateSetting(id, false, { write: false })`.
+  `updateSetting(id, false, { write: false })`. Keep `enforceSlotBudget`'s
+  return value — this helper still consumes it (the two init sites no longer
+  will; drop their unused `writeBack` variable, keeping the call for its
+  in-memory mutation).
 - In `disableAllPremiumFeatures()`, retain the helper and its callers but call
   `updateSetting(id, false, { write: false })`.
 - Update the stale `enforceSlotBudget()` comment that currently instructs
   callers to persist the returned map. No helper rename or redesign is needed.
+
+Verified no-change-needed paths (full-source audit, see appendix):
+
+- **Import** (`settings-menu.js:301`) persists the pasted settings verbatim —
+  including premium prefs — then `updateSettings()` applies them through
+  `updateSetting(..., { write: false })`, whose tier clamp keeps effective
+  behavior within budget. That already matches the stored-vs-effective
+  philosophy; leave it alone.
+- **Export** (`settings-menu.js:268`) reads `browser.storage.local` directly,
+  not the clamped in-memory cache, so post-fix an export taken during an
+  entitlement lapse still contains the user's full preferences. (Pre-fix,
+  storage was already wiped by the time users exported — which is why reports
+  say "re-import".)
+- `updateSetting`'s premium clamp only coerces `value === true`, so the two
+  helpers' `false` writes pass through it unaffected.
 
 Do not add storage keys, background renewal, manifest permissions, messaging,
 new tier states, or a generalized desired-vs-effective settings layer in the
@@ -235,3 +253,37 @@ Deferred-work tests, not part of the Phase 1 patch:
   triggers or multiple content frames overlap.
 - Auth-token-only changes re-derive settings in every already-open
   context without a reload.
+
+## Appendix: storage-write inventory (audit)
+
+Every `browser.storage.local` write/remove in the extension, classified. The
+extension has exactly three script contexts (content script, background
+service worker, options/popup page — both manifests); the background never
+writes storage.
+
+Destructive — removed by Phase 1:
+
+- `content-script/main.js:133` — slot-budget write-back on page load.
+- `options/main.js:33` — slot-budget write-back on options init.
+- `options/main.js:403` via `updateSetting(write: true)` from
+  `pruneToSlotBudget()` and `disableAllPremiumFeatures()` — switched to
+  `{ write: false }`.
+
+Benign — unchanged:
+
+- `content-script/main.js:122`, `options/main.js:22` — reveal-setting
+  migration; fills missing keys only.
+- `content-script/main.js:145` — init defaults; missing keys only.
+- `content-script/main.js:736` — content-script `updateSetting`; callers only
+  touch free keys (reveal dismiss, `global_enable`, timed/schedule keys).
+- `options/main.js:403` — user-initiated toggles (deliberate writes).
+- `options/main.js:671/676` — logging opt-in prompt keys.
+- `settings-menu.js:301` — import; writes what the user pasted.
+- `shared/banners.js:56` — per-banner dismissal key.
+- `shared/auth.js:55/109`, `shared/license.js:71` — auth/license token keys
+  only; sign-out removes `session_token`, `license_token`, `user_email` and
+  never touches settings.
+- `shared/https.js:27-28` — legacy `user`/`login_token` keys (donors page);
+  unrelated to current auth or settings.
+
+(Mixpanel's bundled queue uses `window.localStorage`, not extension storage.)
