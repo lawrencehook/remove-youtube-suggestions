@@ -141,9 +141,7 @@ Verified no-change-needed paths (full-source audit, see appendix):
   philosophy; leave it alone.
 - **Export** (`settings-menu.js:268`) reads `browser.storage.local` directly,
   not the clamped in-memory cache, so post-fix an export taken during an
-  entitlement lapse still contains the user's full preferences. (Pre-fix,
-  storage was already wiped by the time users exported — which is why reports
-  say "re-import".)
+  entitlement lapse still contains the user's full preferences.
 - `updateSetting`'s premium clamp only coerces `value === true`, so the two
   helpers' `false` writes pass through it unaffected.
 
@@ -256,10 +254,9 @@ Deferred-work tests, not part of the Phase 1 patch:
 
 ## Appendix: storage-write inventory (audit)
 
-Every `browser.storage.local` write/remove in the extension, classified. The
-extension has exactly three script contexts (content script, background
-service worker, options/popup page — both manifests); the background never
-writes storage.
+Every `browser.storage.local` write/remove in the extension is classified
+below. The background service worker does not write storage; the other
+extension pages outside this inventory are read-only with respect to settings.
 
 Destructive — removed by Phase 1:
 
@@ -283,7 +280,7 @@ Benign — unchanged:
 - `shared/auth.js:55/109`, `shared/license.js:71` — auth/license token keys
   only; sign-out removes `session_token`, `license_token`, `user_email` and
   never touches settings.
-- `shared/https.js:27-28` — legacy `user`/`login_token` keys (donors page);
+- `shared/https.js:27-28` — legacy donor-auth `user`/`login_token` keys;
   unrelated to current auth or settings.
 
 (Mixpanel's bundled queue uses `window.localStorage`, not extension storage.)
