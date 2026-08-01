@@ -2,8 +2,8 @@
 
 Date: 2026-08-01
 Status: diagnosis confirmed by two independent investigations (Claude and
-Codex); this doc consolidates both and proposes a phased fix. No behavior
-change included.
+Codex); this doc consolidates both and proposes a narrow fix plus deferred
+follow-ups. No behavior change included.
 
 Supersedes the docs on branches `claude/investigate-settings-reset-bug` and
 `codex/investigation/settings-reset-findings`.
