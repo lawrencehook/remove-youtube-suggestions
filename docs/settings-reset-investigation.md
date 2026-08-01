@@ -13,7 +13,8 @@ Supersedes the docs on branches `claude/investigate-settings-reset-bug` and
 Users report that locally stored preferences intermittently "reset" to
 defaults, forcing them to re-import or re-select settings. Reported by at
 least one premium user; also plausible for signed-in free users. Reports
-began after PR #213 (`31b56a5`, "Free premium slots").
+are consistent with the destructive write-back introduced by PR #213
+(`31b56a5`, "Free premium slots").
 
 ## Root cause
 
@@ -124,27 +125,77 @@ apply/render time, exactly as `clearAllPremium` already does:
   routing through `updateSetting(..., false)` storage writes; update UI
   state and the in-memory cache instead. (`disableAllPremiumFeatures()`
   in its current form should have no remaining callers.)
-- Never demote on `error`/`offline` license results — only on an
-  authoritative "not premium" server response, and even then only in
-  effective behavior, not stored values.
+- Never persist a demotion for `error`/`offline` license results. Phase 1 may
+  conservatively restrict effective behavior while entitlement is
+  indeterminate, but it must preserve preferences and re-derive immediately
+  after a successful refresh. Phase 2 defines continuity through that window.
+
+Implementation constraint: the current destructive writes also happen to
+notify every open content script through `browser.storage.onChanged`. Once
+those writes are removed, auth-only changes (`license_token` or
+`session_token`) must explicitly trigger effective-settings reapplication.
+Otherwise an already-open YouTube page can retain premium behavior after
+sign-out/downgrade, and an already-open options page or content script can
+remain pruned after premium is restored.
+
+For Phase 1, factor one shared, pure derivation step such as
+`deriveEffectiveSettings(storedSettings, tier)` that returns a copy and never
+mutates its stored-settings input. Use it in both initializers and whenever
+the tier changes:
+
+- Content scripts should detect auth-token changes, read the current stored
+  preferences again, derive the new effective view, and reapply all premium
+  attributes/cache values.
+- The options page should do the same after `updatePremiumUI()` changes tier,
+  including after successful re-auth or upgrade.
+- Confirmed free, signed-in free, premium, and signed-out transitions must all
+  update already-open contexts without relying on preference writes as a
+  notification mechanism.
+
+The intended transition behavior is:
+
+| Transition | Stored preferences | Effective behavior |
+| --- | --- | --- |
+| Refresh pending or transient error | Unchanged | Keep the current view when available; otherwise use a non-destructive fallback |
+| Confirmed premium | Unchanged | Reapply all stored preferences |
+| Confirmed signed-in free | Unchanged | Apply the allowed slot budget |
+| Sign-out or session `401` | Unchanged | Disable premium behavior in memory |
 
 Acceptance criteria:
 
 - No auth, refresh, sign-out, or tier-transition path deletes or overwrites
   stored preferences.
-- Paid users see no settings change at the 3-day license boundary.
 - Transient network failures cause no persistent changes.
 - Free-tier slot limits remain enforced in effective behavior and UI
   (direct toggles, chained effects, and import).
-- Re-auth or re-upgrade restores previous premium choices without import.
+- Already-open extension contexts immediately reflect confirmed tier changes.
+- Re-auth or re-upgrade restores previous premium choices without import or
+  a page reload.
 
 ### Phase 2 — proactive license renewal
 
-Refresh the license token in the background (alarm in the background
-script, or content-script-triggered renewal when the token is near expiry
-— `LICENSE_REFRESH_THRESHOLD_MS` is already 24h), so renewal doesn't depend
-on the user opening the options page. While renewal is pending, use the
-last-known entitlement rather than demoting.
+Refresh the license token through a single background-owned refresh path when
+the token is near expiry (`LICENSE_REFRESH_THRESHOLD_MS` is already 24h), so
+renewal doesn't depend on the user opening the options page. Avoid direct
+content-script refreshes: content scripts run in all frames, which could cause
+duplicate requests and cross-origin/permission problems. They should consume
+the resulting storage/message update instead.
+
+Implementation requirements include:
+
+- Add the required background alarm and premium-server host permissions to
+  both manifests.
+- Load or expose the auth/license dependencies in the Chrome service worker
+  and Firefox background context.
+- Deduplicate concurrent startup, alarm, and user-triggered refreshes with one
+  in-flight promise.
+- Define a bounded last-confirmed-entitlement/grace policy for pending or
+  transiently failed renewal rather than silently trusting an expired token
+  forever.
+
+Phase 2 acceptance: paid users with a renewable session see no effective
+settings change at the 3-day license boundary, and multiple matching frames do
+not generate multiple renewal requests.
 
 ### Phase 3 — explicit tier states and slot selection (optional hardening)
 
@@ -170,4 +221,10 @@ token-expiry × settings-persistence lifecycle. Add:
   configuration unchanged.
 - Signed-in free user cannot activate a third slot via toggle, chained
   effect, or import.
-- Re-upgrade restores the full desired configuration.
+- Auth-token-only changes re-derive settings in every already-open context;
+  sign-out/downgrade disables effective premium behavior and re-auth/re-upgrade
+  restores the full desired configuration without a reload.
+- Each transition asserts a before/after snapshot of `browser.storage.local`
+  proving preference keys did not change.
+- Background refresh is single-flight when startup/alarm/manual triggers or
+  multiple content frames overlap.
