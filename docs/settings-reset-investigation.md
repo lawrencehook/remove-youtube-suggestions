@@ -64,9 +64,8 @@ Destructive write-back entry points:
 2. **Session expiry (30 days) → 401.** `checkLicense` signs the user out and
    `updatePremiumUI` calls `disableAllPremiumFeatures()`, persisting `false`
    for *every* premium feature (`license.js:58-63`,
-   `settings-menu.js:509-528`). Also hits signed-in free users — their slot
-   features get turned off — matching reports that the bug isn't
-   premium-only but seems limited to logged-in users.
+   `settings-menu.js:509-528`). This also provides a path affecting signed-in
+   free users: their selected slot features get turned off.
 3. **Explicit sign-out.** The sign-out button handler calls the same
    destructive helper (`settings-menu.js:711-726`).
 
@@ -74,7 +73,7 @@ All of this conflicts with the design already documented on
 `clearAllPremium()` (`src/shared/main.js:863`): entitlement enforcement is
 meant to be in-memory so stored premium preferences return when access
 returns. The slot-budget write-back introduced in #213 violates that
-principle, which is why reports are recent.
+principle and creates the reported regression.
 
 ## Why it appears intermittent
 
@@ -107,39 +106,48 @@ gather before/after storage diagnostics.
    `enforceSlotBudget(settings, 2)` → 4 settings returned as `false`
    write-backs. The 2 survivors are chosen by static list order.
 
-## Fix plan
+## Narrow fix plan
 
-Phased: Phase 1 is a small, shippable data-loss fix; later phases are
-incremental hardening. (Codex's fuller desired-vs-effective architecture is
-the end state; we get the safety win first without the refactor.)
+The bug-fix release should contain Phase 1 only. It is a small, mechanical
+data-loss fix. The later sections are explicitly deferred ideas and should not
+be bundled into the same change.
 
 ### Phase 1 — stop destroying stored preferences (minimal, ship first)
 
-Never persist tier-based demotions. Enforce tier in memory at
-apply/render time, exactly as `clearAllPremium` already does:
+Never persist tier-based demotions. Keep the existing control flow and enforce
+tier in memory at apply/render time, exactly as `clearAllPremium` already
+does. The behavioral patch is four concentrated call-site changes:
 
-- Drop the `enforceSlotBudget` write-backs in
-  `src/content-script/main.js` and `src/options/main.js` (enforce on the
-  in-memory copy only).
-- Make `pruneToSlotBudget()` and the `signedOut`/sign-out paths stop
-  routing through `updateSetting(..., false)` storage writes; update UI
-  state and the in-memory cache instead. (`disableAllPremiumFeatures()`
-  in its current form should have no remaining callers.)
-- Never persist a demotion for `error`/`offline` license results. Phase 1 may
-  conservatively restrict effective behavior while entitlement is
-  indeterminate, but it must preserve preferences. Phase 2 defines continuity
-  through that window.
+- In `src/content-script/main.js`, keep `enforceSlotBudget(settings, limit)`
+  but remove its `browser.storage.local.set(writeBack)` call.
+- In `src/options/main.js`, make the identical change: clamp the local
+  `settings` copy without writing the returned map to storage.
+- In `pruneToSlotBudget()`, retain the helper and UI updates but call
+  `updateSetting(id, false, { write: false })`.
+- In `disableAllPremiumFeatures()`, retain the helper and its callers but call
+  `updateSetting(id, false, { write: false })`.
+- Update the stale `enforceSlotBudget()` comment that currently instructs
+  callers to persist the returned map. No helper rename or redesign is needed.
+
+Do not add storage keys, background renewal, manifest permissions, messaging,
+new tier states, or a generalized desired-vs-effective settings layer in the
+Phase 1 patch.
+
+With those four behavioral changes, error/offline, `401`, explicit sign-out,
+content initialization, and options initialization all reuse their existing
+paths without overwriting preferences. Phase 1 may conservatively restrict
+effective behavior while entitlement is indeterminate, but it preserves the
+underlying preferences. The deferred renewal work defines continuity through
+that window.
 
 Accepted limitation (keeps Phase 1 narrow): the current destructive writes
 also happened to notify already-open contexts through
 `browser.storage.onChanged`. With the writes removed, an open YouTube tab or
 options page reflects a confirmed tier change (sign-out, downgrade, re-upgrade)
-on its next page load rather than instantly. That staleness is cosmetic
-feature-gating, rare, and self-healing — acceptable for the data-loss fix. If
-the options page's own transient mismatch (rendered from clamped values, then
-tier confirmed a moment later) proves annoying, a one-line re-init after
-`updatePremiumUI()` changes tier is the cheap remedy. Full immediate
-cross-context re-derivation moves to Phase 3.
+on its next page load rather than instantly. This is temporary effective-state
+staleness, including entitlement gating after sign-out or downgrade; it is not
+data loss, but it is not the ideal final behavior. Accepting it keeps the
+urgent patch narrow. Full immediate cross-context re-derivation is deferred.
 
 The intended transition behavior is:
 
@@ -151,7 +159,7 @@ The intended transition behavior is:
 | Sign-out or session `401` | Unchanged | Disable premium behavior in memory |
 
 In Phase 1, "effective behavior" changes apply at the next initialization of
-each context (page load, popup open); immediate propagation is Phase 3.
+each context (page load, popup open); immediate propagation is deferred.
 
 Acceptance criteria:
 
@@ -163,7 +171,7 @@ Acceptance criteria:
 - Re-auth or re-upgrade restores previous premium choices without import
   (a page reload is acceptable in Phase 1).
 
-### Phase 2 — proactive license renewal
+### Deferred follow-up — proactive license renewal
 
 Refresh the license token through a single background-owned refresh path when
 the token is near expiry (`LICENSE_REFRESH_THRESHOLD_MS` is already 24h), so
@@ -184,11 +192,11 @@ Implementation requirements include:
   transiently failed renewal rather than silently trusting an expired token
   forever.
 
-Phase 2 acceptance: paid users with a renewable session see no effective
-settings change at the 3-day license boundary, and multiple matching frames do
-not generate multiple renewal requests.
+Deferred renewal acceptance: paid users with a renewable session see no
+effective settings change at the 3-day license boundary, and multiple matching
+frames do not generate multiple renewal requests.
 
-### Phase 3 — explicit tier states and slot selection (optional hardening)
+### Deferred follow-up — tier states and slot selection
 
 - Introduce an explicit indeterminate license state (pending / expired-but-
   renewable / offline / transient error) distinct from a confirmed free
@@ -203,10 +211,11 @@ not generate multiple renewal requests.
 - If warranted, complete the desired-vs-effective settings separation:
   `stored preferences + confirmed entitlement -> effective settings`.
 
-## Tests to add
+## Tests
 
 The suite (currently 168 passing) has no coverage of the combined
-token-expiry × settings-persistence lifecycle. Add:
+token-expiry × settings-persistence lifecycle. Phase 1 should add focused
+regression coverage for its four behavioral changes:
 
 - Expired premium license + valid session ⇒ no `false` writes while renewal
   pending; successful renewal preserves all stored preferences.
@@ -219,7 +228,10 @@ token-expiry × settings-persistence lifecycle. Add:
   effect, or import.
 - Each transition asserts a before/after snapshot of `browser.storage.local`
   proving preference keys did not change.
-- (Phase 2) Background refresh is single-flight when startup/alarm/manual
+
+Deferred-work tests, not part of the Phase 1 patch:
+
+- Background refresh is single-flight when startup/alarm/manual
   triggers or multiple content frames overlap.
-- (Phase 3) Auth-token-only changes re-derive settings in every already-open
+- Auth-token-only changes re-derive settings in every already-open
   context without a reload.
