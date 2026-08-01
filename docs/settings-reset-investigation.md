@@ -97,6 +97,26 @@ session token, license token, and email. If reports confirm free settings
 (e.g. `remove_homepage`) also reset, treat that as a separate issue and
 gather before/after storage diagnostics.
 
+## Server and execution-context validation
+
+The complete server and manifest audit confirms that Phase 1 is extension-only:
+
+- `server/src/services/jwt.js` issues 30-day session tokens and regular 3-day
+  license tokens (730 days for grandfathered users), matching the client-side
+  expiry sequence above.
+- `server/src/routes/license.js` returns a new signed license after an
+  authenticated entitlement check, `401` comes from session verification, and
+  transient failures return non-success responses. The server never receives
+  or modifies extension preferences.
+- `src/background/events.js` only manages install behavior and the toolbar
+  icon. It does not refresh licenses or write settings.
+- The Chrome and Firefox manifests load the same settings code paths and run
+  the content script in all matching frames. No build step rewrites those
+  sources.
+
+Therefore Phase 1 requires no server, manifest, background, Stripe, or database
+change.
+
 ## Local reproduction (no server needed)
 
 1. Craft an expired JWT payload with `premium: true`; keep any truthy
@@ -146,8 +166,8 @@ Verified no-change-needed paths (full-source audit, see appendix):
   helpers' `false` writes pass through it unaffected.
 
 Do not add storage keys, background renewal, manifest permissions, messaging,
-new tier states, or a generalized desired-vs-effective settings layer in the
-Phase 1 patch.
+new tier states, server changes, or a generalized desired-vs-effective settings
+layer in the Phase 1 patch.
 
 With those four behavioral changes, error/offline, `401`, explicit sign-out,
 content initialization, and options initialization all reuse their existing
@@ -164,6 +184,14 @@ on its next page load rather than instantly. This is temporary effective-state
 staleness, including entitlement gating after sign-out or downgrade; it is not
 data loss, but it is not the ideal final behavior. Accepting it keeps the
 urgent patch narrow. Full immediate cross-context re-derivation is deferred.
+
+Second accepted limitation: when a signed-in free user has more than two
+premium preferences stored as `true`, initialization still chooses the first
+two by `PREMIUM_FEATURE_IDS` order. Selecting a different feature whose stored
+value is already `true` may not emit `storage.onChanged`, so another open
+context can remain stale until reload. The two-slot budget remains enforced and
+no preference is lost, but stable user-controlled slot selection requires
+separate state and is deferred rather than added to this patch.
 
 The intended transition behavior is:
 
@@ -233,17 +261,25 @@ The suite (currently 168 passing) has no coverage of the combined
 token-expiry × settings-persistence lifecycle. Phase 1 should add focused
 regression coverage for its four behavioral changes:
 
-- Expired premium license + valid session ⇒ no `false` writes while renewal
-  pending; successful renewal preserves all stored preferences.
-- Offline renewal after expiry ⇒ preferences preserved.
-- 401 ⇒ auth state removed, preferences preserved.
-- Explicit sign-out ⇒ preferences preserved.
-- Confirmed free account ⇒ effective two-slot behavior with stored premium
-  configuration unchanged.
-- Signed-in free user cannot activate a third slot via toggle, chained
-  effect, or import.
-- Each transition asserts a before/after snapshot of `browser.storage.local`
-  proving preference keys did not change.
+- Instrument the browser-storage mock to record writes and compare preference
+  keys separately from auth, migration, banner, and initialization keys.
+- Expired premium license + valid session: content and options initialization
+  clamp the effective view to two without changing any stored premium
+  preference. A later successful renewal still finds all preferences intact.
+- Offline renewal after expiry: effective behavior may be restricted, but the
+  stored preference snapshot is unchanged.
+- Session `401`: auth keys are removed as expected, while preference keys are
+  unchanged and the options cache/UI is disabled in memory.
+- Explicit sign-out: use the same preference-snapshot assertion.
+- Confirmed signed-in free: direct toggles, chained effects, and import never
+  produce more than two effective premium features; importing an over-budget
+  configuration preserves the imported raw values.
+- Exercise both `pruneToSlotBudget()` and `disableAllPremiumFeatures()` and
+  assert that their UI/cache updates produce no preference-key writes.
+
+Do not assert that Phase 1 provides immediate cross-context propagation or a
+stable user-selected pair when more than two preferences are stored; those are
+the two accepted limitations above. No server test change is required.
 
 Deferred-work tests, not part of the Phase 1 patch:
 
@@ -266,21 +302,28 @@ Destructive — removed by Phase 1:
   `pruneToSlotBudget()` and `disableAllPremiumFeatures()` — switched to
   `{ write: false }`.
 
-Benign — unchanged:
+System/maintenance writes — unchanged:
 
 - `content-script/main.js:122`, `options/main.js:22` — reveal-setting
   migration; fills missing keys only.
 - `content-script/main.js:145` — init defaults; missing keys only.
 - `content-script/main.js:736` — content-script `updateSetting`; callers only
-  touch free keys (reveal dismiss, `global_enable`, timed/schedule keys).
-- `options/main.js:403` — user-initiated toggles (deliberate writes).
+  touch free keys (reveal dismiss, `global_enable`, and timed state).
 - `options/main.js:671/676` — logging opt-in prompt keys.
-- `settings-menu.js:301` — import; writes what the user pasted.
 - `shared/banners.js:56` — per-banner dismissal key.
 - `shared/auth.js:55/109`, `shared/license.js:71` — auth/license token keys
   only; sign-out removes `session_token`, `license_token`, `user_email` and
   never touches settings.
 - `shared/https.js:27-28` — legacy donor-auth `user`/`login_token` keys;
   unrelated to current auth or settings.
+
+User-directed writes — unchanged:
+
+- `options/main.js:403` — direct toggles and option effects. An effect that
+  requests an over-budget premium `true` can be clamped to `false` and persist
+  that value; this requires an explicit user action and is outside the
+  intermittent auth/reset bug.
+- `settings-menu.js:301` — import; intentionally stores the pasted values
+  before applying an in-memory tier clamp.
 
 (Mixpanel's bundled queue uses `window.localStorage`, not extension storage.)
