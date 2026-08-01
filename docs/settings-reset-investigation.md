@@ -127,30 +127,19 @@ apply/render time, exactly as `clearAllPremium` already does:
   in its current form should have no remaining callers.)
 - Never persist a demotion for `error`/`offline` license results. Phase 1 may
   conservatively restrict effective behavior while entitlement is
-  indeterminate, but it must preserve preferences and re-derive immediately
-  after a successful refresh. Phase 2 defines continuity through that window.
+  indeterminate, but it must preserve preferences. Phase 2 defines continuity
+  through that window.
 
-Implementation constraint: the current destructive writes also happen to
-notify every open content script through `browser.storage.onChanged`. Once
-those writes are removed, auth-only changes (`license_token` or
-`session_token`) must explicitly trigger effective-settings reapplication.
-Otherwise an already-open YouTube page can retain premium behavior after
-sign-out/downgrade, and an already-open options page or content script can
-remain pruned after premium is restored.
-
-For Phase 1, factor one shared, pure derivation step such as
-`deriveEffectiveSettings(storedSettings, tier)` that returns a copy and never
-mutates its stored-settings input. Use it in both initializers and whenever
-the tier changes:
-
-- Content scripts should detect auth-token changes, read the current stored
-  preferences again, derive the new effective view, and reapply all premium
-  attributes/cache values.
-- The options page should do the same after `updatePremiumUI()` changes tier,
-  including after successful re-auth or upgrade.
-- Confirmed free, signed-in free, premium, and signed-out transitions must all
-  update already-open contexts without relying on preference writes as a
-  notification mechanism.
+Accepted limitation (keeps Phase 1 narrow): the current destructive writes
+also happened to notify already-open contexts through
+`browser.storage.onChanged`. With the writes removed, an open YouTube tab or
+options page reflects a confirmed tier change (sign-out, downgrade, re-upgrade)
+on its next page load rather than instantly. That staleness is cosmetic
+feature-gating, rare, and self-healing — acceptable for the data-loss fix. If
+the options page's own transient mismatch (rendered from clamped values, then
+tier confirmed a moment later) proves annoying, a one-line re-init after
+`updatePremiumUI()` changes tier is the cheap remedy. Full immediate
+cross-context re-derivation moves to Phase 3.
 
 The intended transition behavior is:
 
@@ -161,6 +150,9 @@ The intended transition behavior is:
 | Confirmed signed-in free | Unchanged | Apply the allowed slot budget |
 | Sign-out or session `401` | Unchanged | Disable premium behavior in memory |
 
+In Phase 1, "effective behavior" changes apply at the next initialization of
+each context (page load, popup open); immediate propagation is Phase 3.
+
 Acceptance criteria:
 
 - No auth, refresh, sign-out, or tier-transition path deletes or overwrites
@@ -168,9 +160,8 @@ Acceptance criteria:
 - Transient network failures cause no persistent changes.
 - Free-tier slot limits remain enforced in effective behavior and UI
   (direct toggles, chained effects, and import).
-- Already-open extension contexts immediately reflect confirmed tier changes.
-- Re-auth or re-upgrade restores previous premium choices without import or
-  a page reload.
+- Re-auth or re-upgrade restores previous premium choices without import
+  (a page reload is acceptable in Phase 1).
 
 ### Phase 2 — proactive license renewal
 
@@ -202,6 +193,11 @@ not generate multiple renewal requests.
 - Introduce an explicit indeterminate license state (pending / expired-but-
   renewable / offline / transient error) distinct from a confirmed free
   account, so callers can't accidentally collapse them.
+- Immediate cross-context tier propagation: factor a shared, pure
+  `deriveEffectiveSettings(storedSettings, tier)` (returns a copy, never
+  mutates its input) and re-run it in every open context when
+  `license_token`/`session_token` change, instead of relying on next page
+  load. This lifts Phase 1's accepted staleness limitation.
 - Consider a user-controlled list of selected free-slot feature IDs instead
   of first-two-by-list-order, keeping the premium preference set untouched.
 - If warranted, complete the desired-vs-effective settings separation:
@@ -221,10 +217,9 @@ token-expiry × settings-persistence lifecycle. Add:
   configuration unchanged.
 - Signed-in free user cannot activate a third slot via toggle, chained
   effect, or import.
-- Auth-token-only changes re-derive settings in every already-open context;
-  sign-out/downgrade disables effective premium behavior and re-auth/re-upgrade
-  restores the full desired configuration without a reload.
 - Each transition asserts a before/after snapshot of `browser.storage.local`
   proving preference keys did not change.
-- Background refresh is single-flight when startup/alarm/manual triggers or
-  multiple content frames overlap.
+- (Phase 2) Background refresh is single-flight when startup/alarm/manual
+  triggers or multiple content frames overlap.
+- (Phase 3) Auth-token-only changes re-derive settings in every already-open
+  context without a reload.
