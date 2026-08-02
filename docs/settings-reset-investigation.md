@@ -1,11 +1,16 @@
 # Settings reset: consolidated findings and fix plan
 
 Date: 2026-08-01
-Status: diagnosis confirmed by two independent investigations (Claude and
-Codex); this doc consolidates both and proposes a narrow fix plus deferred
-follow-ups. No behavior change included.
+Status: **Phase 1 implemented** (PR #223) — the four call-site changes below,
+plus regression coverage in
+`tests/content-script/settings-persistence.test.js`. This doc remains as the
+diagnosis, audit, and decision record; the "Deferred follow-up" sections
+(background license renewal, tier states, slot selection) are still pending
+and spec'd here for future releases.
 
-Supersedes the docs on branches `claude/investigate-settings-reset-bug` and
+Diagnosis was confirmed by two independent investigations (Claude and Codex);
+this doc consolidates both and supersedes the docs on branches
+`claude/investigate-settings-reset-bug` and
 `codex/investigation/settings-reset-findings`.
 
 ## Symptom
