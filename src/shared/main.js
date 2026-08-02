@@ -865,9 +865,10 @@ function clearAllPremium(settings) {
 }
 
 // Mutates `settings` so at most `slotLimit` premium features stay true (by
-// iteration order). Returns a write-back map of the cleared settings — callers
-// should persist these to storage so over-budget premium settings don't
-// re-surface on the next load.
+// iteration order). Returns a map of the cleared settings for callers that
+// need to sync UI state. In-memory only, like clearAllPremium — callers must
+// never persist the cleared values; stored preferences stay intact so the
+// user's premium state returns when access returns.
 function enforceSlotBudget(settings, slotLimit) {
   const writeBack = {};
   let kept = 0;

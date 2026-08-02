@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tier === TIER.FREE) {
       clearAllPremium(settings);
     } else if (tier === TIER.FREE_SIGNED_IN) {
-      const writeBack = enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
-      if (Object.keys(writeBack).length) browser.storage.local.set(writeBack);
+      enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
     }
 
     const headerSettings = Object.entries(OTHER_SETTINGS).reduce((acc, [id, value]) => {
