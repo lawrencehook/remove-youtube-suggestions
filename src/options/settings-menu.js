@@ -509,16 +509,17 @@ initAccountState();
 // Turn off every premium feature (including menu-level ones like schedule/password).
 // Used when dropping to the `free` tier via sign-out or license revocation.
 function disableAllPremiumFeatures() {
-  PREMIUM_FEATURE_IDS.forEach(id => updateSetting(id, false));
+  PREMIUM_FEATURE_IDS.forEach(id => updateSetting(id, false, { write: false }));
 }
 
 // When transitioning into `free_signed_in` (e.g. subscription lapsed while the
 // options page is open), disable any premium features beyond FREE_PREMIUM_SLOTS
 // so current state matches the new tier. Reuses the shared enforceSlotBudget
-// helper and routes writes through updateSetting so the full UI stays in sync.
+// helper and routes updates through updateSetting so the full UI stays in
+// sync — in memory only; stored preferences are never written by tier logic.
 function pruneToSlotBudget() {
   const overBudget = enforceSlotBudget(cache, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
-  Object.keys(overBudget).forEach(id => updateSetting(id, false));
+  Object.keys(overBudget).forEach(id => updateSetting(id, false, { write: false }));
 }
 
 function updatePremiumUI(licenseData) {
