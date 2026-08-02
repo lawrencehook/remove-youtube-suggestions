@@ -132,7 +132,10 @@ The bug-fix release contains Phase 1 (commit A) only: the mechanical data-loss
 fix below. It is sufficient to fix the reported reset, is reviewable and
 revertible on its own, and does not add background lifecycle or permission
 surface. Background license renewal remains a separately reviewed follow-up;
-it improves continuity but is not required to preserve preferences.
+it improves continuity but is not required to preserve preferences. Keeping
+renewal out also keeps the manifests untouched: a manifest/permission change
+(even the warning-free `alarms`) can draw extra store-review scrutiny, and the
+urgent fix's release should not be coupled to that.
 
 Background renewal is not a substitute for Phase 1: renewal cannot reliably
 win the race against the first page load after wake-from-sleep (the content
