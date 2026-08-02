@@ -20,7 +20,7 @@
     "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "supertest": "^6.3.4"
+    "supertest": "^7.2.2"
   },
   "engines": {
     "node": ">=20.0.0"
