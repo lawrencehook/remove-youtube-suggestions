@@ -65,11 +65,11 @@ function domStubs() {
   };
 }
 
-// Load the real content script and let its async storage callbacks settle.
+// Load the real content script and return its effective DOM settings.
 // Dependencies are loaded individually and their globals passed through,
 // because the content script references them at top level (loadSourceFiles
 // only exposes cross-file globals after all files have run).
-async function runContentScriptInit() {
+function runContentScriptInit() {
   const stubs = domStubs();
   const utils = loadSourceFile('shared/utils.js', stubs);
   const config = loadSourceFile('shared/config.js');
@@ -96,7 +96,10 @@ async function runContentScriptInit() {
     PREMIUM_FEATURE_ID_SET: shared.PREMIUM_FEATURE_ID_SET,
     PREMIUM_FEATURE_IDS: shared.PREMIUM_FEATURE_IDS,
   });
-  await new Promise(resolve => setTimeout(resolve, 20));
+  return {
+    effectiveSettings: stubs.document.documentElement,
+    freePremiumSlots: config.PREMIUM_CONFIG.FREE_PREMIUM_SLOTS,
+  };
 }
 
 describe('Settings persistence across content-script initialization', () => {
@@ -104,14 +107,21 @@ describe('Settings persistence across content-script initialization', () => {
     resetStorage();
   });
 
-  it('expired premium license + valid session: init must not overwrite stored premium preferences', async () => {
+  it('expired premium license + valid session: init must not overwrite stored premium preferences', () => {
     // Day-4 premium user: session still valid, license token expired,
     // more than two premium preferences enabled.
     const seed = { session_token: 'valid-session-token', license_token: expiredPremiumJWT() };
     PREMIUM_PREFS.forEach(id => { seed[id] = true; });
     setStorageData(seed);
 
-    await runContentScriptInit();
+    const { effectiveSettings, freePremiumSlots } = runContentScriptInit();
+
+    PREMIUM_PREFS.forEach((id, index) => {
+      assert.strictEqual(
+        effectiveSettings.getAttribute(id), String(index < freePremiumSlots),
+        `${id} did not reflect the signed-in free slot budget`
+      );
+    });
 
     const after = getStorageData();
     PREMIUM_PREFS.forEach(id => {
@@ -123,14 +133,21 @@ describe('Settings persistence across content-script initialization', () => {
     });
   });
 
-  it('signed out (no tokens): init must not overwrite stored premium preferences', async () => {
+  it('signed out (no tokens): init must not overwrite stored premium preferences', () => {
     // Free-tier user with premium preferences left over from a previous
     // subscription. clearAllPremium must stay in-memory only.
     const seed = {};
     PREMIUM_PREFS.forEach(id => { seed[id] = true; });
     setStorageData(seed);
 
-    await runContentScriptInit();
+    const { effectiveSettings } = runContentScriptInit();
+
+    PREMIUM_PREFS.forEach(id => {
+      assert.strictEqual(
+        effectiveSettings.getAttribute(id), 'false',
+        `${id} remained effectively enabled during free-tier init`
+      );
+    });
 
     const after = getStorageData();
     PREMIUM_PREFS.forEach(id => {
