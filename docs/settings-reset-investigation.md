@@ -128,11 +128,36 @@ change.
 
 ## Narrow fix plan
 
-The bug-fix release should contain Phase 1 only. It is a small, mechanical
-data-loss fix. The later sections are explicitly deferred ideas and should not
-be bundled into the same change.
+The bug-fix release contains two independent commits:
 
-### Phase 1 — stop destroying stored preferences (minimal, ship first)
+- **Commit A (Phase 1)** — the mechanical data-loss fix below. Reviewable and
+  revertible on its own; this is the actual bug fix.
+- **Commit B** — background license renewal (see its section below). A comfort
+  layer that removes the effective-behavior flicker at the 3-day boundary in
+  the common case. Separately revertible if service-worker/alarm behavior
+  proves quirky.
+
+Commit B is not a substitute for commit A: renewal cannot reliably win the
+race against the first page load after wake-from-sleep (the content script
+runs before any network round-trip completes), the license server's
+availability is independent of YouTube's (outages, DNS, or a user's
+adblock/privacy list can block `server.lawrencehook.com` while YouTube works —
+such a user would otherwise wipe every 3 days), the options page runs offline,
+and the sign-out/401 wipe paths have nothing to do with connectivity.
+
+Considered and rejected: gating the destructive writes on an authoritative
+server "not premium" response. The apply-time clamp must exist regardless
+(free tier and fresh installs have no server confirmation), which makes the
+persisted write redundant in every scenario; it would destroy the
+preserve-across-re-upgrade property exactly for churned subscribers; and it
+keeps the dangerous mechanism alive behind a condition every future caller
+must get right. Tier changes affect effective behavior only — stored
+preferences are never written by tier logic, unconditionally.
+
+The remaining sections after commit B are explicitly deferred ideas and should
+not be bundled into this release.
+
+### Phase 1 (commit A) — stop destroying stored preferences
 
 Never persist tier-based demotions. Keep the existing control flow and enforce
 tier in memory at apply/render time, exactly as `clearAllPremium` already
@@ -215,30 +240,47 @@ Acceptance criteria:
 - Re-auth or re-upgrade restores previous premium choices without import
   (a page reload is acceptable in Phase 1).
 
-### Deferred follow-up — proactive license renewal
+### Commit B — background license renewal (same release, separate commit)
 
 Refresh the license token through a single background-owned refresh path when
 the token is near expiry (`LICENSE_REFRESH_THRESHOLD_MS` is already 24h), so
 renewal doesn't depend on the user opening the options page. Avoid direct
-content-script refreshes: content scripts run in all frames, which could cause
-duplicate requests and cross-origin/permission problems. They should consume
-the resulting storage/message update instead.
+content-script refreshes: content scripts run in all frames (both manifests
+set `all_frames: true`), which would duplicate requests — and the server's
+CORS policy rejects page origins anyway (it allows only extension origins and
+localhost, `server/src/index.js:25-41`).
 
-Implementation requirements include:
+Verified permission posture — no user-visible prompt:
 
-- Add the required background alarm and premium-server host permissions to
-  both manifests.
-- Load or expose the auth/license dependencies in the Chrome service worker
-  and Firefox background context.
-- Deduplicate concurrent startup, alarm, and user-triggered refreshes with one
+- The `alarms` permission carries no warning string; Chrome and Firefox grant
+  it silently on update.
+- No `host_permissions` addition is needed: background fetches carry the
+  extension origin, which the server's CORS config already allows (the same
+  reason the options page can fetch today).
+
+Implementation (~20-30 lines plus manifest edits):
+
+- Add `alarms` to both manifests; list the shared auth/license files in the
+  Firefox background `scripts` array and `importScripts` them in the Chrome
+  service worker.
+- On `runtime.onStartup` and a periodic alarm (every few hours), if a session
+  token exists, call the existing `License.checkLicense()` — it already
+  contains the refresh-if-expiring-within-24h logic and token storage; the
+  background adds only a schedule.
+- Deduplicate concurrent startup/alarm/user-triggered refreshes with one
   in-flight promise.
-- Define a bounded last-confirmed-entitlement/grace policy for pending or
-  transiently failed renewal rather than silently trusting an expired token
-  forever.
+- A bounded last-confirmed-entitlement/grace policy for transiently failed
+  renewal stays deferred — with commit A in place, a failed renewal costs
+  effective behavior only, never data.
 
-Deferred renewal acceptance: paid users with a renewable session see no
-effective settings change at the 3-day license boundary, and multiple matching
-frames do not generate multiple renewal requests.
+Commit B acceptance: paid users with a renewable session see no effective
+settings change at the 3-day license boundary, and overlapping triggers do
+not generate multiple renewal requests.
+
+Optional server-side lever (zero extension change, no release needed):
+raising `LICENSE_TOKEN_LIFETIME_DAYS` (currently 3) shrinks boundary
+frequency for all users of existing versions immediately. Tradeoff: the
+lifetime is also how long a canceled subscription keeps premium working.
 
 ### Deferred follow-up — tier states and slot selection
 
@@ -281,17 +323,25 @@ Do not assert that Phase 1 provides immediate cross-context propagation or a
 stable user-selected pair when more than two preferences are stored; those are
 the two accepted limitations above. No server test change is required.
 
-Deferred-work tests, not part of the Phase 1 patch:
+Commit B tests (separate from commit A's):
 
-- Background refresh is single-flight when startup/alarm/manual
-  triggers or multiple content frames overlap.
+- Background refresh is single-flight when startup/alarm/manual triggers
+  overlap, and skips the network entirely when no session token exists or the
+  token isn't near expiry.
+- A failed background refresh writes nothing (preference snapshot unchanged;
+  existing tokens untouched).
+
+Deferred-work tests, not part of this release:
+
 - Auth-token-only changes re-derive settings in every already-open
   context without a reload.
 
 ## Appendix: storage-write inventory (audit)
 
 Every `browser.storage.local` write/remove in the extension is classified
-below. The background service worker does not write storage; the other
+below. As of commit A, the background service worker does not write storage
+(commit B adds one: the refreshed `license_token` via the existing
+`License.checkLicense()` — an auth key, never a preference); the other
 extension pages outside this inventory are read-only with respect to settings.
 
 Destructive — removed by Phase 1:
