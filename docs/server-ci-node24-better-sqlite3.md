@@ -2,8 +2,8 @@
 
 ## Status
 
-Deferred investigation. This is unrelated to the YouTube-logo feature and
-affects `main` as well as feature branches based on it.
+Resolved by upgrading `better-sqlite3` from 11.10.0 to 13.0.3. This is
+unrelated to the YouTube-logo feature.
 
 ## Failure
 
@@ -29,18 +29,14 @@ Workflow change #224 moved both CI jobs from Node 20 to Node 24. The server
 still uses `better-sqlite3` 11.10.0. That native dependency is the crashing
 component in the Node 24 process-cleanup stack.
 
-## Suggested follow-up
+## Resolution
 
-Prefer upgrading `better-sqlite3` to a Node-24-compatible release, regenerate
-`server/package-lock.json`, and run the server suite on Node 24 in CI.
-
-If an upgrade needs more time, temporarily pin only the `server-tests` job to
-Node 22. Keep extension tests on Node 24. Treat that as a short-lived
-workaround rather than the final resolution.
+`better-sqlite3` 13.0.3 supports the Node 24 CI runtime and requires Node 22
+or later. The server's declared Node engine was updated accordingly; CI remains
+on Node 24.
 
 ## Validation for a fix
 
-1. Run `npm install` and `npm test` in `server/` using Node 24.
-2. Confirm the storage tests finish without a native assertion or process
-abort.
-3. Confirm the GitHub Actions `server-tests` job passes.
+1. Run `npm install` and `npm test` in `server/`.
+2. Confirm the GitHub Actions `server-tests` job passes on Node 24 without a
+native assertion or process abort.
