@@ -223,3 +223,52 @@ describe('Main Settings', () => {
     });
   });
 });
+
+describe('Grayscale color exceptions', () => {
+  const main2 = loadSourceFile('shared/main.js');
+
+  describe('parseGrayscaleExemptChannels', () => {
+    it('parses a comma-separated list into normalized handles', () => {
+      assertDeepEqual(
+        main2.parseGrayscaleExemptChannels('@Veritasium, kurzgesagt ,@3blue1brown'),
+        ['@veritasium', '@kurzgesagt', '@3blue1brown']
+      );
+    });
+
+    it('deduplicates and drops empty tokens', () => {
+      assertDeepEqual(
+        main2.parseGrayscaleExemptChannels('@a,, @A , a,'),
+        ['@a']
+      );
+    });
+
+    it('returns [] for empty or non-string input', () => {
+      assertDeepEqual(main2.parseGrayscaleExemptChannels(''), []);
+      assertDeepEqual(main2.parseGrayscaleExemptChannels(null), []);
+      assertDeepEqual(main2.parseGrayscaleExemptChannels(undefined), []);
+      assertDeepEqual(main2.parseGrayscaleExemptChannels(false), []);
+    });
+  });
+
+  describe('isGrayscaleExemptPath', () => {
+    const handles = ['@veritasium', '@kurzgesagt'];
+
+    it('matches channel root and deeper paths', () => {
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@veritasium', handles), true);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@veritasium/videos', handles), true);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@Veritasium', handles), true);
+    });
+
+    it('requires an exact handle segment (no prefix matches)', () => {
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@veri', handles), false);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@veritasium2', handles), false);
+    });
+
+    it('ignores non-channel paths and empty input', () => {
+      assert.strictEqual(main2.isGrayscaleExemptPath('/watch?v=abc', handles), false);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/', handles), false);
+      assert.strictEqual(main2.isGrayscaleExemptPath(null, handles), false);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@veritasium', []), false);
+    });
+  });
+});

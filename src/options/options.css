@@ -76,3 +76,71 @@ html[dark_mode='true'] div.option:hover {
 .noselect {
   user-select: none;
 }
+
+/* Grayscale color exceptions — sub-option revealed under the grayscale toggle */
+#grayscale_exempt_container {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 12px 6px 37px;
+}
+html[grayscale_mode='true'] #grayscale_exempt_container {
+  display: flex;
+}
+/* Keep the sub-row hidden when search/section filters hide its parent row */
+div#grayscale_mode.removed + #grayscale_exempt_container {
+  display: none !important;
+}
+
+#grayscale_exempt_label {
+  font-size: 0.8rem;
+  color: var(--label-color);
+  opacity: 0.75;
+}
+
+#grayscale_pill_box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
+}
+
+#grayscale_pill_box .pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 4px 1px 10px;
+  border-radius: 999px;
+  background-color: var(--box-shadow-color);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+#grayscale_pill_box .pill button {
+  border: none;
+  background: none;
+  padding: 0 4px;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+}
+#grayscale_pill_box .pill button:hover {
+  opacity: 1;
+}
+
+#grayscale_pill_input {
+  flex: 1;
+  min-width: 90px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  font-size: 0.8rem;
+  color: var(--body-color);
+}
+#grayscale_pill_input:focus {
+  box-shadow: none;
+}

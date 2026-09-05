@@ -456,7 +456,7 @@ html[global_enable="true"][foo=bar]
 
 }
 
-html[global_enable='true'][grayscale_mode='true'] ytd-app {
+html[global_enable='true'][grayscale_mode='true']:not([grayscale_exempt='true']) ytd-app {
 	filter: grayscale(100%);
 }
 
