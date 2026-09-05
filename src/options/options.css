@@ -82,7 +82,7 @@ html[dark_mode='true'] div.option:hover {
   display: none;
   flex-direction: column;
   gap: 4px;
-  margin: 2px 12px 6px 37px;
+  margin: 2px 12px 6px 56px;
 }
 html[grayscale_mode='true'] #grayscale_exempt_container {
   display: flex;
