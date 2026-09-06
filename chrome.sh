@@ -1,11 +1,13 @@
 #!/bin/bash
+set -euo pipefail
 
-cd src
-cp chrome_manifest.json manifest.json
-cd ..
-
-cp -r src chrome_extension
-rm -rf chrome_extension/web-ext-artifacts/
-rm extension.zip
-zip -r extension.zip chrome_extension
-rm -rf chrome_extension
+cd "$(dirname "$0")"
+repo="$PWD"
+staging=$(mktemp -d)
+trap 'rm -rf "$staging"' EXIT
+cp -R src/. "$staging/"
+cp src/chrome_manifest.json "$staging/manifest.json"
+rm -rf "$staging/web-ext-artifacts"
+rm -f "$repo/extension.zip"
+cd "$staging"
+zip -qr "$repo/extension.zip" .

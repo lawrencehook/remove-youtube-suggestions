@@ -18,6 +18,21 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Check release versions
+        run: python3 scripts/check-release.py "$GITHUB_REF_NAME"
+
+      - name: Test extension
+        run: npm test
+        working-directory: tests
+
+      - name: Install server dependencies
+        run: npm ci
+        working-directory: server
+
+      - name: Test server
+        run: npm test
+        working-directory: server
+
       - name: Install web-ext
         run: npm install -g web-ext
 
@@ -32,6 +47,9 @@ jobs:
           mkdir -p dist
           cp src/web-ext-artifacts/*.zip "dist/rys-firefox-${GITHUB_REF_NAME}.zip"
           cp extension.zip "dist/rys-chrome-${GITHUB_REF_NAME}.zip"
+
+      - name: Validate release ZIPs
+        run: python3 scripts/check-release.py "$GITHUB_REF_NAME" "dist/rys-chrome-${GITHUB_REF_NAME}.zip" "dist/rys-firefox-${GITHUB_REF_NAME}.zip"
 
       - name: Create release
         uses: softprops/action-gh-release@v3
