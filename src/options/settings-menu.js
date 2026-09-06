@@ -862,8 +862,7 @@ function renderGrayscalePills(value) {
     remove.innerText = '×';
     remove.setAttribute('title', `Remove ${handle}`);
     remove.addEventListener('click', () => {
-      pill.remove();
-      saveGrayscalePills();
+      commitGrayscalePillInput(handle);
     });
 
     pill.append(label, remove);
@@ -876,17 +875,22 @@ function saveGrayscalePills() {
   updateSetting('grayscale_exempt_channels', handles.join(', '), { manual: true });
 }
 
-function commitGrayscalePillInput() {
+function commitGrayscalePillInput(removeHandle) {
   const input = qs('#grayscale_pill_input');
   const raw = input.value.trim().replace(/,+$/, '').trim();
   input.value = '';
-  if (!raw) return;
+  if (!raw && !removeHandle) return;
 
-  const handle = (raw.startsWith('@') ? raw : '@' + raw).toLowerCase();
-  const existing = qsa('#grayscale_pill_box .pill span').map(s => s.innerText);
-  if (existing.includes(handle)) return;
+  const handles = qsa('#grayscale_pill_box .pill span')
+    .map(s => s.innerText)
+    .filter(handle => handle !== removeHandle);
+  if (raw) {
+    const handle = (raw.startsWith('@') ? raw : '@' + raw).toLowerCase();
+    if (!handles.includes(handle)) handles.push(handle);
+  }
 
-  updateSetting('grayscale_exempt_channels', existing.concat(handle).join(', '), { manual: true });
+  // Save the removal and pending input together, before rebuilding the pills.
+  updateSetting('grayscale_exempt_channels', handles.join(', '), { manual: true });
 }
 
 // Move the container beneath the grayscale toggle row and wire the input.
@@ -902,6 +906,7 @@ function initGrayscaleExemptUI(value) {
   renderGrayscalePills(value);
 
   input.addEventListener('keydown', e => {
+    if (e.isComposing || e.keyCode === 229) return;
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       commitGrayscalePillInput();
@@ -913,7 +918,11 @@ function initGrayscaleExemptUI(value) {
       }
     }
   });
-  input.addEventListener('blur', commitGrayscalePillInput);
+  // Moving focus to a remove button must not rebuild it before its click.
+  // Commit when focus leaves the box, or after removal in the click handler.
+  qs('#grayscale_pill_box').addEventListener('focusout', e => {
+    if (!e.currentTarget.contains(e.relatedTarget)) commitGrayscalePillInput();
+  });
 
   // Focus the input when the empty area of the box is clicked
   qs('#grayscale_pill_box').addEventListener('click', e => {
