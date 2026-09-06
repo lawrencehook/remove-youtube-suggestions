@@ -10,6 +10,9 @@ const storage = require('../storage');
 
 const router = express.Router();
 
+// Maximum age of a webhook event before it is rejected as a potential replay.
+const WEBHOOK_EVENT_MAX_AGE_SECONDS = 300;
+
 async function getCustomerEmail(customerId) {
   const customer = await stripe.customers.retrieve(customerId);
   return customer.email ? customer.email.toLowerCase() : null;
@@ -31,6 +34,14 @@ router.post('/stripe', async (req, res) => {
   } catch (err) {
     console.error('[webhook] Signature verification failed:', err.message);
     return res.status(400).json({ error: 'Invalid signature' });
+  }
+
+  // Reject stale events to mitigate replay attacks (an intercepted, validly
+  // signed event replayed later than when Stripe originally sent it).
+  const eventAgeSeconds = Math.floor(Date.now() / 1000) - event.created;
+  if (eventAgeSeconds > WEBHOOK_EVENT_MAX_AGE_SECONDS) {
+    console.error(`[webhook] Rejected stale event ${event.id} (age: ${eventAgeSeconds}s)`);
+    return res.status(400).json({ error: 'Event too old' });
   }
 
   // Reject events whose product isn't in our allowlist. Protects against
