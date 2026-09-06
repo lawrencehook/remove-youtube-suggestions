@@ -71,3 +71,46 @@ Upstream rules change; record the revisions used when prototyping.
 Recommendation: investigate actual blocking, with mute-and-Skip as a comparison
 and possible fallback. No guarantee of universal or permanent ad removal; no
 decision yet to ship this branch or close the reported issues.
+
+## Additional notes (Claude, September 6, 2026)
+
+- The #207 report, taken at face value, argues *against* commit `1a219fc`.
+  The reporter says the warning fires when an ad plays to completion and not
+  when Skip is clicked first. Seeking to `video.duration` is completion in its
+  most literal form: it fires `ended` on the ad and whatever completion beacon
+  the player sends. If the reporter's theory is right, seeking should trigger
+  the warning at least as reliably as 10× playback did. Do not ship the seek
+  path without testing this specific claim.
+- Mute-and-Skip is nearly free and is exactly what the reporter asked for. It
+  is the existing Skip-button click with the 10× branch removed and the mute
+  kept. It adds no detection surface, needs no new permissions, and is safe
+  under stitched ads because it never touches the timeline. I would make it
+  step 0: ship it on its own, then treat blocking as a separate track. The cost
+  is that unskippable ads play at normal length, muted.
+- Maintenance is the gating question, not step 6. Real blocking means joining
+  the uBO/YouTube arms race: uAssets ships YouTube fixes weekly, and each
+  breakage lands on RYS users as "the extension broke YouTube." RYS's public
+  position (store listing, the #114 closure) is that it is not an ad blocker.
+  Decide whether that position changes before prototyping, since the answer
+  makes step 3 either a feature or a distraction.
+- If step 3 goes ahead: no new host permissions are needed on Chrome, since
+  `youtube.com` is already granted and MV3 content scripts can declare
+  `world: "MAIN"` for page-context injection at `document_start`. Firefox MV2
+  needs a different injection path. Any `declarativeNetRequest` use would be a
+  new permission and would show the re-permission prompt we avoided in #223.
+- Concrete reassessment items for the existing commit, from code review:
+  - `ad-showing` is not verified to be absent during stitched ads. If it is
+    present, the seek skips the whole video. A duration cap before seeking
+    (under a few minutes, else fall through to the fallback) bounds the damage
+    while the assumption is checked.
+  - Class removal and the `<video>` source swap are not atomic; at 50ms polling
+    there is a window where the class is set but the element holds the main
+    video. The same duration cap closes most of it.
+  - `adActive` is not updated on the Skip-button branch, so the 50ms poll rate
+    is driven by stale state.
+  - Pre-existing: `handleNewPage` clears `hyper` without restoring playback, so
+    navigating mid-ad leaves the next video muted (and at 10× on the fallback
+    path) until YouTube re-applies its own session settings.
+- Baselines (step 2) will be noisy. Ad exposure depends on account, history,
+  region, and time of day. Use a fresh signed-out profile for comparability,
+  run each arm across many videos, and report ranges rather than single counts.
