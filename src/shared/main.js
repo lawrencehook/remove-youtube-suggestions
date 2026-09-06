@@ -909,7 +909,14 @@ function parseGrayscaleExemptChannels(str) {
 // matches "/@veritasium" and deeper paths like "/@handle/videos" still match.
 function isGrayscaleExemptPath(pathname, handles) {
   if (!pathname || !handles || !handles.length) return false;
-  const seg = pathname.split('/').find(Boolean);
+  let seg = pathname.split('/').find(Boolean);
+  if (!seg) return false;
+  // Browser pathnames encode non-ASCII handles; DOM hrefs may be literal.
+  try {
+    seg = decodeURIComponent(seg);
+  } catch {
+    return false;
+  }
   if (!seg || !seg.startsWith('@')) return false;
   return handles.includes(seg.toLowerCase());
 }

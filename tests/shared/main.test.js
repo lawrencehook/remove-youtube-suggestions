@@ -259,6 +259,20 @@ describe('Grayscale color exceptions', () => {
       assert.strictEqual(main2.isGrayscaleExemptPath('/@Veritasium', handles), true);
     });
 
+    it('matches encoded and literal non-ASCII handles', () => {
+      const unicodeHandles = main2.parseGrayscaleExemptChannels('@日本語, @CAFÉ');
+      const pathname = new URL('https://www.youtube.com/@日本語/videos').pathname;
+      assert.strictEqual(main2.isGrayscaleExemptPath(pathname, unicodeHandles), true);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@日本語', unicodeHandles), true);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@CAF%C3%89', unicodeHandles), true);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@日本語2', unicodeHandles), false);
+    });
+
+    it('rejects malformed percent encoding without throwing', () => {
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@bad%', ['@bad%']), false);
+      assert.strictEqual(main2.isGrayscaleExemptPath('/@%E6%97', handles), false);
+    });
+
     it('requires an exact handle segment (no prefix matches)', () => {
       assert.strictEqual(main2.isGrayscaleExemptPath('/@veri', handles), false);
       assert.strictEqual(main2.isGrayscaleExemptPath('/@veritasium2', handles), false);
