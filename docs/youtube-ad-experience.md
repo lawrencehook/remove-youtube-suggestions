@@ -81,8 +81,10 @@ decision yet to ship this branch or close the reported issues.
   but the actual events, completion requests, and detection trigger are not
   established. Do not ship the seek path without testing this specific claim.
 - Mute-and-Skip is a sensible first comparison experiment: retain the existing
-  Skip-button click and mute, but remove acceleration and seeking. This removes
-  the action implicated by #207, but is not proof of regression-free behavior.
+  Skip-button click and mute, but remove acceleration and seeking. It is a
+  deletion from the shipped path, so its risks are existing ones exposed for
+  longer rather than new ones. This removes the action implicated by #207, but
+  is not proof of regression-free behavior.
   Longer muted intervals expose navigation/toggle-off restoration bugs for
   longer, and deleting acceleration alone leaves playback-rate restoration
   code that can still change the user's speed. Validate those transitions and
@@ -102,8 +104,8 @@ decision yet to ship this branch or close the reported issues.
   `world: "MAIN"`. [Firefox 128 also added manifest-level MAIN-world support](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/128);
   MV2 alone does not require a different path. Neither manifest currently
   declares a minimum browser version. If relying on this API without fallback, add
-  `strict_min_version: "128.0"` under `browser_specific_settings.gecko` and a
-  Chrome's floor (`minimum_chrome_version: "111"`) before shipping. These are
+  `strict_min_version: "128.0"` under `browser_specific_settings.gecko` and
+  `minimum_chrome_version: "111"` before shipping. These are
   the [manifest `world` support floors](https://github.com/mdn/browser-compat-data/blob/main/webextensions/manifest/content_scripts.json),
   not necessarily the final minimums if other APIs are introduced.
   Keep extension storage/auth code isolated: [MAIN-world scripts lack extension APIs and are visible to page code](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts).
