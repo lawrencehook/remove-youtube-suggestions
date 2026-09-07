@@ -82,8 +82,8 @@ decision yet to ship this branch or close the reported issues.
   established. Do not ship the seek path without testing this specific claim.
 - Mute-and-Skip is a sensible first comparison experiment: retain the existing
   Skip-button click and mute, but remove acceleration and seeking. It is a
-  deletion from the shipped path, so its risks are existing ones exposed for
-  longer rather than new ones. This removes the action implicated by #207, but
+  small change that removes playback manipulation but changes ad timing and
+  time spent muted. This removes the action implicated by #207, but
   is not proof of regression-free behavior.
   Longer muted intervals expose navigation/toggle-off restoration bugs for
   longer, and deleting acceleration alone leaves playback-rate restoration
