@@ -80,27 +80,32 @@ decision yet to ship this branch or close the reported issues.
   when Skip is clicked first. Seeking to the end could reproduce the problem,
   but the actual events, completion requests, and detection trigger are not
   established. Do not ship the seek path without testing this specific claim.
-- Mute-and-Skip is a strict subset of what 4.3.83 already ships: the existing
-  Skip-button click and mute, with the 10× branch deleted. It cannot be less
-  safe than current behavior, and it removes the one action the #207 reporter
-  identifies as the trigger. Whether it is undetectable is unknowable, but that
-  is also true of the shipped code. Recommended as step 0, shippable on its
-  own, with blocking as a separate track. Ad detection and mute restoration
-  are unchanged and keep their existing weaknesses (see reassessment items).
-  Unskippable ads would play at normal length, muted.
+- Mute-and-Skip is a sensible first comparison experiment: retain the existing
+  Skip-button click and mute, but remove acceleration and seeking. This removes
+  the action implicated by #207, but is not proof of regression-free behavior.
+  Longer muted intervals expose navigation/toggle-off restoration bugs for
+  longer, and deleting acceleration alone leaves playback-rate restoration
+  code that can still change the user's speed. Validate those transitions and
+  restore only state this mode actually changed. It could ship independently
+  after testing; blocking remains a separate research track. Unskippable ads
+  would play at normal length, muted. Detection outcomes need live measurement.
 - Blocking introduces ongoing filter maintenance and playback-regression risk.
   Evaluate that throughout the experiment, then decide on support and accurate
   store messaging before shipping. The incorrect #114 closure should not
   constrain the investigation; current store wording has not been verified.
-  If the answer to "will we maintain YouTube filters indefinitely" is already
-  no, skip step 3 and stop at mute-and-Skip; the prototype has no other payoff.
+  Set a time budget and a stop condition for the blocking prototype. Its results
+  can inform whether to maintain a focused implementation, reuse an upstream
+  approach, recommend a companion blocker, or stop at mute-and-Skip; indefinite
+  filter maintenance need not be accepted before gathering that evidence.
 - For page-context interception on the already-granted `www.youtube.com` and
   `m.youtube.com` hosts, Chrome can use a separate `document_start` script with
   `world: "MAIN"`. [Firefox 128 also added manifest-level MAIN-world support](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/128);
   MV2 alone does not require a different path. Neither manifest currently
-  declares a minimum browser version, so using `world: "MAIN"` means adding
+  declares a minimum browser version. If relying on this API without fallback, add
   `strict_min_version: "128.0"` under `browser_specific_settings.gecko` and a
-  matching Chrome floor (`minimum_chrome_version`, MAIN world since Chrome 111).
+  Chrome's floor (`minimum_chrome_version: "111"`) before shipping. These are
+  the [manifest `world` support floors](https://github.com/mdn/browser-compat-data/blob/main/webextensions/manifest/content_scripts.json),
+  not necessarily the final minimums if other APIs are introduced.
   Keep extension storage/auth code isolated: [MAIN-world scripts lack extension APIs and are visible to page code](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts).
 - Network filtering needs a DNR API permission, but not necessarily a new user
   warning: [Chrome documents `declarativeNetRequestWithHostAccess`](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#permissions)
@@ -112,9 +117,10 @@ decision yet to ship this branch or close the reported issues.
     A duration cap before seeking (say, under a few minutes, else fall through)
     bounds the damage to short videos but is not a guarantee: short videos fit
     under it, and the 10× fallback can accelerate content when detection is
-    wrong. A cheap stronger signal: on client-side ads `video.duration` changes
-    when the ad ends, on stitched ads it does not. Only the first ad of a
-    session is blind to this.
+    wrong. Log duration/source changes as evidence, not as a reliable ad-type
+    classifier: separate videos can have equal durations, and navigation or
+    stream updates can change duration independently of ads. A previous ad's
+    behavior does not establish the next ad's type or current video identity.
   - Test whether ad-class and video-source transitions can expose stale state.
     The proposed race has not been reproduced; faster polling does not prove
     that the selected video is an ad. Avoid seeking when identity is uncertain.
@@ -126,9 +132,11 @@ decision yet to ship this branch or close the reported issues.
     mid-ad: restoration currently lives inside the enabled skipping path.
   - Restore captured pre-ad state on the correct video element, rather than
     relying solely on YouTube's internal session-storage format. Cover source
-    replacement, user mute/speed changes, and missing storage data. The unit
-    harness has no DOM, so these are `rys-test` Playwright cases, not `node
-    --test` cases.
+    replacement, user mute/speed changes, and missing storage data. Use mocked
+    video elements and events under `node --test` for deterministic state
+    transitions; `main` already has a content-script test with DOM stubs in
+    `tests/content-script/settings-persistence.test.js`. Use `rys-test`
+    Playwright cases for actual DOM integration and browser media behavior.
 - Baselines (step 2) will be noisy. Ad exposure depends on account, history,
   region, and time of day. Use a fresh signed-out profile for comparability,
   run each arm across many videos, and report ranges rather than single counts.
