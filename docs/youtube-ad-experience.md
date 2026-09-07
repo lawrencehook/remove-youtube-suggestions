@@ -1,6 +1,6 @@
 # Improving the YouTube ad experience
 
-Status: investigation, September 6, 2026. No blocking approach selected yet.
+Status: investigation, reviewed September 7, 2026. No blocking approach selected yet.
 
 ## Goal and context
 
@@ -52,7 +52,8 @@ Upstream rules change; record the revisions used when prototyping.
 
 1. Bring this branch up to date with `main` before implementation; it predates
    recent releases. Reassess the existing seek changes rather than shipping them
-   automatically.
+   automatically. Set a bounded prototype scope and maintenance expectations
+   up front; a prototype does not commit us to shipping or supporting blocking.
 2. Establish baselines: RYS disabled, current RYS skipping, mute-and-Skip, and a
    maintained blocker alone. Record browser/version, login state, ad exposure,
    startup delay, warnings, and playback failures. Test coexistence separately.
@@ -72,45 +73,49 @@ Recommendation: investigate actual blocking, with mute-and-Skip as a comparison
 and possible fallback. No guarantee of universal or permanent ad removal; no
 decision yet to ship this branch or close the reported issues.
 
-## Additional notes (Claude, September 6, 2026)
+## Review notes (September 7, 2026)
 
 - The #207 report, taken at face value, argues *against* commit `1a219fc`.
   The reporter says the warning fires when an ad plays to completion and not
-  when Skip is clicked first. Seeking to `video.duration` is completion in its
-  most literal form: it fires `ended` on the ad and whatever completion beacon
-  the player sends. If the reporter's theory is right, seeking should trigger
-  the warning at least as reliably as 10× playback did. Do not ship the seek
-  path without testing this specific claim.
-- Mute-and-Skip is nearly free and is exactly what the reporter asked for. It
-  is the existing Skip-button click with the 10× branch removed and the mute
-  kept. It adds no detection surface, needs no new permissions, and is safe
-  under stitched ads because it never touches the timeline. I would make it
-  step 0: ship it on its own, then treat blocking as a separate track. The cost
-  is that unskippable ads play at normal length, muted.
-- Maintenance is the gating question, not step 6. Real blocking means joining
-  the uBO/YouTube arms race: uAssets ships YouTube fixes weekly, and each
-  breakage lands on RYS users as "the extension broke YouTube." RYS's public
-  position (store listing, the #114 closure) is that it is not an ad blocker.
-  Decide whether that position changes before prototyping, since the answer
-  makes step 3 either a feature or a distraction.
-- If step 3 goes ahead: no new host permissions are needed on Chrome, since
-  `youtube.com` is already granted and MV3 content scripts can declare
-  `world: "MAIN"` for page-context injection at `document_start`. Firefox MV2
-  needs a different injection path. Any `declarativeNetRequest` use would be a
-  new permission and would show the re-permission prompt we avoided in #223.
+  when Skip is clicked first. Seeking to the end could reproduce the problem,
+  but the actual events, completion requests, and detection trigger are not
+  established. Do not ship the seek path without testing this specific claim.
+- Mute-and-Skip is a small comparison prototype and needs no new permissions.
+  Avoiding timeline changes removes the seek-to-end risk, but correct ad
+  detection and mute restoration still matter. It is not proven undetectable
+  or ready to ship. Unskippable ads would play at normal length, muted.
+- Blocking introduces ongoing filter maintenance and playback-regression risk.
+  Evaluate that throughout the experiment, then decide on support and accurate
+  store messaging before shipping. The incorrect #114 closure should not
+  constrain the investigation; current store wording has not been verified.
+- For page-context interception on the already-granted `www.youtube.com` and
+  `m.youtube.com` hosts, Chrome can use a separate `document_start` script with
+  `world: "MAIN"`. [Firefox 128 also added manifest-level MAIN-world support](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/128);
+  MV2 alone does not require a different path. Check minimum supported versions.
+  Keep extension storage/auth code isolated: [MAIN-world scripts lack extension APIs and are visible to page code](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts).
+- Network filtering needs a DNR API permission, but not necessarily a new user
+  warning: [Chrome documents `declarativeNetRequestWithHostAccess`](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#permissions)
+  for existing host grants without additional warnings. Rules targeting other
+  hosts may need broader access. Verify the exact rules and upgrade behavior.
 - Concrete reassessment items for the existing commit, from code review:
   - `ad-showing` is not verified to be absent during stitched ads. If it is
-    present, the seek skips the whole video. A duration cap before seeking
-    (under a few minutes, else fall through to the fallback) bounds the damage
-    while the assumption is checked.
-  - Class removal and the `<video>` source swap are not atomic; at 50ms polling
-    there is a window where the class is set but the element holds the main
-    video. The same duration cap closes most of it.
+    present on a shared timeline, seeking to duration can skip the main content.
+    A duration cap is not a safety guarantee: short videos also fit under it,
+    and the 10× fallback can accelerate content when detection is wrong.
+  - Test whether ad-class and video-source transitions can expose stale state.
+    The proposed race has not been reproduced; faster polling does not prove
+    that the selected video is an ad. Avoid seeking when identity is uncertain.
   - `adActive` is not updated on the Skip-button branch, so the 50ms poll rate
     is driven by stale state.
   - Pre-existing: `handleNewPage` clears `hyper` without restoring playback, so
-    navigating mid-ad leaves the next video muted (and at 10× on the fallback
-    path) until YouTube re-applies its own session settings.
+    navigating mid-ad can leave playback modified if YouTube reuses the element
+    without resetting it. Also test disabling the setting or global power
+    mid-ad: restoration currently lives inside the enabled skipping path.
+  - Restore captured pre-ad state on the correct video element, rather than
+    relying solely on YouTube's internal session-storage format. Cover source
+    replacement, user mute/speed changes, and missing storage data in tests.
 - Baselines (step 2) will be noisy. Ad exposure depends on account, history,
   region, and time of day. Use a fresh signed-out profile for comparability,
   run each arm across many videos, and report ranges rather than single counts.
+  Keep signed-in results separate and alternate test order to reduce bias;
+  a fresh profile is a baseline, not control over YouTube's ad experiments.
