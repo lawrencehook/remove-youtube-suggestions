@@ -35,7 +35,7 @@ const REVEAL_BOX_CONFIGS = [
   },
 ];
 let url = location.href;
-let theaterClicked = false, hyper = false, adActive = false;
+let theaterClicked = false, adActive = false, adMuted = false, mutedBeforeAd = false;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
@@ -186,6 +186,7 @@ function runDynamicSettings() {
   }
 
   if (!on) {
+    restoreAdMute();
     frameRequested = false;
     isRunning = false;
     requestRunDynamicSettings();
@@ -435,6 +436,8 @@ function runDynamicSettings() {
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
       skipAds();
+    } else {
+      restoreAdMute();
     }
 
     // Hide all but the timestamped comments
@@ -573,89 +576,51 @@ function runDynamicSettings() {
 }
 
 
-// `#movie_player.ad-showing` is the player's own state flag. It's more stable
-// than the cosmetic ytp-ad-* classes, and it's only set for client-side ads --
-// which also tells us the <video> src is the ad itself.
-function clientSideAdShowing() {
-  return !!qs('#movie_player.ad-showing');
-}
-
-// Older/secondary signals. Kept as a fallback in case `ad-showing` is missing.
-function legacyAdShowing() {
-  const adSelectors = [
-    '.ytp-ad-player-overlay-instream-info',
-    '.ytp-ad-button-icon',
-  ];
-  return adSelectors
+// `#movie_player.ad-showing` is the player's own state flag. The ytp-ad-*
+// classes are older signals, kept as a fallback.
+function adShowing() {
+  if (qs('#movie_player.ad-showing')) return true;
+  return ['.ytp-ad-player-overlay-instream-info', '.ytp-ad-button-icon']
     .flatMap(selector => qsa(selector))
-    .some(elt => elt && window.getComputedStyle(elt).display !== 'none');
+    .some(elt => window.getComputedStyle(elt).display !== 'none');
 }
 
-// Undo whatever we did to get through the ad.
-function restorePlayback(video) {
-  if (!hyper) return;
-
-  let playbackRate = 1;
-  let muted = false;
-  try {
-    const playbackRateObject = window.sessionStorage['yt-player-playback-rate'];
-    const volumeObject = window.sessionStorage['yt-player-volume'];
-    playbackRate = Number(JSON.parse(playbackRateObject).data);
-    muted = JSON.parse(JSON.parse(volumeObject).data).muted;
-  } catch (error) {
-    console.log(error);
-  }
-
-  video.playbackRate = Number.isFinite(playbackRate) && playbackRate > 0 ? playbackRate : 1;
-  video.muted = muted === true;
-  hyper = false;
+// Undo our ad mute, restoring whatever mute state the user had before the ad.
+function restoreAdMute() {
+  if (!adMuted) return;
+  const video = qs('video');
+  if (video) video.muted = mutedBeforeAd;
+  adMuted = false;
 }
 
+// Mute ads and click Skip once YouTube offers it. Deliberately never seeks or
+// speeds up the ad: playing an ad through to completion is reported to trigger
+// YouTube's ad-blocker warning (#207).
 function skipAds() {
 
   // Close overlay ads.
   qsa('.ytp-ad-overlay-close-button').forEach(e => {
-    if (e && e.offsetParent) {
-      e.click();
-    }
+    if (e.offsetParent) e.click();
   });
 
-  // Click on "Skip ad" button
-  const skipButtons = qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button');
-  if (skipButtons.some(button => button.offsetParent)) {
-    skipButtons.forEach(e => {
-      if (e && e.offsetParent) {
-        e.click();
-      }
-    });
-    return;
-  }
-
   const video = qs('video');
-  if (!video) return;
-
-  const clientSideAd = clientSideAdShowing();
-  adActive = clientSideAd || legacyAdShowing();
+  adActive = !!video && adShowing();
   if (!adActive) {
-    restorePlayback(video);
+    restoreAdMute();
     return;
   }
 
-  // Seeking is only safe when we know the <video> src is the ad itself.
-  // Server-stitched (SSAP) ads share a timeline with the video, so
-  // video.duration covers both -- seeking there would skip the whole video.
-  const duration = video.duration;
-  if (clientSideAd && Number.isFinite(duration) && duration > 0) {
-    hyper = true;
-    video.muted = true;
-    video.currentTime = duration;
-    return;
+  if (!adMuted) {
+    mutedBeforeAd = video.muted;
+    adMuted = true;
   }
-
-  // Fall back to speeding through when we can't safely seek.
-  hyper = true;
-  video.playbackRate = 10;
   video.muted = true;
+
+  // Click on "Skip ad" button
+  qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button')
+    .forEach(e => {
+      if (e.offsetParent) e.click();
+    });
 }
 
 
@@ -727,7 +692,7 @@ function handleNewPage() {
   dynamicIters = 0;
   url = location.href;
   theaterClicked = false;
-  hyper = false;
+  restoreAdMute();
   adActive = false;
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
