@@ -139,6 +139,11 @@ html[global_enable="true"][foo=bar] {
 }
 
 
+/* Hide the top-left YouTube logo, including its country label. */
+html[global_enable="true"][remove_youtube_logo="true"] ytd-topbar-logo-renderer {
+  display: none !important;
+}
+
 /* Disable Youtube logo's link to the homepage */
 html[global_enable="true"][remove_logo_link="true"] #logo[href="/"] {
   pointer-events: none;

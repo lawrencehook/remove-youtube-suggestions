@@ -10,7 +10,10 @@ module.exports = {
   // JWT
   get JWT_SECRET() { return process.env.JWT_SECRET; },
   SESSION_TOKEN_LIFETIME_DAYS: 30,
-  LICENSE_TOKEN_LIFETIME_DAYS: 3,
+  // 14 days: reduces how often clients hit the expiry boundary (the
+  // settings-reset bug trigger for pre-4.3.82 versions) at the cost of a
+  // canceled subscription keeping premium until its token expires.
+  LICENSE_TOKEN_LIFETIME_DAYS: 14,
   GRANDFATHERED_TOKEN_LIFETIME_DAYS: 730, // 2 years
 
   // Timing
