@@ -322,6 +322,8 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   const openScheduleButton = document.getElementById('disabled_message_open_schedule');
   openScheduleButton.addEventListener('click', e => openScheduleModal());
 
+  initGrayscaleExemptUI(SETTING_VALUES['grayscale_exempt_channels'] || '');
+
   // Begin time loop -- checks for timedChanges, scheduling
   timeLoop();
   refreshActiveSection();
@@ -405,6 +407,12 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   // Special cases
   if (id === 'global_enable' && manual) {
     updateSetting('nextTimedChange', false);
+  }
+
+  // Keep the pill UI in sync when the list changes (e.g. from another window)
+  if (id === 'grayscale_exempt_channels' &&
+      typeof renderGrayscalePills === 'function') {
+    renderGrayscalePills(value);
   }
 
   const timeInfoIds = [

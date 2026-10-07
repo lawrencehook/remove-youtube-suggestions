@@ -473,6 +473,24 @@ function runDynamicSettings() {
       document.title = document.title.replace(/^\(\d+\)/g, '');
     }
 
+    // Grayscale color exceptions — pages belonging to an exempt channel
+    // render in color. Channel pages match by URL; watch pages match by the
+    // owner link once YouTube renders it (the loop re-checks each pass, so
+    // SPA navigations self-correct).
+    if (cache['grayscale_mode'] === true) {
+      const handles = parseGrayscaleExemptChannels(cache['grayscale_exempt_channels']);
+      let exempt = false;
+      if (handles.length) {
+        if (onChannel) {
+          exempt = isGrayscaleExemptPath(location.pathname, handles);
+        } else if (onVideo) {
+          const owner = qs('ytd-video-owner-renderer ytd-channel-name a[href^="/@"]');
+          exempt = isGrayscaleExemptPath(owner?.getAttribute('href'), handles);
+        }
+      }
+      HTML.setAttribute('grayscale_exempt', exempt);
+    }
+
     // Show video length when thumbnails are hidden
     if (cache['search_engine_mode'] || cache['remove_video_thumbnails']) {
       const thumbnails = qsa('ytd-thumbnail');
@@ -710,6 +728,10 @@ function handleNewPage() {
 
   // Mark whether or not we're on a video page
   HTML.setAttribute('on_video', onVideo);
+
+  // Reset the grayscale exemption on navigation; the dynamic loop re-derives
+  // it for the new page (prevents a stale color/gray state carrying over).
+  HTML.setAttribute('grayscale_exempt', false);
 
   // Refresh HTML attributes
   Object.entries(cache).forEach(([key, value]) => HTML.setAttribute(key, value));

@@ -697,6 +697,7 @@ const OTHER_SETTINGS = {
   dark_mode: false,
   log_enabled: false,
   log_prompt_answered: false,
+  grayscale_exempt_channels: '',
   ...TIMED_SETTINGS,
   ...SCHEDULE_SETTINGS,
   ...PASSWORD_SETTINGS,
@@ -828,6 +829,7 @@ const idToShortId = {
   "remove_playables":                  '95',
   "remove_sub_most_relevant":          '96',
   "remove_youtube_logo":              '97',
+  "grayscale_exempt_channels":         '98',
 };
 
 
@@ -889,4 +891,32 @@ function enforceSlotBudget(settings, slotLimit) {
     }
   });
   return writeBack;
+}
+
+// Grayscale color exceptions: parse the user's comma-separated channel list
+// into normalized, deduplicated @handles (lowercased for comparison).
+function parseGrayscaleExemptChannels(str) {
+  if (!str || typeof str !== 'string') return [];
+  const handles = str.split(',')
+    .map(t => t.trim())
+    .filter(Boolean)
+    .map(t => (t.startsWith('@') ? t : '@' + t).toLowerCase());
+  return Array.from(new Set(handles));
+}
+
+// True when a YouTube path (or channel-link href) belongs to one of the
+// exempt @handles. Matches the first path segment exactly, so "@veri" never
+// matches "/@veritasium" and deeper paths like "/@handle/videos" still match.
+function isGrayscaleExemptPath(pathname, handles) {
+  if (!pathname || !handles || !handles.length) return false;
+  let seg = pathname.split('/').find(Boolean);
+  if (!seg) return false;
+  // Browser pathnames encode non-ASCII handles; DOM hrefs may be literal.
+  try {
+    seg = decodeURIComponent(seg);
+  } catch {
+    return false;
+  }
+  if (!seg || !seg.startsWith('@')) return false;
+  return handles.includes(seg.toLowerCase());
 }

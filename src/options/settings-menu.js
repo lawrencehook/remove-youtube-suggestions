@@ -836,3 +836,96 @@ upgradeCheckoutButton.addEventListener('click', async () => {
     upgradeCheckoutButton.disabled = false;
   }
 });
+
+
+/*******************************
+ * Grayscale color exceptions
+ *******************************/
+
+// Rebuild the pill list from the stored comma-separated string. Called on
+// init and whenever the setting changes (including from another window).
+function renderGrayscalePills(value) {
+  const box = qs('#grayscale_pill_box');
+  const input = qs('#grayscale_pill_input');
+  if (!box || !input) return;
+
+  qsa('.pill', box).forEach(pill => pill.remove());
+
+  parseGrayscaleExemptChannels(value).forEach(handle => {
+    const pill = document.createElement('div');
+    pill.className = 'pill';
+
+    const label = document.createElement('span');
+    label.innerText = handle;
+
+    const remove = document.createElement('button');
+    remove.innerText = '×';
+    remove.setAttribute('title', `Remove ${handle}`);
+    remove.addEventListener('click', () => {
+      commitGrayscalePillInput(handle);
+    });
+
+    pill.append(label, remove);
+    box.insertBefore(pill, input);
+  });
+}
+
+function saveGrayscalePills() {
+  const handles = qsa('#grayscale_pill_box .pill span').map(s => s.innerText);
+  updateSetting('grayscale_exempt_channels', handles.join(', '), { manual: true });
+}
+
+function commitGrayscalePillInput(removeHandle) {
+  const input = qs('#grayscale_pill_input');
+  const raw = input.value.trim().replace(/,+$/, '').trim();
+  input.value = '';
+  if (!raw && !removeHandle) return;
+
+  const handles = qsa('#grayscale_pill_box .pill span')
+    .map(s => s.innerText)
+    .filter(handle => handle !== removeHandle);
+  if (raw) {
+    const handle = (raw.startsWith('@') ? raw : '@' + raw).toLowerCase();
+    if (!handles.includes(handle)) handles.push(handle);
+  }
+
+  // Save the removal and pending input together, before rebuilding the pills.
+  updateSetting('grayscale_exempt_channels', handles.join(', '), { manual: true });
+}
+
+// Move the container beneath the grayscale toggle row and wire the input.
+// Runs once, at the end of populateOptions.
+function initGrayscaleExemptUI(value) {
+  const container = qs('#grayscale_exempt_container');
+  const toggleRow = qs('div#grayscale_mode');
+  const input = qs('#grayscale_pill_input');
+  if (!container || !toggleRow || !input) return;
+
+  toggleRow.insertAdjacentElement('afterend', container);
+  container.removeAttribute('hidden');
+  renderGrayscalePills(value);
+
+  input.addEventListener('keydown', e => {
+    if (e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      commitGrayscalePillInput();
+    } else if (e.key === 'Backspace' && input.value === '') {
+      const pills = qsa('#grayscale_pill_box .pill');
+      if (pills.length) {
+        pills[pills.length - 1].remove();
+        saveGrayscalePills();
+      }
+    }
+  });
+  // Moving focus to a remove button must not rebuild it before its click.
+  // Commit when focus leaves the box, or after removal in the click handler.
+  qs('#grayscale_pill_box').addEventListener('focusout', e => {
+    if (!e.currentTarget.contains(e.relatedTarget)) commitGrayscalePillInput();
+  });
+
+  // Focus the input when the empty area of the box is clicked
+  qs('#grayscale_pill_box').addEventListener('click', e => {
+    if (e.target.id === 'grayscale_pill_box') input.focus();
+  });
+}
