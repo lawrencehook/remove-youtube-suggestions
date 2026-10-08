@@ -249,7 +249,7 @@ const SECTIONS = [
     tags: "Video Player",
     options: [
       {
-        name: "Skip and close ads",
+        name: "Speed through ads",
         tags: "Basic",
         id: "auto_skip_ads",
         defaultValue: false,
