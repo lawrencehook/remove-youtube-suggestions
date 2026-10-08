@@ -3,8 +3,8 @@ const assert = require('node:assert');
 const { loadSourceFile, resetStorage } = require('../setup');
 
 /**
- * auto_skip_ads: mute the ad, click Skip when offered, and restore the
- * user's own mute state afterward. Never seek or change playback speed.
+ * auto_skip_ads: mute the ad and play it at 10x, click Skip when offered,
+ * and restore the user's own mute state and speed afterward. Never seek.
  */
 
 // Fake player whose ad state the test controls.
@@ -70,7 +70,7 @@ function loadContentScript(stubs) {
   });
 }
 
-describe('auto_skip_ads mute-and-Skip', () => {
+describe('auto_skip_ads', () => {
   let player, cs;
 
   beforeEach(() => {
@@ -79,14 +79,26 @@ describe('auto_skip_ads mute-and-Skip', () => {
     cs = loadContentScript(player.stubs);
   });
 
-  it('mutes during the ad and unmutes afterward', () => {
+  it('mutes and speeds up the ad, then restores mute state and speed', () => {
     player.ad = true;
     cs.skipAds();
     assert.strictEqual(player.video.muted, true);
+    assert.strictEqual(player.video.playbackRate, 10);
+    assert.strictEqual(player.video.currentTime, 12, 'must never seek');
 
     player.ad = false;
     cs.skipAds();
     assert.strictEqual(player.video.muted, false);
+    assert.strictEqual(player.video.playbackRate, 1.5);
+  });
+
+  it('keeps a speed YouTube re-applied after the ad', () => {
+    player.ad = true;
+    cs.skipAds();
+    player.video.playbackRate = 2;
+    player.ad = false;
+    cs.skipAds();
+    assert.strictEqual(player.video.playbackRate, 2);
   });
 
   it('leaves a user who was already muted muted', () => {
@@ -98,7 +110,7 @@ describe('auto_skip_ads mute-and-Skip', () => {
     assert.strictEqual(player.video.muted, true);
   });
 
-  it('clicks Skip when offered, without seeking or changing speed', () => {
+  it('clicks Skip when offered, without seeking', () => {
     player.ad = true;
     cs.skipAds();
     assert.strictEqual(player.skipClicks, 0);
@@ -108,18 +120,18 @@ describe('auto_skip_ads mute-and-Skip', () => {
     assert.strictEqual(player.skipClicks, 1);
     assert.strictEqual(player.video.muted, true);
     assert.strictEqual(player.video.currentTime, 12);
-    assert.strictEqual(player.video.playbackRate, 1.5);
   });
 
-  it('restoreAdMute (setting turned off or navigation mid-ad) restores the pre-ad state', () => {
+  it('restoreAdPlayback (setting turned off or navigation mid-ad) restores the pre-ad state', () => {
     player.ad = true;
     cs.skipAds();
-    cs.restoreAdMute();
+    cs.restoreAdPlayback();
     assert.strictEqual(player.video.muted, false);
+    assert.strictEqual(player.video.playbackRate, 1.5);
 
     // A later mute by the user is not undone by a second restore.
     player.video.muted = true;
-    cs.restoreAdMute();
+    cs.restoreAdPlayback();
     assert.strictEqual(player.video.muted, true);
   });
 });

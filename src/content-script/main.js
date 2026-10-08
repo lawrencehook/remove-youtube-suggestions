@@ -35,7 +35,7 @@ const REVEAL_BOX_CONFIGS = [
   },
 ];
 let url = location.href;
-let theaterClicked = false, adActive = false, adMuted = false, mutedBeforeAd = false;
+let theaterClicked = false, adActive = false, adHandled = false, mutedBeforeAd = false, rateBeforeAd = 1;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
@@ -186,7 +186,7 @@ function runDynamicSettings() {
   }
 
   if (!on) {
-    restoreAdMute();
+    restoreAdPlayback();
     frameRequested = false;
     isRunning = false;
     requestRunDynamicSettings();
@@ -437,7 +437,7 @@ function runDynamicSettings() {
     if (cache['auto_skip_ads'] === true) {
       skipAds();
     } else {
-      restoreAdMute();
+      restoreAdPlayback();
     }
 
     // Hide all but the timestamped comments
@@ -603,17 +603,23 @@ function adShowing() {
     .some(elt => window.getComputedStyle(elt).display !== 'none');
 }
 
-// Undo our ad mute, restoring whatever mute state the user had before the ad.
-function restoreAdMute() {
-  if (!adMuted) return;
+const AD_PLAYBACK_RATE = 10;
+
+// Undo our ad mute and speed-up, restoring the user's pre-ad state. The speed
+// is only reset if it is still ours, so a rate YouTube re-applies is kept.
+function restoreAdPlayback() {
+  if (!adHandled) return;
   const video = qs('video');
-  if (video) video.muted = mutedBeforeAd;
-  adMuted = false;
+  if (video) {
+    video.muted = mutedBeforeAd;
+    if (video.playbackRate === AD_PLAYBACK_RATE) video.playbackRate = rateBeforeAd;
+  }
+  adHandled = false;
 }
 
-// Mute ads and click Skip once YouTube offers it. Deliberately never seeks or
-// speeds up the ad: playing an ad through to completion is reported to trigger
-// YouTube's ad-blocker warning (#207).
+// Mute ads and play them at 10x. YouTube ignores scripted clicks on Skip
+// (untrusted events), so the click below is best-effort. Never seeks: with
+// server-stitched ads the video's timeline includes the content itself.
 function skipAds() {
 
   // Close overlay ads.
@@ -624,15 +630,17 @@ function skipAds() {
   const video = qs('video');
   adActive = !!video && adShowing();
   if (!adActive) {
-    restoreAdMute();
+    restoreAdPlayback();
     return;
   }
 
-  if (!adMuted) {
+  if (!adHandled) {
     mutedBeforeAd = video.muted;
-    adMuted = true;
+    rateBeforeAd = video.playbackRate === AD_PLAYBACK_RATE ? 1 : video.playbackRate;
+    adHandled = true;
   }
   video.muted = true;
+  video.playbackRate = AD_PLAYBACK_RATE;
 
   // Click on "Skip ad" button
   qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button')
@@ -710,7 +718,7 @@ function handleNewPage() {
   dynamicIters = 0;
   url = location.href;
   theaterClicked = false;
-  restoreAdMute();
+  restoreAdPlayback();
   adActive = false;
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
