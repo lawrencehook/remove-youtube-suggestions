@@ -316,14 +316,25 @@ function runDynamicSettings() {
         updatedGridVideo?.setAttribute('is_vod', '');
       });
 
+      // New layout: videos are yt-lockup-view-model inside ytd-rich-item-renderer.
+      // Thumbnail badges (LIVE, UPCOMING, PREMIERE, or a duration) are tagged
+      // like the old ones; the avatar's live ring is a separate element.
+      qsa('ytd-rich-item-renderer yt-thumbnail-badge-view-model .ytBadgeShapeText')
+        .forEach(addBadgeTextToVideo);
+      qsa('ytd-rich-item-renderer ytm-shorts-lockup-view-model').forEach(short => {
+        short.closest('ytd-rich-item-renderer')?.setAttribute('is_sub_short', '');
+        short.closest('ytd-rich-section-renderer')?.setAttribute('is_sub_short', '');
+      });
+      qsa('ytd-rich-item-renderer yt-content-metadata-view-model span')
+        .filter(span => span.innerText.includes('Streamed'))
+        .forEach(span => span.closest('ytd-rich-item-renderer')?.setAttribute('is_vod', ''));
+
       // "Most relevant" shelf
       if (cache['remove_sub_most_relevant']) {
-        const shelves = qsa('ytd-rich-section-renderer ytd-rich-shelf-renderer');
-        shelves.forEach(shelf => {
-          const title = qs('span#title', shelf);
+        qsa('ytd-rich-section-renderer').forEach(section => {
+          const title = qs('span#title, #title, h2', section);
           if (title?.innerText.trim().toLowerCase() === 'most relevant') {
-            const section = shelf.closest('ytd-rich-section-renderer');
-            section?.setAttribute('is_most_relevant', '');
+            section.setAttribute('is_most_relevant', '');
           }
         });
       }
