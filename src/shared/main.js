@@ -835,6 +835,7 @@ const idToShortId = {
   "remove_sub_most_relevant":          '96',
   "remove_youtube_logo":              '97',
   "grayscale_exempt_channels":         '98',
+  "power_btn_active_during_schedule":  '99',
 };
 
 
