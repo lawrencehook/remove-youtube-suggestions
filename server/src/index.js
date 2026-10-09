@@ -22,6 +22,11 @@ const webhookRoutes = require('./routes/webhook');
 
 const app = express();
 
+// nginx on the same host forwards the client address in X-Forwarded-For.
+// Trust it only from loopback so req.ip (used for rate limiting) is the real
+// client, while clients can't spoof it by sending the header directly.
+app.set('trust proxy', 'loopback');
+
 function isAllowedOrigin(origin) {
   // Allow requests with no origin (like mobile apps or curl)
   if (!origin) return true;

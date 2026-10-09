@@ -90,6 +90,29 @@ describe('Auth Routes', () => {
       assert.strictEqual(res.status, 429);
       assert.ok(res.headers['retry-after']);
     });
+    it('should rate limit per client IP behind the local proxy', async () => {
+      // nginx on the same host forwards the client address in X-Forwarded-For.
+      // Each client must get its own IP budget, not share 127.0.0.1's.
+      for (let i = 0; i < 5; i++) {
+        const res = await request(app)
+          .post('/auth/send-magic-link')
+          .set('X-Forwarded-For', '203.0.113.1')
+          .send({ email: `client-a-${i}@example.com` });
+        assert.strictEqual(res.status, 200);
+      }
+
+      const blocked = await request(app)
+        .post('/auth/send-magic-link')
+        .set('X-Forwarded-For', '203.0.113.1')
+        .send({ email: 'client-a-extra@example.com' });
+      assert.strictEqual(blocked.status, 429);
+
+      const other = await request(app)
+        .post('/auth/send-magic-link')
+        .set('X-Forwarded-For', '203.0.113.2')
+        .send({ email: 'client-b@example.com' });
+      assert.strictEqual(other.status, 200);
+    });
   });
 
   describe('GET /auth/verify', () => {
