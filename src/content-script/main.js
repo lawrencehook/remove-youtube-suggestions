@@ -706,7 +706,8 @@ function checkRedirects() {
       lastRedirect = Date.now();
     }
     if (cache['redirect_to_library']) {
-      const button = qs('a#endpoint[href="/feed/library"]');
+      // The nav link moved from /feed/library to /feed/you.
+      const button = qs('a#endpoint[href="/feed/you"], a#endpoint[href="/feed/library"]');
       button?.click();
       lastRedirect = Date.now();
     }
