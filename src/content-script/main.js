@@ -755,7 +755,8 @@ function handleNewPage() {
 
   // Autofocus the search bar
   if (on && !onVideo && (cache['autofocus_search'] || cache['search_engine_mode'])) {
-    const searchBar = qs('input#search');
+    // YouTube's search field is now a textarea inside yt-searchbox.
+    const searchBar = qs('input#search, yt-searchbox .ytSearchboxComponentInput');
     if (searchBar && !searchBar.value) {
       searchBar?.focus();
     }
