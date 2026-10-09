@@ -31,11 +31,10 @@ html[global_enable="true"][remove_left_nav_bar="true"] ytd-mini-guide-renderer[r
 html[global_enable="true"][remove_left_nav_bar="true"] yt-icon-button#guide-button,
 
 html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-section-entry-renderer #header,
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(1),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(1),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(2),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(3),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(4),
+/* Keep only "You" entries that link to playlists (Playlists, Watch later,
+   Liked videos, and saved playlists); YouTube reorders these, so match by
+   link rather than position. */
+html[global_enable="true"][only_show_playlists="true"] #section-items > :not(:has(a[href^="/playlist"], a[href="/feed/playlists"])),
 html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-entry-renderer #expanded > ytd-guide-entry-renderer,
 
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
