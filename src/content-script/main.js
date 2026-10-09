@@ -35,7 +35,7 @@ const REVEAL_BOX_CONFIGS = [
   },
 ];
 let url = location.href;
-let theaterClicked = false, hyper = false;
+let theaterClicked = false, adActive = false, adHandled = false, mutedBeforeAd = false, rateBeforeAd = 1;
 let onResultsPage = resultsPageRegex.test(url);
 let onHomepage = homepageRegex.test(url);
 let onShorts = shortsRegex.test(url);
@@ -186,6 +186,7 @@ function runDynamicSettings() {
   }
 
   if (!on) {
+    restoreAdPlayback();
     frameRequested = false;
     isRunning = false;
     requestRunDynamicSettings();
@@ -434,58 +435,9 @@ function runDynamicSettings() {
 
     // Skip through ads
     if (cache['auto_skip_ads'] === true) {
-
-      // Close overlay ads.
-      qsa('.ytp-ad-overlay-close-button')?.forEach(e => {
-        if (e && e.offsetParent) {
-          e.click();
-        }
-      });
-
-      // Click on "Skip ad" button
-      const skipButtons = qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button');
-
-      const skippableAd = skipButtons?.some(button => button.offsetParent);
-      if (skippableAd) {
-        skipButtons?.forEach(e => {
-          if (e && e.offsetParent) {
-            e.click();
-          }
-        });
-      } else {
-
-        // Speed through ads that can't be skipped (yet).
-        let adSelectors = [
-          '.ytp-ad-player-overlay-instream-info',
-          '.ytp-ad-button-icon'
-        ];
-        let adElements = adSelectors.flatMap(selector => qsa(selector));
-        const adActive = adElements.some(elt => elt && window.getComputedStyle(elt).display !== 'none');
-        const video = qs('video');
-        if (adActive) {
-          if (!hyper) {
-            hyper = true;
-          }
-          video.playbackRate = 10;
-          video.muted = true;
-        } else {
-          if (hyper) {
-            let playbackRate = 1;
-            let muted = false;
-            try {
-              const playbackRateObject = window.sessionStorage['yt-player-playback-rate'];
-              const volumeObject = window.sessionStorage['yt-player-volume'];
-              playbackRate = Number(JSON.parse(playbackRateObject).data);
-              muted = JSON.parse(JSON.parse(volumeObject).data).muted;
-            } catch (error) {
-              console.log(error);
-            }
-            video.playbackRate = playbackRate !== undefined ? playbackRate : 1;
-            video.muted = muted !== undefined ? muted : false;
-            hyper = false;
-          }
-        }
-      }
+      skipAds();
+    } else {
+      restoreAdPlayback();
     }
 
     // Hide all but the timestamped comments
@@ -642,12 +594,72 @@ function runDynamicSettings() {
 }
 
 
+// `#movie_player.ad-showing` is the player's own state flag. The ytp-ad-*
+// classes are older signals, kept as a fallback.
+function adShowing() {
+  if (qs('#movie_player.ad-showing')) return true;
+  return ['.ytp-ad-player-overlay-instream-info', '.ytp-ad-button-icon']
+    .flatMap(selector => qsa(selector))
+    .some(elt => window.getComputedStyle(elt).display !== 'none');
+}
+
+const AD_PLAYBACK_RATE = 10;
+
+// Undo our ad mute and speed-up, restoring the user's pre-ad state. The speed
+// is only reset if it is still ours, so a rate YouTube re-applies is kept.
+function restoreAdPlayback() {
+  if (!adHandled) return;
+  const video = qs('video');
+  if (video) {
+    video.muted = mutedBeforeAd;
+    if (video.playbackRate === AD_PLAYBACK_RATE) video.playbackRate = rateBeforeAd;
+  }
+  adHandled = false;
+}
+
+// Mute ads and play them at 10x. YouTube ignores scripted clicks on Skip
+// (untrusted events), so the click below is best-effort. Never seeks: with
+// server-stitched ads the video's timeline includes the content itself.
+function skipAds() {
+
+  // Close overlay ads.
+  qsa('.ytp-ad-overlay-close-button').forEach(e => {
+    if (e.offsetParent) e.click();
+  });
+
+  const video = qs('video');
+  adActive = !!video && adShowing();
+  if (!adActive) {
+    restoreAdPlayback();
+    return;
+  }
+
+  if (!adHandled) {
+    mutedBeforeAd = video.muted;
+    rateBeforeAd = video.playbackRate === AD_PLAYBACK_RATE ? 1 : video.playbackRate;
+    adHandled = true;
+  }
+  video.muted = true;
+  video.playbackRate = AD_PLAYBACK_RATE;
+
+  // Click on "Skip ad" button
+  qsa('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-skip-ad button')
+    .forEach(e => {
+      if (e.offsetParent) e.click();
+    });
+}
+
+
 function requestRunDynamicSettings() {
   if (frameRequested || isRunning) return;
   if (document.hidden) return; // Pause polling when tab is hidden
   frameRequested = true;
-  // Start fast (100ms), slow down to 500ms after page settles
-  const delay = dynamicIters < 20 ? 100 : Math.min(500, 100 + dynamicIters * 10);
+  // Start fast (100ms), slow down after the page settles. Ad skipping wants low
+  // latency, so cap the backoff on video pages and poll hard while an ad is up.
+  const skipping = onVideo && cache['global_enable'] === true && cache['auto_skip_ads'] === true;
+  const delay = (skipping && adActive)
+    ? 50
+    : dynamicIters < 20 ? 100 : Math.min(skipping ? 250 : 500, 100 + dynamicIters * 10);
   setTimeout(() => runDynamicSettings(), delay);
 }
 
@@ -706,7 +718,8 @@ function handleNewPage() {
   dynamicIters = 0;
   url = location.href;
   theaterClicked = false;
-  hyper = false;
+  restoreAdPlayback();
+  adActive = false;
   onResultsPage = resultsPageRegex.test(url);
   onHomepage = homepageRegex.test(url);
   onShorts = shortsRegex.test(url);
