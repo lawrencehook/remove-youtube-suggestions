@@ -167,6 +167,13 @@ router.get('/poll', async (req, res) => {
     return res.status(404).json({ error: 'Unknown or expired request_id' });
   }
 
+  // Authorization check: only the IP that created this auth request may poll it.
+  // This prevents an attacker who merely obtains/guesses the request_id (e.g. via
+  // leaked referrer/email headers) from retrieving the victim's session_token.
+  if (authRequest.ip && authRequest.ip !== ip) {
+    return res.status(403).json({ error: 'Not authorized to poll this request_id' });
+  }
+
   if (authRequest.status === 'pending') {
     return res.json({ status: 'pending' });
   }
