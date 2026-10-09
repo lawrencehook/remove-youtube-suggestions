@@ -31,11 +31,10 @@ html[global_enable="true"][remove_left_nav_bar="true"] ytd-mini-guide-renderer[r
 html[global_enable="true"][remove_left_nav_bar="true"] yt-icon-button#guide-button,
 
 html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-section-entry-renderer #header,
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(1),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(1),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(2),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(3),
-html[global_enable="true"][only_show_playlists="true"] #section-items > :nth-child(4),
+/* Keep only "You" entries that link to playlists (Playlists, Watch later,
+   Liked videos, and saved playlists); YouTube reorders these, so match by
+   link rather than position. */
+html[global_enable="true"][only_show_playlists="true"] #section-items > :not(:has(a[href^="/playlist"], a[href="/feed/playlists"])),
 html[global_enable="true"][only_show_playlists="true"] ytd-guide-collapsible-entry-renderer #expanded > ytd-guide-entry-renderer,
 
 html[global_enable="true"][remove_home_link="true"] a:not(#logo)[href="/"],
@@ -79,6 +78,7 @@ html[global_enable="true"][remove_menu_buttons="true"] #menu-container,
 html[global_enable="true"][remove_menu_buttons="true"] #actions,
 html[global_enable="true"][remove_clip_button="true"] #menu button[scissor_button],
 html[global_enable="true"][remove_video_likes="true"] like-button-view-model .yt-spec-button-shape-next__button-text-content,
+html[global_enable="true"][remove_video_likes="true"] like-button-view-model .ytSpecButtonShapeNextButtonTextContent,
 html[global_enable="true"][remove_channel_subscribers="true"] #owner-sub-count,
 html[global_enable="true"][remove_embedded_more_videos="true"] div.ytp-pause-overlay,
 html[global_enable="true"][remove_overlay_suggestions="true"] .ytp-cards-teaser,
@@ -93,6 +93,7 @@ html[global_enable="true"][remove_comment_usernames="true"] #author-text,
 html[global_enable="true"][remove_comment_profiles="true"] #author-thumbnail,
 html[global_enable="true"][remove_comment_replies="true"] #replies.ytd-comment-thread-renderer,
 html[global_enable="true"][remove_comment_upvotes="true"] #vote-count-middle.ytd-comment-action-buttons-renderer,
+html[global_enable="true"][remove_comment_upvotes="true"] #vote-count-middle.ytd-comment-engagement-bar,
 
 /* Search Results Page */
 html[global_enable="true"][remove_search_suggestions="true"] div.sbdd_a,
@@ -129,6 +130,7 @@ html[global_enable="true"][remove_sub_upcoming="true"] ytd-rich-item-renderer[ba
 html[global_enable="true"][remove_sub_premiere="true"] ytd-rich-item-renderer[badge-text="premiere"],
 html[global_enable="true"][remove_sub_vods="true"]     ytd-rich-item-renderer[is_vod],
 
+html[global_enable="true"][remove_sub_shorts="true"]   ytd-rich-section-renderer[is_sub_short],
 html[global_enable="true"][remove_sub_most_relevant="true"] ytd-rich-section-renderer[is_most_relevant],
 
 /* Other */
