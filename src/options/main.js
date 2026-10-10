@@ -261,11 +261,10 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     });
   }
 
-  // Pre-select sidebar. Non-premium users default to "free"; others use URL-based section.
+  // Pre-select the sidebar section for the current page. Elsewhere, free users
+  // default to "Free" and premium users to "Basic".
   const tier = License.getTierSync(SETTING_VALUES['license_token'], SETTING_VALUES['session_token']);
-  if (tier !== TIER.PREMIUM) {
-    qs('#free_sidebar').click();
-  } else if (resultsPageRegex.test(currentUrl)) {
+  if (resultsPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Search"]').click();
   } else if (videoPageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Video Player"]').click();
@@ -275,6 +274,8 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
     qs('.sidebar_section[tag="Channel"]').click();
   } else if (homepageRegex.test(currentUrl)) {
     qs('.sidebar_section[tag="Homepage"]').click();
+  } else if (tier !== TIER.PREMIUM) {
+    qs('#free_sidebar').click();
   } else {
     qs('.sidebar_section[tag="Basic"]').click();
   }
