@@ -97,6 +97,8 @@ html[dark_mode='false'] #header-light { display: none }
 }
 #power-pop-up {
   position: absolute;
+  /* Above the sticky section label (z-index 5) it can overlap. */
+  z-index: 10;
   font-size: 0.85rem;
   width: 200px;
   top: 115%;
