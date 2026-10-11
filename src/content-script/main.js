@@ -488,7 +488,10 @@ function runDynamicSettings() {
 
     // Hide notification number in title
     if (cache['remove_notif_bell']) {
-      document.title = document.title.replace(/^\(\d+\)/g, '');
+      // Only write when the count is present: every write to the title is a
+      // DOM mutation, which other extensions can mistake for a navigation.
+      const title = document.title.replace(/^\(\d+\)/g, '');
+      if (title !== document.title) document.title = title;
     }
 
     // Grayscale color exceptions — pages belonging to an exempt channel

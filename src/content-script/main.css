@@ -352,6 +352,11 @@ html[global_enable="true"][search_engine_mode="true"] ytd-search *,
 /* Video player */
 html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy,
 html[global_enable="true"][search_engine_mode="true"] ytd-watch-flexy *,
+/* Embedded player (youtube.com/embed/... inside other sites) */
+html[global_enable="true"][search_engine_mode="true"] body > #player,
+html[global_enable="true"][search_engine_mode="true"] body > #player *,
+html[global_enable="true"][search_engine_mode="true"] body > #player-controls,
+html[global_enable="true"][search_engine_mode="true"] body > #player-controls *,
 
 
 
