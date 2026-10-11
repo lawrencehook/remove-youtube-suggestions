@@ -68,7 +68,8 @@ html[global_enable="true"][remove_playables="true"] *[is_playable],
 html[global_enable="true"][disable_fullscreen_scroll="true"] ytd-watch-flexy[fullscreen] div#columns,
 
 /* Video Player - UI*/
-html[global_enable="true"][remove_entire_sidebar="true"] #secondary,
+/* Watch page only: other pages reuse #secondary (history keeps its search bar there). */
+html[global_enable="true"][remove_entire_sidebar="true"] ytd-watch-flexy #secondary,
 html[global_enable="true"][remove_sidebar_infinite_scroll="true"] #secondary #contents ytd-continuation-item-renderer,
 html[global_enable="true"][remove_extra_sidebar_tags="true"] yt-chip-cloud-chip-renderer[hide-chip],
 html[global_enable="true"][remove_chat="true"] #chat,
