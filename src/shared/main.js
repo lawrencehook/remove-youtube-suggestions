@@ -504,7 +504,7 @@ const SECTIONS = [
         premium: true,
       },
       {
-        name: "Hide the For You section - channel page",
+        name: "Hide the For You section - channel page (English only)",
         id: "remove_channel_for_you",
         defaultValue: false,
         premium: true,
