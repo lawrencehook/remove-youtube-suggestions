@@ -417,7 +417,15 @@ function runDynamicSettings() {
 
       const menuItems = qsa('.ytp-settings-menu .ytp-panel .ytp-panel-menu > div');
       const checkBoxes = menuItems.filter(n => n.getAttribute('aria-checked'));
-      const [ stableVolumeToggle, ambientToggle, annotationsToggle ] = checkBoxes;
+      // Find each toggle by its label. The menu doesn't always have all of
+      // "Stable volume", "Ambient mode", and "Annotations", so position alone
+      // can pick the wrong one. For non-English menus, fall back to position
+      // only when all three are present.
+      const toggleFor = (label, position) =>
+        checkBoxes.find(n => qs('.ytp-menuitem-label', n)?.innerText.trim() === label) ||
+        (checkBoxes.length === 3 ? checkBoxes[position] : undefined);
+      const ambientToggle = toggleFor('Ambient mode', 1);
+      const annotationsToggle = toggleFor('Annotations', 2);
 
       // Disable ambient mode
       if (cache['disable_ambient_mode'] === true) {
@@ -427,7 +435,6 @@ function runDynamicSettings() {
       }
 
       // Disable annotations
-      //    Note: I don't see a toggle for "annotations" anymore
       if (cache['disable_annotations'] === true) {
         if (annotationsToggle?.getAttribute('aria-checked') === 'true') {
           qs('.ytp-menuitem-toggle-checkbox', annotationsToggle)?.click();
