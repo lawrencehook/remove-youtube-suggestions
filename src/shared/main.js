@@ -53,6 +53,7 @@ const SECTIONS = [
         tags: "Homepage, Subscriptions, Video Player, Search",
         id: "remove_keyword_videos",
         defaultValue: false,
+        premium: true,
       },
     ]
   },
