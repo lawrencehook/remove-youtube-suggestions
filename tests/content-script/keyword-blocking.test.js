@@ -19,7 +19,7 @@ function fakeItem({ tag = 'ytd-video-renderer', title = '', inRichItem = false }
     title,
     attrs: new Set(),
     matches: selector => selector === tag,
-    closest: selector => (inRichItem && selector === 'ytd-rich-item-renderer' ? {} : null),
+    parentElement: { closest: () => (inRichItem ? {} : null) },
     querySelector: () => (item.title === null ? null : { textContent: item.title }),
     toggleAttribute(name, force) {
       if (force) this.attrs.add(name); else this.attrs.delete(name);

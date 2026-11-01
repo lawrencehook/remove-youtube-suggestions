@@ -293,16 +293,16 @@ describe('Keyword blocking', () => {
     kw.titleHasBlockedKeyword(title, kw.compileBlockedKeywords(keywords));
 
   describe('settings', () => {
-    it('is a free setting, off by default, with an empty list', () => {
+    it('is a premium setting, off by default, with an empty list', () => {
       const option = kw.SECTIONS.flatMap(s => s.options).find(o => o.id === 'remove_keyword_videos');
       assert.ok(option, 'option missing from SECTIONS');
-      assert.notStrictEqual(option.premium, true);
+      assert.strictEqual(option.premium, true);
       assert.strictEqual(kw.DEFAULT_SETTINGS.remove_keyword_videos, false);
       assert.strictEqual(kw.DEFAULT_SETTINGS.blocked_keywords, '');
     });
 
-    it('is not counted against the free premium slots', () => {
-      assert.strictEqual(kw.PREMIUM_FEATURE_ID_SET.has('remove_keyword_videos'), false);
+    it('counts the toggle, not the list, as the premium feature', () => {
+      assert.strictEqual(kw.PREMIUM_FEATURE_ID_SET.has('remove_keyword_videos'), true);
       assert.strictEqual(kw.PREMIUM_FEATURE_ID_SET.has('blocked_keywords'), false);
     });
 

@@ -36,20 +36,35 @@ const REVEAL_BOX_CONFIGS = [
 ];
 
 // Keyword blocking: the elements that stand for one video, on each surface.
-// A lockup inside a rich grid item is skipped; the item hides it, so the grid
-// doesn't keep an empty slot.
+// An item nested in another item is skipped; the outer one hides it, so a
+// grid doesn't keep an empty slot.
 const KEYWORD_ITEM_SELECTOR = [
-  'ytd-rich-item-renderer',      // homepage, subscriptions, channel grids
-  'yt-lockup-view-model',        // watch page sidebar
-  'ytd-video-renderer',          // search results
-  'ytd-compact-video-renderer',  // older sidebar layout
-  'ytd-grid-video-renderer',     // older grid layout
-  '.ytp-videowall-still',        // end-of-video suggestions
+  'ytd-rich-item-renderer',                // homepage, subscriptions, channel grids
+  'yt-lockup-view-model',                  // watch page sidebar
+  'ytm-shorts-lockup-view-model',          // Shorts shelves and grids
+  'ytd-video-renderer',                    // search results
+  'ytd-watch-card-compact-video-renderer', // search result side card
+  'ytd-compact-video-renderer',            // older sidebar layout
+  'ytd-grid-video-renderer',               // older grid layout
+  'ytd-channel-video-player-renderer',     // channel home featured video
+  '.ytp-videowall-still',                  // end-of-video suggestions (older)
+  '.ytp-modern-videowall-still',           // end-of-video suggestions
+  '.ytp-ce-video', '.ytp-ce-playlist',     // end screen cards
+  'ytm-rich-item-renderer',                // mobile grids
+  'ytm-video-with-context-renderer',       // mobile feeds, search, watch page
+  'ytm-compact-video-renderer',            // mobile channel videos
 ].join(', ');
 const KEYWORD_TITLE_SELECTOR = [
   '.ytLockupMetadataViewModelTitle',
+  '.shortsLockupViewModelHostMetadataTitle',
   '#video-title',
+  '#metadata-container #title',
+  'yt-formatted-string.title',
   '.ytp-videowall-still-info-title',
+  '.ytp-modern-videowall-still-info-title',
+  '.ytp-ce-video-title', '.ytp-ce-playlist-title',
+  '.media-item-headline',
+  '.YtmCompactMediaItemHeadline',
 ].join(', ');
 const keywordChecked = new WeakMap(); // item -> { title, source } as last checked
 let keywordMatchers = [];
@@ -644,7 +659,7 @@ function hideKeywordBlockedVideos() {
   }
 
   qsa(KEYWORD_ITEM_SELECTOR).forEach(item => {
-    if (item.matches('yt-lockup-view-model') && item.closest('ytd-rich-item-renderer')) return;
+    if (item.parentElement?.closest(KEYWORD_ITEM_SELECTOR)) return;
 
     const title = qs(KEYWORD_TITLE_SELECTOR, item)?.textContent ?? '';
     const last = keywordChecked.get(item);
