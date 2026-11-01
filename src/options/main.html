@@ -253,11 +253,19 @@
       <input>
     </div>
 
-    <!-- Sub-option of grayscale_mode; moved beneath its toggle at init. -->
-    <div id="grayscale_exempt_container" hidden>
-      <div id="grayscale_exempt_label">Keep these channels in color</div>
-      <div id="grayscale_pill_box">
-        <input id="grayscale_pill_input" type="text" placeholder="@channel" spellcheck="false">
+    <!-- Pill lists: sub-options of a toggle, moved beneath it at init
+         (see PILL_LISTS in settings-menu.js). -->
+    <div id="grayscale_exempt_container" class="pill_list" hidden>
+      <div class="pill_list_label">Keep these channels in color</div>
+      <div class="pill_box">
+        <input class="pill_input" type="text" placeholder="@channel" spellcheck="false">
+      </div>
+    </div>
+
+    <div id="blocked_keywords_container" class="pill_list" hidden>
+      <div class="pill_list_label">Blocked words or phrases (* is a wildcard, e.g. polit*)</div>
+      <div class="pill_box">
+        <input class="pill_input" type="text" placeholder="keyword or phrase" spellcheck="false">
       </div>
     </div>
 

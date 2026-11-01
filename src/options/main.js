@@ -323,7 +323,7 @@ function populateOptions(SECTIONS, headerSettings, SETTING_VALUES) {
   const openScheduleButton = document.getElementById('disabled_message_open_schedule');
   openScheduleButton.addEventListener('click', e => openScheduleModal());
 
-  initGrayscaleExemptUI(SETTING_VALUES['grayscale_exempt_channels'] || '');
+  Object.keys(PILL_LISTS).forEach(id => initPillListUI(id, SETTING_VALUES[id] || ''));
 
   // Begin time loop -- checks for timedChanges, scheduling
   timeLoop();
@@ -393,7 +393,13 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
     }
   }
 
-  if (manual) recordEvent('Setting changed', { id, value });
+  // The keyword list is personal: log how many entries it has, not the entries.
+  if (manual) {
+    recordEvent('Setting changed', {
+      id,
+      value: id === 'blocked_keywords' ? parseBlockedKeywords(value).length : value,
+    });
+  }
 
   HTML.setAttribute(id, value);
   cache[id] = value;
@@ -411,9 +417,8 @@ function updateSetting(id, value, { write=true, manual=false }={}) {
   }
 
   // Keep the pill UI in sync when the list changes (e.g. from another window)
-  if (id === 'grayscale_exempt_channels' &&
-      typeof renderGrayscalePills === 'function') {
-    renderGrayscalePills(value);
+  if (typeof renderPills === 'function' && id in PILL_LISTS) {
+    renderPills(id, value);
   }
 
   const timeInfoIds = [

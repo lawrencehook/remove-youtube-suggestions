@@ -48,6 +48,12 @@ const SECTIONS = [
         defaultValue: false,
         premium: true,
       },
+      {
+        name: "Hide videos with blocked keywords in the title",
+        tags: "Homepage, Subscriptions, Video Player, Search",
+        id: "remove_keyword_videos",
+        defaultValue: false,
+      },
     ]
   },
   {
@@ -704,6 +710,7 @@ const OTHER_SETTINGS = {
   log_enabled: false,
   log_prompt_answered: false,
   grayscale_exempt_channels: '',
+  blocked_keywords: '',
   ...TIMED_SETTINGS,
   ...SCHEDULE_SETTINGS,
   ...PASSWORD_SETTINGS,
@@ -837,6 +844,8 @@ const idToShortId = {
   "remove_youtube_logo":              '97',
   "grayscale_exempt_channels":         '98',
   "power_btn_active_during_schedule":  '99',
+  "remove_keyword_videos":             '100',
+  "blocked_keywords":                  '101',
 };
 
 
@@ -926,4 +935,52 @@ function isGrayscaleExemptPath(pathname, handles) {
   }
   if (!seg || !seg.startsWith('@')) return false;
   return handles.includes(seg.toLowerCase());
+}
+
+// Keyword blocking: lowercase, strip accents, collapse whitespace. Applied to
+// both keywords and titles so "Política" matches "politica" and "POLÍTICA".
+function normalizeKeywordText(text) {
+  return String(text || '')
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Parse the comma-separated keyword list into display strings (the user's own
+// spelling), dropping duplicates (ignoring case and accents) and entries with
+// no letter or digit — a lone "*" would otherwise match every title.
+function parseBlockedKeywords(str) {
+  if (!str || typeof str !== 'string') return [];
+  const seen = new Set();
+  return str.split(',')
+    .map(t => t.trim())
+    .filter(t => {
+      const key = normalizeKeywordText(t);
+      if (!/[\p{L}\p{N}]/u.test(key) || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+// Build one matcher per keyword. A keyword matches whole words or phrases
+// only ("gol" does not match "golpe"); "*" matches any run of letters or
+// digits, so "polit*" matches "política" and "políticos".
+function compileBlockedKeywords(str) {
+  const wordChar = '[\\p{L}\\p{N}]';
+  return parseBlockedKeywords(str).map(keyword => {
+    const body = normalizeKeywordText(keyword)
+      .split('*')
+      .map(part => part.replace(/[.+?^${}()|[\]\\]/g, '\\$&'))
+      .join(wordChar + '*');
+    return new RegExp(`(?<!${wordChar})${body}(?!${wordChar})`, 'u');
+  });
+}
+
+function titleHasBlockedKeyword(title, matchers) {
+  if (!matchers || !matchers.length) return false;
+  const text = normalizeKeywordText(title);
+  if (!text) return false;
+  return matchers.some(matcher => matcher.test(text));
 }

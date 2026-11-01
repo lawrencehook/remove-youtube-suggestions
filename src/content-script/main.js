@@ -34,6 +34,26 @@ const REVEAL_BOX_CONFIGS = [
     revealSetting: 'add_reveal_end_of_video',
   },
 ];
+
+// Keyword blocking: the elements that stand for one video, on each surface.
+// A lockup inside a rich grid item is skipped; the item hides it, so the grid
+// doesn't keep an empty slot.
+const KEYWORD_ITEM_SELECTOR = [
+  'ytd-rich-item-renderer',      // homepage, subscriptions, channel grids
+  'yt-lockup-view-model',        // watch page sidebar
+  'ytd-video-renderer',          // search results
+  'ytd-compact-video-renderer',  // older sidebar layout
+  'ytd-grid-video-renderer',     // older grid layout
+  '.ytp-videowall-still',        // end-of-video suggestions
+].join(', ');
+const KEYWORD_TITLE_SELECTOR = [
+  '.ytLockupMetadataViewModelTitle',
+  '#video-title',
+  '.ytp-videowall-still-info-title',
+].join(', ');
+const keywordChecked = new WeakMap(); // item -> { title, source } as last checked
+let keywordMatchers = [];
+let keywordSource;
 let url = location.href;
 let theaterClicked = false, adActive = false, adHandled = false, mutedBeforeAd = false, rateBeforeAd = 1;
 let onResultsPage = resultsPageRegex.test(url);
@@ -232,6 +252,11 @@ function runDynamicSettings() {
         const shelfContainer = shelf.closest('ytd-rich-section-renderer');
         shelfContainer?.setAttribute('is_short', '');
       });
+    }
+
+    // Hide videos with a blocked keyword in the title
+    if (cache['remove_keyword_videos']) {
+      hideKeywordBlockedVideos();
     }
 
     // Hide playables
@@ -605,6 +630,29 @@ function runDynamicSettings() {
   frameRequested = false;
   isRunning = false;
   requestRunDynamicSettings();
+}
+
+
+// Tag each video whose title has a blocked keyword; the CSS hides the tag.
+// YouTube reuses these elements for new videos, so an item is re-checked
+// whenever its title or the keyword list differs from the last check.
+function hideKeywordBlockedVideos() {
+  const source = cache['blocked_keywords'];
+  if (source !== keywordSource) {
+    keywordSource = source;
+    keywordMatchers = compileBlockedKeywords(source);
+  }
+
+  qsa(KEYWORD_ITEM_SELECTOR).forEach(item => {
+    if (item.matches('yt-lockup-view-model') && item.closest('ytd-rich-item-renderer')) return;
+
+    const title = qs(KEYWORD_TITLE_SELECTOR, item)?.textContent ?? '';
+    const last = keywordChecked.get(item);
+    if (last && last.title === title && last.source === source) return;
+
+    keywordChecked.set(item, { title, source });
+    item.toggleAttribute('rys_keyword_blocked', titleHasBlockedKeyword(title, keywordMatchers));
+  });
 }
 
 

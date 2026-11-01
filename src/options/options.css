@@ -77,28 +77,30 @@ html[dark_mode='true'] div.option:hover {
   user-select: none;
 }
 
-/* Grayscale color exceptions — sub-option revealed under the grayscale toggle */
-#grayscale_exempt_container {
+/* Pill lists — sub-options revealed under their toggle (see PILL_LISTS) */
+.pill_list {
   display: none;
   flex-direction: column;
   gap: 4px;
   margin: 2px 12px 6px 56px;
 }
-html[grayscale_mode='true'] #grayscale_exempt_container {
+html[grayscale_mode='true'] #grayscale_exempt_container,
+html[remove_keyword_videos='true'] #blocked_keywords_container {
   display: flex;
 }
 /* Keep the sub-row hidden when search/section filters hide its parent row */
-div#grayscale_mode.removed + #grayscale_exempt_container {
+div#grayscale_mode.removed + #grayscale_exempt_container,
+div#remove_keyword_videos.removed + #blocked_keywords_container {
   display: none !important;
 }
 
-#grayscale_exempt_label {
+.pill_list_label {
   font-size: 0.8rem;
   color: var(--label-color);
   opacity: 0.75;
 }
 
-#grayscale_pill_box {
+.pill_box {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -108,7 +110,7 @@ div#grayscale_mode.removed + #grayscale_exempt_container {
   box-shadow: 0px 0px 1px 0.5px var(--box-shadow-color);
 }
 
-#grayscale_pill_box .pill {
+.pill_box .pill {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -119,7 +121,7 @@ div#grayscale_mode.removed + #grayscale_exempt_container {
   white-space: nowrap;
 }
 
-#grayscale_pill_box .pill button {
+.pill_box .pill button {
   border: none;
   background: none;
   padding: 0 4px;
@@ -128,11 +130,11 @@ div#grayscale_mode.removed + #grayscale_exempt_container {
   cursor: pointer;
   opacity: 0.6;
 }
-#grayscale_pill_box .pill button:hover {
+.pill_box .pill button:hover {
   opacity: 1;
 }
 
-#grayscale_pill_input {
+.pill_input {
   flex: 1;
   min-width: 90px;
   border: none;
@@ -141,6 +143,6 @@ div#grayscale_mode.removed + #grayscale_exempt_container {
   font-size: 0.8rem;
   color: var(--body-color);
 }
-#grayscale_pill_input:focus {
+.pill_input:focus {
   box-shadow: none;
 }

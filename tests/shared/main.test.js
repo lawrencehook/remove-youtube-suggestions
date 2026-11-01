@@ -286,3 +286,112 @@ describe('Grayscale color exceptions', () => {
     });
   });
 });
+
+describe('Keyword blocking', () => {
+  const kw = loadSourceFile('shared/main.js');
+  const blocks = (keywords, title) =>
+    kw.titleHasBlockedKeyword(title, kw.compileBlockedKeywords(keywords));
+
+  describe('settings', () => {
+    it('is a free setting, off by default, with an empty list', () => {
+      const option = kw.SECTIONS.flatMap(s => s.options).find(o => o.id === 'remove_keyword_videos');
+      assert.ok(option, 'option missing from SECTIONS');
+      assert.notStrictEqual(option.premium, true);
+      assert.strictEqual(kw.DEFAULT_SETTINGS.remove_keyword_videos, false);
+      assert.strictEqual(kw.DEFAULT_SETTINGS.blocked_keywords, '');
+    });
+
+    it('is not counted against the free premium slots', () => {
+      assert.strictEqual(kw.PREMIUM_FEATURE_ID_SET.has('remove_keyword_videos'), false);
+      assert.strictEqual(kw.PREMIUM_FEATURE_ID_SET.has('blocked_keywords'), false);
+    });
+
+    it('can be exported and imported', () => {
+      assert.ok('remove_keyword_videos' in kw.idToShortId);
+      assert.ok('blocked_keywords' in kw.idToShortId);
+    });
+  });
+
+  describe('normalizeKeywordText', () => {
+    it('lowercases, strips accents, and collapses whitespace', () => {
+      assert.strictEqual(kw.normalizeKeywordText('  ELEIÇÃO   Política\n'), 'eleicao politica');
+    });
+
+    it('tolerates non-strings', () => {
+      assert.strictEqual(kw.normalizeKeywordText(null), '');
+      assert.strictEqual(kw.normalizeKeywordText(undefined), '');
+    });
+  });
+
+  describe('parseBlockedKeywords', () => {
+    it('splits on commas and keeps the user spelling', () => {
+      assertDeepEqual(kw.parseBlockedKeywords('Política, Copa do Mundo ,BBB'),
+        ['Política', 'Copa do Mundo', 'BBB']);
+    });
+
+    it('drops empties and duplicates ignoring case and accents', () => {
+      assertDeepEqual(kw.parseBlockedKeywords('política, Politica, ,, POLÍTICA'), ['política']);
+    });
+
+    it('drops entries with no letter or digit, which would match every title', () => {
+      assertDeepEqual(kw.parseBlockedKeywords('*, **, -, ok'), ['ok']);
+    });
+
+    it('returns an empty list for missing or non-string input', () => {
+      assertDeepEqual(kw.parseBlockedKeywords(''), []);
+      assertDeepEqual(kw.parseBlockedKeywords(null), []);
+      assertDeepEqual(kw.parseBlockedKeywords(undefined), []);
+      assertDeepEqual(kw.parseBlockedKeywords(false), []);
+    });
+  });
+
+  describe('titleHasBlockedKeyword', () => {
+    it('ignores case and accents in both the keyword and the title', () => {
+      assert.strictEqual(blocks('politica', 'ELEIÇÃO e POLÍTICA hoje'), true);
+      assert.strictEqual(blocks('POLÍTICA', 'a politica de hoje'), true);
+    });
+
+    it('matches whole words only', () => {
+      assert.strictEqual(blocks('gol', 'O gol mais bonito'), true);
+      assert.strictEqual(blocks('gol', 'Golpe de estado'), false);
+      assert.strictEqual(blocks('gol', 'Ontologia'), false);
+    });
+
+    it('matches at the start, end, and next to punctuation', () => {
+      assert.strictEqual(blocks('bbb', 'BBB 26: tudo sobre'), true);
+      assert.strictEqual(blocks('bbb', 'Tudo sobre o BBB'), true);
+      assert.strictEqual(blocks('bbb', 'Resumo (BBB), parte 2'), true);
+    });
+
+    it('matches multi-word phrases regardless of spacing and case', () => {
+      assert.strictEqual(blocks('copa do mundo', 'Copa  do Mundo 2026'), true);
+      assert.strictEqual(blocks('copa do mundo', 'Copa e Mundo'), false);
+    });
+
+    it('supports * as a wildcard for letters and digits', () => {
+      assert.strictEqual(blocks('polit*', 'Os políticos de sempre'), true);
+      assert.strictEqual(blocks('polit*', 'Política em 2026'), true);
+      assert.strictEqual(blocks('*ismo', 'O capitalismo hoje'), true);
+      assert.strictEqual(blocks('polit*', 'Pole position'), false);
+    });
+
+    it('treats regex characters in a keyword literally', () => {
+      assert.strictEqual(blocks('c++', 'Aprenda C++ agora'), true);
+      assert.strictEqual(blocks('c++', 'Aprenda C agora'), false);
+      assert.strictEqual(blocks('(x)', 'Resultado (x) final'), true);
+      assert.strictEqual(blocks('a.b', 'a-b e axb'), false);
+    });
+
+    it('matches when any keyword in the list matches', () => {
+      assert.strictEqual(blocks('futebol, política', 'Resumo da política'), true);
+      assert.strictEqual(blocks('futebol, política', 'Receita de bolo'), false);
+    });
+
+    it('never blocks with an empty list or an empty title', () => {
+      assert.strictEqual(blocks('', 'qualquer título'), false);
+      assert.strictEqual(blocks('futebol', ''), false);
+      assert.strictEqual(blocks('futebol', null), false);
+      assert.strictEqual(kw.titleHasBlockedKeyword('x', undefined), false);
+    });
+  });
+});

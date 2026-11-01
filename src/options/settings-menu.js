@@ -839,30 +839,49 @@ upgradeCheckoutButton.addEventListener('click', async () => {
 
 
 /*******************************
- * Grayscale color exceptions
+ * Pill lists
  *******************************/
 
-// Rebuild the pill list from the stored comma-separated string. Called on
-// init and whenever the setting changes (including from another window).
-function renderGrayscalePills(value) {
-  const box = qs('#grayscale_pill_box');
-  const input = qs('#grayscale_pill_input');
+// String settings holding a comma-separated list, edited as removable pills.
+// `container` is moved beneath the toggle row of `toggle` at init.
+const PILL_LISTS = {
+  grayscale_exempt_channels: {
+    container: 'grayscale_exempt_container',
+    toggle: 'grayscale_mode',
+    parse: parseGrayscaleExemptChannels,
+  },
+  blocked_keywords: {
+    container: 'blocked_keywords_container',
+    toggle: 'remove_keyword_videos',
+    parse: parseBlockedKeywords,
+  },
+};
+
+const pillListBox = id => qs('.pill_box', qs(`#${PILL_LISTS[id].container}`));
+const pillListInput = id => qs('.pill_input', pillListBox(id));
+const pillListItems = id => qsa('.pill span', pillListBox(id)).map(s => s.innerText);
+
+// Rebuild the pills from the stored comma-separated string. Called on init
+// and whenever the setting changes (including from another window).
+function renderPills(id, value) {
+  const box = pillListBox(id);
+  const input = pillListInput(id);
   if (!box || !input) return;
 
   qsa('.pill', box).forEach(pill => pill.remove());
 
-  parseGrayscaleExemptChannels(value).forEach(handle => {
+  PILL_LISTS[id].parse(value).forEach(item => {
     const pill = document.createElement('div');
     pill.className = 'pill';
 
     const label = document.createElement('span');
-    label.innerText = handle;
+    label.innerText = item;
 
     const remove = document.createElement('button');
     remove.innerText = '×';
-    remove.setAttribute('title', `Remove ${handle}`);
+    remove.setAttribute('title', `Remove ${item}`);
     remove.addEventListener('click', () => {
-      commitGrayscalePillInput(handle);
+      commitPillInput(id, item);
     });
 
     pill.append(label, remove);
@@ -870,62 +889,57 @@ function renderGrayscalePills(value) {
   });
 }
 
-function saveGrayscalePills() {
-  const handles = qsa('#grayscale_pill_box .pill span').map(s => s.innerText);
-  updateSetting('grayscale_exempt_channels', handles.join(', '), { manual: true });
+function savePills(id) {
+  updateSetting(id, pillListItems(id).join(', '), { manual: true });
 }
 
-function commitGrayscalePillInput(removeHandle) {
-  const input = qs('#grayscale_pill_input');
+// Save the pending input (and the removal of `removeItem`, if given) together,
+// before rebuilding the pills. `parse` normalizes and drops duplicates.
+function commitPillInput(id, removeItem) {
+  const input = pillListInput(id);
   const raw = input.value.trim().replace(/,+$/, '').trim();
   input.value = '';
-  if (!raw && !removeHandle) return;
+  if (!raw && !removeItem) return;
 
-  const handles = qsa('#grayscale_pill_box .pill span')
-    .map(s => s.innerText)
-    .filter(handle => handle !== removeHandle);
-  if (raw) {
-    const handle = (raw.startsWith('@') ? raw : '@' + raw).toLowerCase();
-    if (!handles.includes(handle)) handles.push(handle);
-  }
-
-  // Save the removal and pending input together, before rebuilding the pills.
-  updateSetting('grayscale_exempt_channels', handles.join(', '), { manual: true });
+  const items = pillListItems(id).filter(item => item !== removeItem);
+  if (raw) items.push(raw);
+  updateSetting(id, PILL_LISTS[id].parse(items.join(', ')).join(', '), { manual: true });
 }
 
-// Move the container beneath the grayscale toggle row and wire the input.
-// Runs once, at the end of populateOptions.
-function initGrayscaleExemptUI(value) {
-  const container = qs('#grayscale_exempt_container');
-  const toggleRow = qs('div#grayscale_mode');
-  const input = qs('#grayscale_pill_input');
-  if (!container || !toggleRow || !input) return;
+// Move the container beneath its toggle row and wire the input.
+// Runs once per list, at the end of populateOptions.
+function initPillListUI(id, value) {
+  const container = qs(`#${PILL_LISTS[id].container}`);
+  const toggleRow = qs(`div#${PILL_LISTS[id].toggle}`);
+  const box = pillListBox(id);
+  const input = pillListInput(id);
+  if (!container || !toggleRow || !box || !input) return;
 
   toggleRow.insertAdjacentElement('afterend', container);
   container.removeAttribute('hidden');
-  renderGrayscalePills(value);
+  renderPills(id, value);
 
   input.addEventListener('keydown', e => {
     if (e.isComposing || e.keyCode === 229) return;
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      commitGrayscalePillInput();
+      commitPillInput(id);
     } else if (e.key === 'Backspace' && input.value === '') {
-      const pills = qsa('#grayscale_pill_box .pill');
+      const pills = qsa('.pill', box);
       if (pills.length) {
         pills[pills.length - 1].remove();
-        saveGrayscalePills();
+        savePills(id);
       }
     }
   });
   // Moving focus to a remove button must not rebuild it before its click.
   // Commit when focus leaves the box, or after removal in the click handler.
-  qs('#grayscale_pill_box').addEventListener('focusout', e => {
-    if (!e.currentTarget.contains(e.relatedTarget)) commitGrayscalePillInput();
+  box.addEventListener('focusout', e => {
+    if (!e.currentTarget.contains(e.relatedTarget)) commitPillInput(id);
   });
 
   // Focus the input when the empty area of the box is clicked
-  qs('#grayscale_pill_box').addEventListener('click', e => {
-    if (e.target.id === 'grayscale_pill_box') input.focus();
+  box.addEventListener('click', e => {
+    if (e.target === box) input.focus();
   });
 }
