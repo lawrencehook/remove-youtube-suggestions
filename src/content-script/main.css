@@ -385,7 +385,8 @@ html[global_enable="true"][search_engine_mode="true"] ytd-merch-shelf-renderer,
 /* Comments */
 html[global_enable="true"][search_engine_mode="true"] #comments,
 html[foobar] {
-	display: none;
+	/* !important: some watch layouts (split-scroll) force #secondary to display: flex. */
+	display: none !important;
 }
 
 /* Search results */
