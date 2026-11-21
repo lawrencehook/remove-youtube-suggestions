@@ -826,8 +826,9 @@ function handleNewPage() {
 
   // Redirect the shorts player
   if (on && onShorts && cache['normalize_shorts']) {
-    const newUrl = url.replace('shorts', 'watch');
-    location.replace(newUrl);
+    // Build /watch?v=<id> directly; YouTube doesn't always redirect /watch/<id>.
+    const id = location.pathname.split('/')[2];
+    if (id) location.replace(`/watch?v=${id}`);
   }
 
   // Autofocus the search bar
