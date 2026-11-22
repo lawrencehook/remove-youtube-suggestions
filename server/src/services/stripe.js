@@ -84,12 +84,19 @@ async function createBillingPortalSession(email) {
   return session;
 }
 
+// STRIPE_WEBHOOK_SECRET may hold several comma-separated secrets, so a new
+// webhook endpoint (e.g. for an API version upgrade) can overlap the old one.
 function constructWebhookEvent(payload, signature) {
-  return stripe.webhooks.constructEvent(
-    payload,
-    signature,
-    config.STRIPE_WEBHOOK_SECRET
-  );
+  const secrets = (config.STRIPE_WEBHOOK_SECRET || '').split(',').map(s => s.trim()).filter(Boolean);
+  let lastErr = new Error('No webhook secret configured');
+  for (const secret of secrets) {
+    try {
+      return stripe.webhooks.constructEvent(payload, signature, secret);
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr;
 }
 
 // Extract the product IDs associated with a webhook event, or null if the event
@@ -115,8 +122,9 @@ async function getEventProductIds(event) {
         .filter(Boolean);
     case 'invoice.payment_failed':
     case 'invoice.payment_succeeded':
+      // API 2025-03-31+ moved the line's price under pricing.price_details.
       return (obj.lines?.data || [])
-        .map(l => l.price?.product)
+        .map(l => l.pricing?.price_details?.product || l.price?.product)
         .filter(Boolean);
     default:
       return null;
