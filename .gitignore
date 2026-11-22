@@ -5,3 +5,4 @@ manifest.json
 _scratch/
 node_modules/
 dist/
+.DS_Store
