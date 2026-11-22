@@ -20,7 +20,7 @@ function renderPage({ title, heading, message, icon }) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} — RYS</title>
+  <title>${title} — Rein</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -142,9 +142,9 @@ function renderPage({ title, heading, message, icon }) {
 <body>
   <header>
     <a href="${RYS_HOME_URL}">
-      <img src="${RYS_LOGO_URL}" alt="RYS">
+      <img src="${RYS_LOGO_URL}" alt="Rein">
     </a>
-    <span class="title">RYS</span>
+    <span class="title">Rein</span>
     <span class="premium-badge">Premium</span>
   </header>
 
