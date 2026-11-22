@@ -1,5 +1,5 @@
 {
-  "name": "RYS — Remove YouTube Suggestions",
+  "name": "Rein: Remove YouTube Suggestions",
   "description": "Spend less time on YouTube. Customize YouTube's user interface to be less engaging.",
   "homepage_url": "https://github.com/lawrencehook/remove-youtube-suggestions",
   "manifest_version": 3,
@@ -37,7 +37,7 @@
 
   "action": {
     "default_popup": "/options/main.html",
-    "default_title": "Remove Youtube Suggestions",
+    "default_title": "Rein: Remove YouTube Suggestions",
     "default_icon": {
       "16": "/images/16.png",
       "32": "/images/32.png",

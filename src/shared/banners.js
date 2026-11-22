@@ -7,8 +7,8 @@ function createBannerHTML(banner, logoUrl) {
   container.id = `rys_banner_${banner.id}`;
   container.className = 'rys_announcement_banner';
   container.innerHTML = `
-    <img src="${logoUrl}" alt="RYS" class="rys_banner_logo">
-    <span class="rys_banner_brand">RYS</span>
+    <img src="${logoUrl}" alt="Rein" class="rys_banner_logo">
+    <span class="rys_banner_brand">Rein</span>
     <span class="rys_banner_message">${banner.message}</span>
     <a href="${banner.linkUrl}" target="_blank" class="rys_banner_link">${banner.linkText}</a>
     <a class="rys_banner_dismiss">${banner.dismissText}</a>

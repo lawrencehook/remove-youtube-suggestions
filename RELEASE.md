@@ -1,4 +1,4 @@
-# Releasing RYS
+# Releasing Rein
 
 1. Start from clean, up-to-date `main`; choose a version unused on GitHub and both stores.
 2. Set the same version in `src/chrome_manifest.json` and `src/firefox_manifest.json`.

@@ -151,7 +151,7 @@ function start() {
   console.log(`Loaded ${grandfathered.size} grandfathered emails`);
 
   app.listen(config.PORT, () => {
-    console.log(`RYS Premium Server running on port ${config.PORT}`);
+    console.log(`Rein Premium Server running on port ${config.PORT}`);
     console.log(`Base URL: ${config.BASE_URL}`);
   });
 }

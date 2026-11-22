@@ -699,13 +699,6 @@ html[dark_mode='true'] #active_sidebar .active_count {
   height: 20px;
 }
 
-#signin_header_rys,
-#upgrade_header_rys,
-#premium_required_header_rys {
-  font-size: 1.3rem;
-  font-weight: normal;
-}
-
 #signin_header_premium,
 #upgrade_header_premium,
 #premium_required_header_premium {

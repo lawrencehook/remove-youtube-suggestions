@@ -1,4 +1,4 @@
-# RYS Premium Server
+# Rein Premium Server
 
 Backend server for the premium subscription system.
 

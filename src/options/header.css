@@ -42,11 +42,6 @@ html[dark_mode='false'] #header-light { display: none }
   max-height: var(--icon-dim);
   max-width: var(--icon-dim);
 }
-#header-text {
-  font-size: 1.3rem;
-  color: var(--label-color);
-}
-
 #header-premium-badge {
   font-size: 0.7rem;
   font-weight: 500;

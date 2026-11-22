@@ -1,4 +1,4 @@
-// Authentication module for RYS Premium
+// Authentication module for Rein Premium
 
 const Auth = {
   // Send magic link to email
