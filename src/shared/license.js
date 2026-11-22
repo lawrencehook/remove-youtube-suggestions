@@ -1,4 +1,4 @@
-// License checking module for RYS Premium
+// License checking module for Rein Premium
 
 const License = {
   // Decode JWT payload (no signature verification - we trust our server)

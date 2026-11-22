@@ -475,7 +475,7 @@ html[global_enable='true'][grayscale_mode='true']:not([grayscale_exempt='true'])
 	filter: grayscale(100%);
 }
 
-/* RYS UI Variables */
+/* Rein UI Variables */
 :root {
   --rys-primary: #065fd4;
   --rys-text: #fff;

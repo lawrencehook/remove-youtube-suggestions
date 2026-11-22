@@ -1,4 +1,4 @@
-# RYS — Remove YouTube Suggestions
+# Rein — Remove YouTube Suggestions
 #### A Browser Extension
 
 ---
