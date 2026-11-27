@@ -111,6 +111,10 @@ html[global_enable="true"][remove_results_description="true"] #contents #descrip
 html[global_enable="true"][remove_results_description="true"] #contents #description,
 html[global_enable="true"][remove_results_description="true"] #contents ytd-expandable-metadata-renderer,
 html[global_enable="true"][remove_results_description="true"] #contents ytd-badge-supported-renderer,
+/* New search layout (yt-lockup-view-model): the description is the metadata row after the spacer row, or the two-line snippet on channel results. */
+html[global_enable="true"][remove_results_description="true"] ytd-search yt-lockup-view-model .ytContentMetadataViewModelMetadataRow:has(> .ytContentMetadataViewModelSpacer) ~ .ytContentMetadataViewModelMetadataRow,
+html[global_enable="true"][remove_results_description="true"] ytd-search yt-lockup-view-model .ytContentMetadataViewModelMetadataRow:has(> .ytContentMetadataViewModelMetadataTextMaxLines2),
+html[global_enable="true"][remove_results_description="true"] ytd-search yt-lockup-view-model yt-expandable-metadata-view-model,
 
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search ytd-reel-shelf-renderer,
 html[global_enable="true"][remove_shorts_results="true"] #container.ytd-search grid-shelf-view-model.ytGridShelfViewModelHostHasBottomButton.ytd-item-section-renderer.ytGridShelfViewModelHost,
