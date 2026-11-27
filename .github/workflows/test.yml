@@ -13,6 +13,18 @@ jobs:
       - run: npm test
         working-directory: tests
 
+  # Lints the Firefox build the way firefox.sh assembles it. Fails on errors
+  # only; warnings are reported but don't fail the job.
+  firefox-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: cp src/firefox_manifest.json src/manifest.json
+      - run: npx --yes web-ext@10.8.0 lint --source-dir src --no-config-discovery
+
   server-tests:
     runs-on: ubuntu-latest
     steps:
