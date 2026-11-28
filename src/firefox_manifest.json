@@ -14,6 +14,9 @@
 
   "background": {
     "scripts": [
+      "/shared/config.js",
+      "/shared/auth.js",
+      "/shared/license.js",
       "/background/events.js"
     ],
     "persistent": false
@@ -54,6 +57,7 @@
   },
   "permissions": [
     "storage",
+    "alarms",
     "*://www.youtube.com/*",
     "*://m.youtube.com/*"
   ],

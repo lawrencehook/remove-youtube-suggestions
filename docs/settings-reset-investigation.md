@@ -3,10 +3,13 @@
 Date: 2026-08-01
 Status: **Phase 1 implemented** (PR #223) — the four call-site changes below,
 plus regression coverage in
-`tests/content-script/settings-persistence.test.js`. This doc remains as the
-diagnosis, audit, and decision record; the "Deferred follow-up" sections
-(background license renewal, tier states, slot selection) are still pending
-and spec'd here for future releases.
+`tests/content-script/settings-persistence.test.js`. **Background license
+renewal** (`alarms` + single-flight `License.checkLicense(false)` in
+`src/background/events.js`, tested in
+`tests/background/license-renewal.test.js`) and **immediate cross-context tier
+re-derivation** in `src/content-script/main.js` are also implemented. This doc
+remains as the diagnosis, audit, and decision record; explicit indeterminate
+tier states and user-controlled slot selection remain optional future work.
 
 Diagnosis was confirmed by two independent investigations (Claude and Codex);
 this doc consolidates both and supersedes the docs on branches
