@@ -121,7 +121,7 @@ SCHEDULE_DAYS_OPTIONS.forEach(o => {
   o.addEventListener('click', e => {
     const day = o.getAttribute('day');
     const active = o.toggleAttribute('active');
-    const currentDays = HTML.getAttribute('scheduleDays').split(',');
+    const currentDays = (HTML.getAttribute('scheduleDays') || '').split(',');
 
     let newDays;
     if (active) {
@@ -198,12 +198,14 @@ function unlockWithPassword() {
   HTML.setAttribute('passwordEntered', 'true');
 }
 
-PASSWORD_INPUT2.addEventListener('input', e => {
+function syncPasswordConfirmButton() {
   const password = PASSWORD_INPUT1.value;
   const reentry = PASSWORD_INPUT2.value;
   const matching = password !== '' && password === reentry;
   PASSWORD_BUTTON.toggleAttribute('disabled', !matching);
-});
+}
+PASSWORD_INPUT1.addEventListener('input', syncPasswordConfirmButton);
+PASSWORD_INPUT2.addEventListener('input', syncPasswordConfirmButton);
 
 PASSWORD_BUTTON.addEventListener('click', e => {
   const password = PASSWORD_INPUT1.value;
@@ -485,17 +487,27 @@ window.addEventListener('focus', handleVisibilityRefresh);
 
 // Initialize account state on load
 async function initAccountState() {
-  const signedIn = await Auth.isSignedIn();
-  if (signedIn) {
+  const cached = await browser.storage.local.get([
+    PREMIUM_CONFIG.STORAGE_KEYS.SESSION_TOKEN,
+    PREMIUM_CONFIG.STORAGE_KEYS.LICENSE_TOKEN,
+  ]);
+  const sessionToken = cached[PREMIUM_CONFIG.STORAGE_KEYS.SESSION_TOKEN];
+  const licenseToken = cached[PREMIUM_CONFIG.STORAGE_KEYS.LICENSE_TOKEN];
+  const cachedTier = License.getTierSync(licenseToken, sessionToken);
+  HTML.setAttribute('tier', cachedTier);
+  if (cachedTier === TIER.PREMIUM) {
+    if (DONATE_LINK) DONATE_LINK.hidden = true;
+    if (HEADER_PREMIUM_BADGE) HEADER_PREMIUM_BADGE.removeAttribute('hidden');
+  }
+  if (sessionToken) {
     ACCOUNT_OPTION.textContent = 'Account';
-    // Provisionally treat as free_signed_in until license check returns
-    HTML.setAttribute('tier', TIER.FREE_SIGNED_IN);
     updateSlotIndicator();
-    // Check license in background
-    refreshLicense(true);
+    // For valid cached Premium tokens, respect the 24h refresh threshold to
+    // avoid redundant server/Stripe calls; for free signed-in accounts, force
+    // a refresh so a recent upgrade is picked up immediately.
+    refreshLicense(cachedTier !== TIER.PREMIUM);
   } else {
     ACCOUNT_OPTION.textContent = 'Sign In';
-    HTML.setAttribute('tier', TIER.FREE);
     updateSlotIndicator();
     // Auto-open sign-in modal if ?signin=1 param is present
     const params = new URLSearchParams(window.location.search);

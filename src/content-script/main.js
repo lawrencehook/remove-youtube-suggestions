@@ -113,13 +113,50 @@ function getTier(licenseToken, sessionToken) {
   return TIER.FREE;
 }
 
+// Keys that must never be mirrored onto YouTube's <html> element attributes
+// (where page scripts could read them).
+const PRIVATE_STORAGE_KEYS = new Set([
+  'session_token',
+  'license_token',
+  'user_email',
+  'hashed_password',
+]);
+
+function setHtmlSettingAttr(id, value) {
+  if (id.startsWith('_') || PRIVATE_STORAGE_KEYS.has(id)) return;
+  HTML.setAttribute(id, value);
+}
+
+// Apply stored settings into `cache` and `HTML` attributes using the current
+// entitlement tier. Purely in-memory: never writes preferences back to storage.
+function applyEffectiveSettings(rawSettings) {
+  const settings = { ...DEFAULT_SETTINGS, ...rawSettings };
+  const tier = getTier(settings['license_token'], settings['session_token']);
+  cache['_tier'] = tier;
+  cache['_licenseToken'] = settings['license_token'];
+  cache['_sessionToken'] = settings['session_token'];
+
+  if (tier === TIER.FREE) {
+    clearAllPremium(settings);
+  } else if (tier === TIER.FREE_SIGNED_IN) {
+    enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
+  }
+
+  Object.entries(settings).forEach(([id, value]) => {
+    setHtmlSettingAttr(id, value);
+    cache[id] = value;
+  });
+}
+
 // Respond to changes in settings
 function logStorageChange(changes, area) {
   if (area !== 'local') return;
 
+  const prevTier = cache['_tier'];
   if ('license_token' in changes) cache['_licenseToken'] = changes['license_token'].newValue;
   if ('session_token' in changes) cache['_sessionToken'] = changes['session_token'].newValue;
-  if ('license_token' in changes || 'session_token' in changes) {
+  const authChanged = 'license_token' in changes || 'session_token' in changes;
+  if (authChanged) {
     cache['_tier'] = getTier(cache['_licenseToken'], cache['_sessionToken']);
   }
 
@@ -138,13 +175,21 @@ function logStorageChange(changes, area) {
       }
     }
 
-    HTML.setAttribute(id, newValue);
+    setHtmlSettingAttr(id, newValue);
     cache[id] = newValue;
 
     if (id.includes('schedule')) {
       lastScheduleCheck = null;
     }
   });
+
+  // Re-derive effective settings immediately when the tier transitions
+  // (sign-in, sign-out, upgrade, or license renewal) without writing storage.
+  if (authChanged && cache['_tier'] !== prevTier) {
+    browser.storage.local.get(settings => {
+      if (settings) applyEffectiveSettings(settings);
+    });
+  }
 }
 browser.storage.onChanged.addListener(logStorageChange);
 
@@ -157,20 +202,7 @@ browser.storage.local.get(settings => {
     browser.storage.local.set(revealUpdates);
   }
 
-  const tier = getTier(settings['license_token'], settings['session_token']);
-  cache['_tier'] = tier;
-  cache['_licenseToken'] = settings['license_token'];
-  cache['_sessionToken'] = settings['session_token'];
-  if (tier === TIER.FREE) {
-    clearAllPremium(settings);
-  } else if (tier === TIER.FREE_SIGNED_IN) {
-    enforceSlotBudget(settings, PREMIUM_CONFIG.FREE_PREMIUM_SLOTS);
-  }
-
-  Object.entries({ ...DEFAULT_SETTINGS, ...settings}).forEach(([ id, value ]) => {
-    HTML.setAttribute(id, value);
-    cache[id] = value;
-  });
+  applyEffectiveSettings(settings);
 
   const init = {};
   Object.entries(DEFAULT_SETTINGS).forEach(([ id, value]) => {
@@ -482,12 +514,19 @@ function runDynamicSettings() {
       }
     }
 
-    // Enable theater mode
-    if (cache['enable_theater']) {
+    // Enable theater mode (retry until active, then respect manual exit until navigation)
+    if (onVideo && cache['enable_theater'] && !theaterClicked) {
       const flexy = document.querySelector("ytd-watch-flexy");
-      const btn = document.querySelector(".ytp-size-button");
-      if (flexy && btn && !flexy.hasAttribute("theater")) {
-        btn.click();
+      if (flexy?.hasAttribute("theater")) {
+        theaterClicked = true;
+      } else {
+        const btn = document.querySelector(".ytp-size-button");
+        if (flexy && btn) {
+          btn.click();
+          if (flexy.hasAttribute("theater")) {
+            theaterClicked = true;
+          }
+        }
       }
     }
 
@@ -820,7 +859,7 @@ function handleNewPage() {
   HTML.setAttribute('grayscale_exempt', false);
 
   // Refresh HTML attributes
-  Object.entries(cache).forEach(([key, value]) => HTML.setAttribute(key, value));
+  Object.entries(cache).forEach(([key, value]) => setHtmlSettingAttr(key, value));
 
   checkRedirects();
 
