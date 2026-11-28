@@ -4,7 +4,7 @@ const config = require('../config');
 const storage = require('../storage');
 const emailService = require('../services/email');
 const { generateSessionToken } = require('../services/jwt');
-const { checkPremiumStatus } = require('../services/stripe');
+const stripeService = require('../services/stripe');
 const { renderPage } = require('../templates');
 
 const router = express.Router();
@@ -90,11 +90,26 @@ router.post('/send-magic-link', async (req, res) => {
     const requestId = uuidv4();
     storage.createAuthRequest(requestId, email, { ip });
 
+    // Best-effort badge lookup; never fail sign-in if Stripe is unavailable.
+    let isPremium = storage.isGrandfathered(email);
+    if (!isPremium) {
+      const cached = storage.getSubscriptionStatus(email);
+      if (cached) {
+        isPremium = cached.premium;
+      } else {
+        try {
+          const status = await stripeService.checkPremiumStatus(email);
+          isPremium = !!status.premium;
+        } catch (err) {
+          console.warn(`[auth] Premium status lookup failed for ${email}:`, err.message);
+        }
+      }
+    }
+
     // Send magic link email
     const magicLinkUrl = `${config.BASE_URL}/auth/verify?token=${requestId}`;
     try {
-      const status = await checkPremiumStatus(email);
-      await emailService.sendMagicLinkEmail(email, magicLinkUrl, { isPremium: status.premium });
+      await emailService.sendMagicLinkEmail(email, magicLinkUrl, { isPremium });
     } catch (err) {
       storage.deleteAuthRequest(requestId);
       throw err;

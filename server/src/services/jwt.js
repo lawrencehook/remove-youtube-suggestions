@@ -4,6 +4,7 @@ const config = require('../config');
 function generateSessionToken(email) {
   const payload = {
     email: email.toLowerCase(),
+    type: 'session',
   };
 
   const options = {
@@ -16,6 +17,7 @@ function generateSessionToken(email) {
 function generateLicenseToken(email, premium, grandfathered = false) {
   const payload = {
     email: email.toLowerCase(),
+    type: 'license',
     premium: !!premium,
     grandfathered: !!grandfathered,
   };
@@ -30,6 +32,18 @@ function generateLicenseToken(email, premium, grandfathered = false) {
 function verifySessionToken(token) {
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
+    // Reject license tokens (both typed and legacy payloads carrying `premium`),
+    // while remaining compatible with previously issued session tokens that only
+    // carry `{ email }`.
+    if (decoded.type !== undefined && decoded.type !== 'session') {
+      return { valid: false, error: 'Invalid token type' };
+    }
+    if ('premium' in decoded) {
+      return { valid: false, error: 'Invalid token type' };
+    }
+    if (!decoded.email) {
+      return { valid: false, error: 'Missing email claim' };
+    }
     return { valid: true, email: decoded.email };
   } catch (err) {
     return { valid: false, error: err.message };
