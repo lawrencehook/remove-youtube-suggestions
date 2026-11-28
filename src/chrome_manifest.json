@@ -50,7 +50,8 @@
     "open_in_tab": true
   },
   "permissions": [
-    "storage"
+    "storage",
+    "alarms"
   ],
   "host_permissions": [
     "*://www.youtube.com/*",
