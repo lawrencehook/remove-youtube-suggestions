@@ -3,11 +3,11 @@ if (typeof browser === 'undefined') {
   browser = typeof chrome !== 'undefined' ? chrome : null;
 }
 
-const uninstallUrl = "http://lawrencehook.com/rys/👋";
+const uninstallUrl = encodeURI("https://lawrencehook.com/rys/👋");
 browser.runtime.setUninstallURL(uninstallUrl);
 
 browser.runtime.onInstalled.addListener(async object => {
-  const url = "http://lawrencehook.com/rys/welcome";
+  const url = "https://lawrencehook.com/rys/welcome";
   if (object.reason !== browser.runtime.OnInstalledReason.INSTALL) return;
   // management.getSelf() returns a Promise in both Chrome MV3 and Firefox
   // (Firefox ignores callbacks), so use await for cross-browser consistency.

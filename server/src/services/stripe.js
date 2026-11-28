@@ -23,13 +23,21 @@ async function findOrCreateCustomer(email) {
   return createCustomer(email);
 }
 
+function getSubscriptionProductIds(subscription) {
+  return (subscription?.items?.data || [])
+    .map(item => item.price?.product)
+    .filter(Boolean);
+}
+
 async function getActiveSubscription(customerId) {
   const subscriptions = await stripe.subscriptions.list({
     customer: customerId,
     status: 'active',
-    limit: 1,
+    limit: 100,
   });
-  return subscriptions.data[0] || null;
+  return (subscriptions.data || []).find(sub =>
+    isAllowedProduct(getSubscriptionProductIds(sub))
+  ) || null;
 }
 
 async function checkPremiumStatus(email) {
@@ -117,9 +125,7 @@ async function getEventProductIds(event) {
     case 'customer.subscription.created':
     case 'customer.subscription.updated':
     case 'customer.subscription.deleted':
-      return (obj.items?.data || [])
-        .map(i => i.price?.product)
-        .filter(Boolean);
+      return getSubscriptionProductIds(obj);
     case 'invoice.payment_failed':
     case 'invoice.payment_succeeded':
       // API 2025-03-31+ moved the line's price under pricing.price_details.

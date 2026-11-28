@@ -22,6 +22,15 @@ describe('JWT Service', () => {
 
       assert.strictEqual(result.email, 'test@example.com');
     });
+    it('should include session token type claim', () => {
+      const jwt = require('jsonwebtoken');
+      const config = require('../src/config');
+
+      const token = generateSessionToken('typed@example.com');
+      const decoded = jwt.verify(token, config.JWT_SECRET);
+
+      assert.strictEqual(decoded.type, 'session');
+    });
   });
 
   describe('verifySessionToken', () => {
@@ -31,6 +40,38 @@ describe('JWT Service', () => {
 
       assert.strictEqual(result.valid, true);
       assert.strictEqual(result.email, 'verify@example.com');
+    });
+
+    it('should remain compatible with legacy untyped session tokens', () => {
+      const jwt = require('jsonwebtoken');
+      const config = require('../src/config');
+
+      const legacyToken = jwt.sign({ email: 'legacy@example.com' }, config.JWT_SECRET, { expiresIn: '1d' });
+      const result = verifySessionToken(legacyToken);
+
+      assert.strictEqual(result.valid, true);
+      assert.strictEqual(result.email, 'legacy@example.com');
+    });
+
+    it('should reject license tokens used as session tokens', () => {
+      const licenseToken = generateLicenseToken('donor@example.com', true, true);
+      const result = verifySessionToken(licenseToken);
+
+      assert.strictEqual(result.valid, false);
+    });
+
+    it('should reject legacy untyped license tokens used as session tokens', () => {
+      const jwt = require('jsonwebtoken');
+      const config = require('../src/config');
+
+      const legacyLicense = jwt.sign(
+        { email: 'donor@example.com', premium: true, grandfathered: true },
+        config.JWT_SECRET,
+        { expiresIn: '730d' }
+      );
+      const result = verifySessionToken(legacyLicense);
+
+      assert.strictEqual(result.valid, false);
     });
 
     it('should reject an invalid token', () => {
@@ -53,15 +94,19 @@ describe('JWT Service', () => {
 
   describe('generateLicenseToken', () => {
     it('should generate a valid license token with premium status', () => {
+      const jwt = require('jsonwebtoken');
+      const config = require('../src/config');
+
       const token = generateLicenseToken('test@example.com', true, false);
 
       assert.ok(token);
       assert.strictEqual(typeof token, 'string');
       assert.ok(token.split('.').length === 3);
 
-      const result = verifySessionToken(token);
-      assert.strictEqual(result.valid, true);
-      assert.strictEqual(result.email, 'test@example.com');
+      const decoded = jwt.verify(token, config.JWT_SECRET);
+      assert.strictEqual(decoded.email, 'test@example.com');
+      assert.strictEqual(decoded.type, 'license');
+      assert.strictEqual(decoded.premium, true);
     });
 
     it('should include premium and grandfathered flags in payload', () => {

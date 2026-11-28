@@ -3,13 +3,15 @@ const assert = require('node:assert');
 const request = require('supertest');
 
 // Setup must be required first
-const { cleanTestData } = require('./setup');
+const fs = require('fs');
+const path = require('path');
+const { cleanTestData, testDataDir } = require('./setup');
 
 // Mock the email service before requiring app
 const emailService = require('../src/services/email');
 let lastSentEmail = null;
-emailService.sendMagicLinkEmail = async (email, url) => {
-  lastSentEmail = { email, url };
+emailService.sendMagicLinkEmail = async (email, url, options) => {
+  lastSentEmail = { email, url, options };
   return { MessageId: 'test-message-id' };
 };
 
@@ -19,6 +21,7 @@ stripeService.checkPremiumStatus = async () => ({ premium: false, expiresAt: nul
 
 const { app } = require('../src/index');
 const storage = require('../src/storage');
+const config = require('../src/config');
 
 describe('Auth Routes', () => {
   beforeEach(() => {
@@ -26,6 +29,7 @@ describe('Auth Routes', () => {
     storage.ensureDirectories();
     lastSentEmail = null;
     emailService.validateEmail = async () => ({ valid: true });
+    stripeService.checkPremiumStatus = async () => ({ premium: false, expiresAt: null });
   });
 
   after(() => {
@@ -42,6 +46,33 @@ describe('Auth Routes', () => {
       assert.ok(res.body.request_id);
       assert.strictEqual(lastSentEmail.email, 'test@example.com');
       assert.ok(lastSentEmail.url.includes(res.body.request_id));
+    });
+
+    it('should mark grandfathered donors as premium in magic link email', async () => {
+      const grandfatheredFile = path.join(testDataDir, config.GRANDFATHERED_FILE);
+      fs.writeFileSync(grandfatheredFile, 'donor@example.com\n');
+      storage.loadGrandfatheredEmails();
+
+      const res = await request(app)
+        .post('/auth/send-magic-link')
+        .send({ email: 'donor@example.com' });
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(lastSentEmail.options.isPremium, true);
+    });
+
+    it('should still send magic link when Stripe status lookup fails', async () => {
+      stripeService.checkPremiumStatus = async () => {
+        throw new Error('Stripe unavailable');
+      };
+
+      const res = await request(app)
+        .post('/auth/send-magic-link')
+        .send({ email: 'resilient@example.com' });
+
+      assert.strictEqual(res.status, 200);
+      assert.ok(res.body.request_id);
+      assert.strictEqual(lastSentEmail.options.isPremium, false);
     });
 
     it('should reject invalid email format', async () => {
