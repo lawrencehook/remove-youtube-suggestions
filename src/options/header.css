@@ -1,4 +1,12 @@
 
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/options/fonts/playfair-display-rein.woff2') format('woff2');
+}
+
 /* Visual cues for dark mode */
 html[dark_mode='false'] { --svg-color: #464646 }
 html[dark_mode='true']  { --svg-color: #E9E9E9 }
@@ -33,24 +41,43 @@ html[dark_mode='false'] #header-light { display: none }
   --icon-dim: 28px;
 }
 
+#header-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 #header-logo-link {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 #header-logo {
   height: var(--icon-dim);
   max-height: var(--icon-dim);
   max-width: var(--icon-dim);
 }
+#header-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-bottom: 1px;
+}
 #header-text {
-  font-size: 1.3rem;
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1;
   color: var(--label-color);
+  user-select: none;
 }
 #header-premium-badge {
   font-size: 0.7rem;
   font-weight: 500;
+  line-height: 1;
   color: var(--blue-color, #4a6cf7);
   letter-spacing: 0.02em;
+  user-select: none;
 }
 
 #header-slot-indicator {
